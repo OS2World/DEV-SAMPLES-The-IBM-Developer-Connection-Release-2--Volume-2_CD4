@@ -1,0 +1,46 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+     Fsourcefileup   f  200        disk
+     Isourcefilens  01
+     I                                 13  200  srcdta
+     C     *entry        plist
+     C                   parm                    from              3 0
+     C                   parm                    to                3 0
+     C                   parm                    string           80
+     C                   if        %subst(srcdta:from:to-from+1) =
+     C                             %trim(string)
+     C                   delete    sourcefile
+     C                   endif

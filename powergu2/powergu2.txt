@@ -1,0 +1,491 @@
+OS/2 C++ CLASS LIBRARY: POWER GUI PROGRAMMING WITH C SET ++
+
+SAMPLE UPDATES TO SUPPORT IBM VISUALAGE C++ 3.0 AND OS/2 WARP 3.0
+=========================================================================
+We have provided this README file with a zip file that contains only
+those files changed to support VisualAge C++ and OS/2 Warp 3.0.  Prior
+to installing these files, you must install the examples from the disk
+shipped with the book, since files that have not changed are not
+included in the zip file.  Since many of the changes were made to support
+changes in IBM Open Class 3.0, the examples will no longer compile and
+link correctly on C Set ++ Version 2.1 once you have applied these
+changes.  Do not install the updates unless you plan to use VisualAge C++
+Version 3.0.
+
+To install the update, copy POWERGU2.ZIP to the root directory where you
+installed the examples from the book (for example, D:\POWERGUI).  Make
+that directory the current directory, and explode the file.  For example:
+  COPY A:POWERGU2.ZIP D:\POWERGUI
+  D:
+  CD D:\POWERGUI
+  PKUNZIP POWERGU2.ZIP -d -o
+
+Please send any problems installing the updates, errors in the samples,
+or inaccuracies in the book to:
+
+   boblove@vnet.ibm.com
+
+If you have "how to" questions on topics not covered in the book, please
+append these questions to one of the IBM supported forums.  For example,
+the IBM Open Class library developers regularly monitor OS2DF1 Section 5
+on CompuServe.
+
+
+BUGS FOUND ON VISUALAGE C++ AND OS/2 WARP
+=========================================================================
+1)  In the Title bar bitmap example using system menus (menus\titlebmp),
+    the buttons are rearranged after minimizing and restoring the window.
+===> This behavior only occurs on OS/2 Warp and we have not developed a
+     work around.  If you need title bar bitmaps, see the example that
+     uses graphic pushbuttons (buttons\titlebut).
+
+2)  In the Container Spreadsheet example (cnr\spreadsh), the multi-line
+    edit field automatically closes when the Tab key is pressed.
+===> This is a bug in the Open Class library scheduled to be fixed in
+     CSD CTO302.
+
+3)  In the Container Spreadsheet example (cnr\spreadsh), the multi-line
+    edit field will overwrite the bottom scroll bar.
+===> This is a bug in the Open Class library scheduled to be fixed in
+     CSD CTO302.
+
+4)  We fixed a bug in the Container Tree Details example (cnr\treedet),
+    where the tree view and details view containers do not stay lined up.
+
+5)  In the Derived Frame Extension example (advframe\drawextn), you must
+    resize the frame window before you can see the controls on the frame.
+===> This appears to be a bug in IBM Open Class.  We have implemented a
+     work around in the example until it can be resolved.
+
+6)  In the Menu Draw Item example (menus\drawmenu), the menu items that
+    appear after the item with MI_DRAWITEM style are drawn with an
+    incorrect font.
+===> This looks like a Presentation Manager bug that occurs to all menu
+     items following the menu item with MI_DRAWITEM style.  We have
+     implemented a work around in the example.
+
+7)  We fixed the TableObject copy constructor in the Container Spreadsheet
+    example (cnr\spreadsh) to correctly copy all of the strings for the
+    object.
+
+8)  We removed the SourceFixHandler from the Menu Drag example
+    (menus\menudrag), since is no longer necessary.
+
+9)  We removed a work around from the Static Text and Canvas example
+    (static\textcv) that is no longer necessary.  We also updated the
+    function MultiLineStaticText::calcMinimumSize to use a minimum width
+    no smaller than what is needed to display the longest word.
+
+10) We fixed a bug in the Canvas Deck Packing and Alignment
+    (canvas\setpack) example where the frame window was being positioned
+    above the top of the screen in 1280x1024 resolution.
+
+11) We fixed the Complex Canvas example (canvas\complex) to allow the
+    child window of the right-hand view port (a multi-cell canvas) to
+    change size if the minimum size of one of its child windows changes
+    (for example, as a result of a font drop).  We also updated the
+    resizing logic to properly size the child of the view port (it wasn't
+    correctly accounting for the size needed by the scroll bars of the
+    view port).
+
+12) We fixed the painting in the Listbox Custom Drawing example
+    (listctls\drawlist) to honor color drops and palette changes.  We
+    also fixed the item height returned by the handler.
+
+
+VISUALAGE C++ 3.0 INTERFACE AND MAKEFILE CHANGES
+=========================================================================
+The following changes were made to support Version 3.0 of IBM Open Class.
+
+ALL MAKEFILES
+---------------------------------------------------------
+==> We removed the library names DDE4MUII.LIB and DDE4CCI.LIB from the
+    link step.
+==> We added the compiler option /Wppc- to suppress new compiler
+    informational messages.
+
+ADVFRAME\DRAWEXTNS
+---------------------------------------------------------
+myextns.hpp/cpp
+==> We changed the return type of separatorWidth from "unsigned" to
+    "unsigned long."
+==> We changed the function drawSeparators from const to non-const.
+==> We added a private copy constructor and assignment operator to
+    MyExtension.
+
+DM\MENUDRAG
+---------------------------------------------------------
+.\cmditem.cpp(87:7) : error EDC3071: Call to "IDMImage::IDMImage" matches more than one function.
+==> We added a parameter to the IDMImage constructor call, changing it
+    from:
+       IDMImage
+         image( IResourceId( IC_DEFAULT_FRAME_ID ) );
+    to:
+       IDMImage
+         image( IResourceId( IC_DEFAULT_FRAME_ID ), true );
+    This error occurs because IBM Open Class obsoleted an IDMImage
+    constructor and the replacement constructor is ambiguous with the old
+    one.  A defect is open against the IBM Open Class for this problem,
+    so this ambiguity may be fixed in a future CSD.
+
+.\menudrag.cpp(83:30) : error EDC3013: Identifier "IMenuItem" is undefined.
+==> We added an include for imnitem.hpp to menudrag.cpp and cmditem.cpp.
+
+HELP\BASIC
+---------------------------------------------------------
+.\childhlp.cpp(56:30) : error EDC3055: "IFrameWindow*" cannot be converted to "IWindow*".
+.\childhlp.cpp(65:36) : error EDC3055: "IFrameWindow*" cannot be converted to "IWindow*".
+==> We added an include for iframe.hpp.
+
+.\childhlp.cpp(72:23) : error EDC3013: Identifier "IC_MEMBER_ACCESS_ERROR" is undefined.
+==> We added an include for icconst.h.
+
+.\childhlp.cpp(70:50) : informational EDC3126: Argument "window" is not used in function "ChildHelpHandler::handleEventsFor(IWindow*)".
+==> We removed the argument name from the definition of these functions.
+
+HELP\SPECIAL
+---------------------------------------------------------
+.\childhlp.cpp(56:30) : error EDC3055: "IFrameWindow*" cannot be converted to "IWindow*".
+.\childhlp.cpp(65:36) : error EDC3055: "IFrameWindow*" cannot be converted to "IWindow*".
+==> We added an include for iframe.hpp.
+
+.\childhlp.cpp(72:23) : error EDC3013: Identifier "IC_MEMBER_ACCESS_ERROR" is undefined.
+==> We added an include for icconst.h.
+
+.\childhlp.cpp(70:50) : informational EDC3126: Argument "window" is not used in function "ChildHelpHandler::handleEventsFor(IWindow*)".
+==> We removed the argument name from the definition of these functions.
+
+EXCEPTNS\NEWEXCP
+---------------------------------------------------------
+  custexcp.obj(.\custexcp.cpp) : error LNK2029: "IException::logExceptionData()" : unresolved external
+  newexcp.obj(.\newexcp.cpp) : error LNK2029: "IExceptionLocation::IExceptionLocation(const char*,const char*,unsigned long)" : unresolved external
+  custexcp.obj(.\custexcp.cpp) : error LNK2029: "IException::terminate()" : unresolved external
+  custexcp.obj(.\custexcp.cpp) : error LNK2029: "IException::addLocation(const IExceptionLocation&)" : unresolved external
+  newexcp.obj(.\newexcp.cpp) : error LNK2029: "IException::addLocation(const IExceptionLocation&)" : unresolved external
+  custexcp.obj(.\custexcp.cpp) : error LNK2029: "IException::IException(const char*,unsigned long,IException::Severity)" : unresolved external
+  custexcp.obj(.\custexcp.cpp) : error LNK2029: "IException::~IException()" : unresolved external
+  newexcp.obj(.\newexcp.cpp) : error LNK2029: "IException::~IException()" : unresolved external
+  custexcp.obj(.\custexcp.cpp) : error LNK2029: "IException::isRecoverable() const" : unresolved external
+  custexcp.obj(.\custexcp.cpp) : error LNK2029: "IException::IException(const IException&)" : unresolved external
+  newexcp.obj(.\newexcp.cpp) : error LNK2029: "IException::IException(const IException&)" : unresolved external
+==> We added an include for ibase.hpp.
+    These errors occur because this example only uses the exception
+    classes, and consequently only included iexcbase.hpp.  This file does
+    not specify the appropriate pragma library directives, and does not
+    include another file that does (like ibase.hpp).  This is a defect in
+    IBM Open Class.
+
+FRAME1\DIALOG
+---------------------------------------------------------
+.\dialog.cpp(44:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+    Note:  This only occurs when I_NO_INLINES is defined.
+
+FRAME1\MINMAX
+---------------------------------------------------------
+.\minmax.cpp(30:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+    Note:  This only occurs when I_NO_INLINES is defined.
+
+MENUS\DYNPOPUP
+---------------------------------------------------------
+.\dynpopup.cpp(86:13) : error EDC3013: Identifier "IMenuItem" is undefined.
+==> We added an include for imnitem.hpp.
+
+SHIPAPP\HELLO1
+---------------------------------------------------------
+==> We renamed dde4xtra.obj to cppopa3.obj in the makefile, to reflect
+    the file's new name.
+
+MENUS\SYSMENU
+---------------------------------------------------------
+.\sysmenu.cpp(26:11) : error EDC3013: Identifier "IMenuItem" is undefined.
+==> We added an include for imnitem.hpp.
+
+MENUS\TITLEBMP
+---------------------------------------------------------
+.\titlebmp.cpp(60:3) : error EDC3013: Identifier "IMenuItem" is undefined.
+==> We added an include for imnitem.hpp.
+
+MENUS\CURSOR
+---------------------------------------------------------
+.\cursor.cpp(38:13) : error EDC3013: Identifier "IMenuItem" is undefined.
+==> We added an include for imnitem.hpp.
+
+MENUS\DRAWMENU
+---------------------------------------------------------
+.\drawmenu.cpp(72:11) : error EDC3013: Identifier "IMenuItem" is undefined.
+==> We added an include for imnitem.hpp.
+
+CONTROLS
+---------------------------------------------------------
+.\controls.cpp(104:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+STATIC\TEXTCLR
+---------------------------------------------------------
+.\textclr.cpp(57:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+STATIC\TEXTCV
+---------------------------------------------------------
+.\textcv.cpp(172:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+STATIC\ICONBMP
+---------------------------------------------------------
+.\iconbmp.cpp(63:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+STATIC\BOXES
+---------------------------------------------------------
+.\boxes.cpp(59:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+LISTCTLS\DRAWLIST
+---------------------------------------------------------
+listdhdr.hpp(46:3) : warning EDC3293: "DrawHandler::drawItem(IListBoxDrawItemEvent&,IBase::Boolean)" hides the virtual function "IListBoxDrawItemHandler::drawItem(IListBoxDrawItemEvent&)".
+==> We renamed the drawItem private function to drawListItem to avoid a
+    clash with the same name added to IBM Open Class.
+
+SLIDER\PROGIND
+---------------------------------------------------------
+.\taskview.cpp(56:22) : error EDC3013: Identifier "IString" is undefined.
+==> We added an include for istring.hpp.
+
+CNR\CDATE
+---------------------------------------------------------
+developr.hpp(66:19) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(66:30) : error EDC3078: Non-static member "Developer::strCompuServeId" must be associated with an object or a pointer to an object.
+developr.hpp(66:10) : error EDC3013: Identifier "offsetof" is undefined.
+developr.hpp(70:21) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(70:32) : error EDC3078: Non-static member "Developer::strAge" must be associated with an object or a pointer to an object.
+developr.hpp(70:12) : error EDC3013: Identifier "offsetof" is undefined.
+developr.hpp(74:21) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(74:32) : error EDC3078: Non-static member "Developer::date" must be associated with an object or a pointer to an object.
+developr.hpp(74:12) : error EDC3013: Identifier "offsetof" is undefined.
+developr.hpp(78:21) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(78:32) : error EDC3078: Non-static member "Developer::time" must be associated with an object or a pointer to an object.
+developr.hpp(78:12) : error EDC3013: Identifier "offsetof" is undefined.
+==> We added an include for stddef.h.
+
+.\cdate.cpp(23:13) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CNR\UIDATE
+---------------------------------------------------------
+developr.hpp(36:19) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(36:30) : error EDC3078: Non-static member "Developer::strCompuServeId" must be associated with an object or a pointer to an object.
+developr.hpp(36:10) : error EDC3013: Identifier "offsetof" is undefined.
+developr.hpp(40:21) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(40:32) : error EDC3078: Non-static member "Developer::strAge" must be associated with an object or a pointer to an object.
+developr.hpp(40:12) : error EDC3013: Identifier "offsetof" is undefined.
+developr.hpp(44:21) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(44:32) : error EDC3078: Non-static member "Developer::date" must be associated with an object or a pointer to an object.
+developr.hpp(44:12) : error EDC3013: Identifier "offsetof" is undefined.
+developr.hpp(48:21) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+developr.hpp(48:32) : error EDC3078: Non-static member "Developer::time" must be associated with an object or a pointer to an object.
+developr.hpp(48:12) : error EDC3013: Identifier "offsetof" is undefined.
+==>  We added an include for stddef.h.
+
+.\uidate.cpp(23:13) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CNR\HELP
+---------------------------------------------------------
+.\devmodel.cpp(49:19) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+.\devmodel.cpp(49:30) : error EDC3078: Non-static member "Developer::strAddress" must be associated with an object or a pointer to an object.
+.\devmodel.cpp(49:10) : error EDC3013: Identifier "offsetof" is undefined.
+.\devmodel.cpp(54:19) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+.\devmodel.cpp(54:30) : error EDC3078: Non-static member "Developer::strAge" must be associated with an object or a pointer to an object.
+.\devmodel.cpp(54:10) : error EDC3013: Identifier "offsetof" is undefined.
+==> We added an include for stddef.h
+
+.\devview.cpp(59:39) : error EDC3205: Syntax error - "IApplication" is followed "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CNR\POPUP
+---------------------------------------------------------
+.\popup.cpp(33:19) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+.\popup.cpp(33:30) : error EDC3078: Non-static member "Developer::strCompuServeId" must be associated with an object or a pointer to an object.
+.\popup.cpp(33:10) : error EDC3013: Identifier "offsetof" is undefined.
+.\popup.cpp(37:21) : error EDC3523: "Developer" is a type name being used where a variable name is expected.
+.\popup.cpp(37:32) : error EDC3078: Non-static member "Developer::ulAge" must be associated with an object or a pointer to an object.
+.\popup.cpp(37:12) : error EDC3013: Identifier "offsetof" is undefined.
+==> We added an include for stddef.h.
+
+.\devview.cpp(59:39) : error EDC3205: Syntax error - "IApplication" is followed "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CNR\TREEDET
+---------------------------------------------------------
+partobj.hpp(52:19) : error EDC3523: "ExecutablePart" is a type name being used where a variable name is expected.
+partobj.hpp(52:35) : error EDC3078: Non-static member "ExecutablePart::strTraceAble" must be associated with an object or a pointer to an object.
+partobj.hpp(52:10) : error EDC3013: Identifier "offsetof" is undefined.
+partobj.hpp(55:19) : error EDC3523: "ExecutablePart" is a type name being used where a variable name is expected.
+partobj.hpp(55:35) : error EDC3078: Non-static member "ExecutablePart::strEnabledPart" must be associated with an object or a pointer to an object.
+partobj.hpp(55:10) : error EDC3013: Identifier "offsetof" is undefined.
+partobj.hpp(58:19) : error EDC3523: "ExecutablePart" is a type name being used where a variable name is expected.
+partobj.hpp(58:35) : error EDC3078: Non-static member "ExecutablePart::strGeneratesTrace" must be associated with an object or a pointer to an object.
+partobj.hpp(58:10) : error EDC3013: Identifier "offsetof" is undefined.
+partobj.hpp(61:19) : error EDC3523: "ExecutablePart" is a type name being used where a variable name is expected.
+partobj.hpp(61:35) : error EDC3078: Non-static member "ExecutablePart::strContainsTrigger" must be associated with an object or a pointer to an object.
+partobj.hpp(61:10) : error EDC3013: Identifier "offsetof" is undefined.
+==> We added an include for stddef.h.
+
+NOTEBOOK\SIMPLE
+---------------------------------------------------------
+.\simple.cpp(19:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+NOTEBOOK\DEFAULT
+---------------------------------------------------------
+.\default.cpp(41:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+NOTEBOOK\ADDPAGES
+---------------------------------------------------------
+.\addpages.cpp(66:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+NOTEBOOK\VPORTDLG
+---------------------------------------------------------
+.\vportdlg.cpp(60:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+NOTEBOOK\SELECT
+---------------------------------------------------------
+.\select.cpp(95:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\LUNCHDLG
+---------------------------------------------------------
+.\lunchdlg.cpp(24:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\CVSIMPLE
+---------------------------------------------------------
+.\cvsimple.cpp(69:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\CVTAB
+---------------------------------------------------------
+.\cvtab.cpp(69:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\SETLUNCH
+---------------------------------------------------------
+.\setlunch.cpp(153:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\MCSIMPLE
+---------------------------------------------------------
+.\mcsimple.cpp(70:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\MCLUNCH
+---------------------------------------------------------
+.\mclunch.cpp(157:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\SPLITTXT
+---------------------------------------------------------
+.\splittxt.cpp(37:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\SPLITPRB
+---------------------------------------------------------
+.\splitprb.cpp(89:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+CANVAS\VPORTLOG
+---------------------------------------------------------
+.\vportlog.cpp(273:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+GENHDRS\KEYBD
+---------------------------------------------------------
+.\keybd.cpp(50:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+GENHDRS\MOUSECLK
+---------------------------------------------------------
+.\mouseclk.cpp(89:15) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+EXTLIB\VALUESET
+---------------------------------------------------------
+.\testvset.cpp(141:29) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+.\testvset.cpp(164:29) : error EDC3205: Syntax error - "IApplication" is followed by "::" but is not the name of a class.
+==> We added an include for iapp.hpp.
+
+.\testvset.cpp(184:36) : error EDC3013: Identifier "IMenuItem" is undefined.
+==> We added an include for imnitem.hpp.
+
+DM\LBOXDRAG
+---------------------------------------------------------
+.\lboxitem.cpp(123:5) : error EDC3090: Syntax error - expected ";" and found "tgtOp".
+.\lboxitem.cpp(124:8) : error EDC3013: Identifier "tgtOp" is undefined.
+.\lboxitem.cpp(366:5) : error EDC3090: Syntax error - expected ";" and found "tgtOp".
+.\lboxitem.cpp(377:8) : error EDC3013: Identifier "tgtOp" is undefined.
+==> We added an include for idmtgth.hpp.
+
+DATA\STRNGTST
+---------------------------------------------------------
+.\strngtst.cpp(22:16) : error EDC3013: Identifier "isspace" is undefined.
+.\strngtst.cpp(22:32) : error EDC3013: Identifier "ispunct" is undefined.
+==> We added an include for ctype.h.
+
+We changed 0x8004 to ISystemMenu::idClose in the following files.
+-----------------------------------------------------------------
+CANVAS\COMPLEX\PUSHBTNS.HPP
+CANVAS\CVSIMPLE\CVSIMPLE.CPP
+CANVAS\CVTAB\CVTAB.CPP
+CANVAS\MCLUNCH\PUSHBTNS.HPP
+CANVAS\MCSIMPLE\MCSIMPLE.CPP
+CANVAS\SETLUNCH\PUSHBTNS.HPP
+
+We changed SC_CLOSE to ISystemMenu::idClose in the following files.
+-------------------------------------------------------------------
+MENUS\DYNPOPUP\DYNPOPUP.CPP
+BUTTONS\PUSHBUT\PUSHBUT.CPP
+CANVAS\COMPLEX\PUSHBTNS.HPP
+CANVAS\CVSIMPLE\CVSIMPLE.CPP
+CANVAS\CVTAB\CVTAB.CPP
+CANVAS\MCLUNCH\PUSHBTNS.HPP
+CANVAS\MCSIMPLE\MCSIMPLE.CPP
+CANVAS\SETLUNCH\PUSHBTNS.HPP
+FRAME1\OK2CLOSE\OK2CLOSE.CPP
+LATOUR\SHOPPING\PURITEMV.CPP
+
+We changed 0x8008 to IC_FRAME_CLIENT_ID in the following files.
+---------------------------------------------------------------
+BUTTONS\PUSHBUT\PUSHBUT.CPP
+BUTTONS\RADIO\RADIO.CPP
+CANVAS\CVSIMPLE\CVSIMPLE.CPP
+CANVAS\CVTAB\CVTAB.CPP
+CANVAS\MCLUNCH\MCLUNCH.CPP
+CANVAS\MCSIMPLE\MCSIMPLE.CPP
+CANVAS\SETLUNCH\SETLUNCH.CPP
+CANVAS\SETPACK\PACKCV.CPP
+CANVAS\SPLITTXT\SPLITTXT.CPP
+CANVAS\SPLITPRB\SPLITPRB.CPP
+CANVAS\VPORTBMP\VPORTBMP.CPP
+CANVAS\VPORTLOG\VPORTLOG.CPP
+CNR\EDITHDR\EDITHDR.CPP
+DEBUG\PRTQUE\TRBROWSE.CPP
+EXCEPTNS\EXVIEWER\EXVIEWER.CPP
+GENHDRS\CMDHDRS\CMDHDRS.CPP
+GENHDRS\MOUSECLK\MOUSECLK.CPP
+GETSTART\START1\START1.CPP
+LISTCTLS\DRAWLIST\DRAWLIST.CPP
+LISTCTLS\SPINBUT\SPINBUT.CPP
+NOTEBOOK\ADDPAGES\ADDPAGES.CPP
+NOTEBOOK\SIMPLE\SIMPLE.CPP
+NOTEBOOK\VPORTDLG\VPORTDLG.CPP
+SHIPAPP\HELLO1\HELLO1.CPP
+STATIC\BOXES\BOXES.CPP
+STATIC\ICONBMP\ICONBMP.CPP
+STATIC\TEXTCLR\TEXTCLR.CPP
+STATIC\TEXTCV\TEXTCV.CPP
+STATIC\TEXTSTYL\TEXTSTYL.CPP

@@ -1,0 +1,93 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+      * Procedure cgiparse
+      * ------------------
+      * Inputs:  string containing input from the browser
+      *          length of the string
+      * Outputs: modified string with escape sequences in the data portion of each field converted
+      *          to EBCDIC escape sequences and those in the field name part converted to an
+      *          EBCDIC character.
+      *
+      * Example:      callp     cgiparse(inbuff:inactln)
+      *
+     Hnomain
+      /copy cgidev/qrpglesrc,prototypes
+     P cgiparse        B                   export
+
+     D cgiparse        PI
+     D    string                  32767    options(*varsize)
+     D    stringln                   10I 0
+
+     D i1              s              5I 0
+     D i2              s              5I 0
+     D i3              s              5I 0
+     D i4              s              5I 0
+     D twohex          s              2
+     D char            s              1
+      *
+      * Handle 3-character ASCII escape sequences, %XX, where XX is the hexadecimal ASCII code.
+      * point.  If the escape sequence occurs in variable name, convert it to one EBCDIC character,
+      * else, convert it to the equivalent 3-character EBCDIC escape sequence, %XX, where XX is
+      * the hexadecimal EBCDIC code point.
+      *
+     C                   eval      i1 = 1
+     C                   dou       i1 = 0
+     C     '%':1         scan      string:i1     i1                       97    find escape seq
+     C                   if        *in97                                        if found
+     C                   eval      i1 = i1 +1                                   work on 2 hex chars
+     C                   eval      twohex = %subst(string:i1:2)
+     C                   eval      char = hex2char(twohex)                      cvt to ASCII char
+     C                   call      'QDCXLATE'                                   cvt to EBCDIC char
+     C                   parm      1             xlateln           5 0
+     C                   parm                    char
+     C                   parm      'QAEUSBB1'    xlatetbl         10
+     C                   parm      'QUSRSYS'     xlatelib         10
+     C                   eval      i2 = stringln - i1 + 1                       len 2 rt of %
+     C* logic to handle whether in variable name or variable's data.
+     C     '='           scan      string:i1     i3                             find next =
+     C     '&'           scan      string:i1     i4                             find next &
+     C                   if        (i4 > i3) or (i4 = 0 and i3 > 0)             in the var's name
+     C                   eval      %subst(string:i1-1:1) = char                 rep % with EBC char
+     C                   eval      string = %subst(string:1:i1-1) +             scrunch out two
+     C                                      %subst(string:i1+2:i2-2)            hex chars
+     C                   eval      stringln = stringln - 2                      adjust length
+     C                   else                                                   in variable's data
+     C                   eval      %subst(string:i1:2) = char2hex(char)         rep ASCII hex with
+     C                   endif                                                  EBCDIC hex
+     C                   endif
+     C                   end
+     C                   return
+     P cgiparse        E

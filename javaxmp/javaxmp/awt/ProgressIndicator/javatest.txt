@@ -1,0 +1,79 @@
+What's missing in Java test coverage ?
+- AWT FVT Level tests.
+- Good/Bad returns. Exceptions.
+- Printing
+- JCK not sufficient.
+- Video configurations.
+- Can we sit down and review the JCK to see how good/bad it is ?
+- Can we pick up the new JavaSoft testing tools ? (10 licenses in fall plan).
+-- > Java-scope.
+-- > Java-spec.
+
+- KRL Test bucket, could it be run by the SVT team ?
+-- > If so can Hursley do it ?
+-- > What about regression for performance pak ?
+
+- Should we be doing more extensive video testing ?
+-- > We are for perf pak.
+
+-- > Perhaps we need to expand the coverage of different video modes and
+video memory configurations. (Resolutions/Colours/Memory).
+
+- Need to try different printer devices and many different printer tests.
+
+Extend application coverage.
+-- > Would we have found enter key not working problem ?
+-- > Host On Demand.
+-- > Which applications could we add to our bucket ?
+-- > Can we get more from the Soyring/Roberts team (need better
+integration with that team).
+-- > Visual Age Java
+-- > Lotus Bean Machine
+
+Keyboards
+-- > Could use extended FVT level testing.
+-- > How much NLV testing was done on keyboards in Hursley ?
+-- > How many different NLV tests do Hursley run.
+
+Internationalization
+--> Being beefed up by FVT for next revision to cover more "locale like"
+things.
+
+Shell Integration
+-- > Is any one officially testing this ?
+
+Stress Testing
+-- > Can we get stress testing done any sooner ?
+-- > Cannot do stress earlier unless function is stable.
+-- > Garbage collection testing needs improving.  Would perf team run this ?
+-- > JIT testing needs improving. Perf idiom tests ?
+-- > More JIT testing before it comes to Austin.
+
+Java Beans
+-- > Are we running enough Java Beans based apps.
+-- > we currently don't test the BDK.
+
+Server Sider
+-- > Need more servlett coverage.
+-- > Need to synch up with the ICS folks.
+
+JDBC
+-- > Need some DB2 workload tests.
+-- > Need to test that we work with the code that Toronto is providing.
+
+Netscape
+-- > Need tests that work with the Netscape <--> Java bridge if we ship it.
+
+Debugger
+-- > Should we do any ICAT testing ?
+-- > Probably not.
+
+Compatibility Testing
+-- > Do we do enough to make sure that apps work the same on NT and OS/2 etc?
+-- > We still don't have a Solaris box.
+-- > We still don't have enough AIX boxes.
+
+New support
+-- > Performance pak graphics etc.
+-- > Codepage 1208 support (In perf pak).
+

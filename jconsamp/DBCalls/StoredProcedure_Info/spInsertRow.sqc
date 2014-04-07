@@ -1,0 +1,84 @@
+/******************************************************************************
+**
+** Source File Name = inpsrv.sqc  1.5
+**
+** Licensed Materials - Property of IBM
+**
+** (C) COPYRIGHT International Business Machines Corp. 1995, 1997 
+** All Rights Reserved.
+**
+** US Government Users Restricted Rights - Use, duplication or
+** disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+**
+**
+** PURPOSE: This sample program demonstrates stored procedures.
+**
+**          There are two parts to this program:
+**              - the inpcli executable (placed on the client)
+**              - the inpsrv library (placed on the server)
+**
+**          The inpsrv function will take the information
+**          received in the SQLDA to create a table and insert the
+**          names of the presidents.
+**
+**          Refer to the inpcli.sqc program for more details on how
+**          this program is invoked as the inpsrv function
+**          in the inpsrv library by the EXEC SQL CALL statement.
+**
+** NOTE:    One technique to minimize network flow is to set the
+**          variables that returns no output to null on the server program
+**          before returning to the client program.
+**          This can be achieved by setting the value -128 to the
+**          indicator value associated with the data.
+**
+**          The inpsrv routine will take the information received
+**          and create a table called "Presidents" in the "sample"
+**          database.  It will then place the values it received in
+**          the input/output SQLDA into the "Presidents" table.
+**
+**    EXTERNAL DEPENDENCIES :
+**       - Ensure existence of database for precompile purposes.
+**       - Precompile with the SQL precompiler (PREP in DB2)
+**       - Bind to a database (BIND in DB2)
+**       - Compile and link with the IBM Cset++ compiler (AIX and OS/2)
+**         or the Microsoft Visual C++ compiler (Windows) 
+**         or the compiler supported on your platform.
+**
+*******************************************************************************/
+#include <memory.h>
+#include <string.h>
+#include <sqlenv.h>
+#include <sqlutil.h>
+#include "util.h"
+
+SQL_API_RC SQL_API_FN spInsertRow(
+	     char * date,	      
+           long int id,
+	     short int paydebit,
+		short int transaction_type,
+		char * description,
+		char * forwhat,
+		double amount)	
+           
+{
+   /* Declare a local SQLCA */
+   EXEC SQL INCLUDE SQLCA;
+
+   /* Declare Host Variables */
+   EXEC SQL BEGIN DECLARE SECTION;
+     char insert_stmt[80] = "INSERT INTO BALANCESHEET VALUES('1997-12-01',9876,0,0,'description goes here', 'for what goes here', 1000.00)" ;
+   EXEC SQL END DECLARE SECTION;
+
+   
+   EXEC SQL WHENEVER SQLERROR CONTINUE;
+   EXEC SQL EXECUTE IMMEDIATE :insert_stmt ;
+   EXEC SQL COMMIT ;
+   if(SQLCODE)
+   {
+	printf("\nError on Commit, sqlcode = %ld\n",SQLCODE) ;
+	exit(1) ;
+   }  
+
+   return(0;
+}
+

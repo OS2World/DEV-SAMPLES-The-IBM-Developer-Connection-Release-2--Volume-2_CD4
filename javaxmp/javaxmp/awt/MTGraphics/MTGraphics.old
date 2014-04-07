@@ -1,0 +1,179 @@
+//-----------------------------------------------------------------------------
+// MTGraphics.java
+//
+// 
+//
+// 
+// 
+// 
+//
+// 
+// 
+// 
+//
+// Author : Kelvin R Lawrence.     27th-February-1997
+//
+// History:
+//
+//-----------------------------------------------------------------------------
+
+import java.awt.* ;
+import java.applet.* ;
+import java.util.*;
+
+//---------------------------------------------------------------
+// Class: GraphicsThread
+//
+// Simple timer class that will setup a timer using a secondary
+// thread to draw some graphics.
+//---------------------------------------------------------------
+class GraphicsThread extends Thread 
+{
+
+  Canvas pnl ;
+  Graphics g ;
+
+  //--------------------------------------------------------------------
+  //
+  // Constructor: GraphicsThread()
+  //
+  // 
+  //--------------------------------------------------------------------
+  GraphicsThread( Canvas p )
+  {
+    pnl = p ;
+  }
+
+  //--------------------------------------------------------------------
+  // run()
+  //
+  // This method is automatically called when a new GraphicsThread object  
+  // is created as it extends the Thread class.
+  //--------------------------------------------------------------------
+  public void run()
+  {
+    Random rnd = new Random() ;
+    int x1,x2,y1,y2 ;
+
+    int width  = pnl.size().width ;
+    int height = pnl.size().height ;
+
+    System.out.println( "width  = " + width ) ;
+    System.out.println( "height = " + height ) ;
+
+    Graphics g = pnl.getGraphics() ;
+
+    System.out.println( "New graphics thread is running" ) ;  
+
+    for ( int i = 0; i < 100; i++ )
+    {
+      for ( int j = 0; j < 10; j++ )
+      {
+        x1 = rnd.nextInt() %  width ;
+        x2 = rnd.nextInt() %  width ;
+        y1 = rnd.nextInt() %  height ;
+        y2 = rnd.nextInt() %  height ;
+
+        g.setColor( new Color(rnd.nextInt() % 255, rnd.nextInt() % 255, rnd.nextInt() % 255) ) ;
+        //g.setColor( Color.blue ) ;
+        g.drawLine( x1,y1,x2,y2 ) ;
+      }
+      try
+      {
+        Thread.sleep(10);
+      }
+      catch( InterruptedException e )
+      {
+        return;
+      }
+    }
+  }
+}
+
+//---------------------------------------------------------------
+// Class: MTGraphics
+//
+// 
+// 
+//---------------------------------------------------------------
+public class MTGraphics extends Applet
+{
+  final int NUM_PANELS = 8 ;
+
+  Canvas[] graphicsPanels;
+  Thread[] graphicsThreads;
+
+  Button start ;
+  Button stop  ;
+
+  Panel mainPanel ;
+  Panel displayPanel ;
+  Panel controlPanel ;
+
+  //----------------------------------------------------------
+  // Init routine. Called whenever the applet is first loaded.
+  //----------------------------------------------------------
+  public void init()
+  {
+    System.out.println( "init() method called" ) ;
+
+    Graphics h = this.getGraphics();
+    h.drawLine( 10,10,100,100 ) ;
+
+    setLayout( new GridLayout( NUM_PANELS/2,NUM_PANELS/2 ) ) ;
+
+    graphicsPanels  = new Canvas[NUM_PANELS] ;
+    graphicsThreads = new Thread[NUM_PANELS] ;
+
+    for ( int i = 0; i < NUM_PANELS; i++ )
+    {
+      graphicsPanels[i] = new Canvas() ;
+      add( graphicsPanels[i] ) ;
+      graphicsThreads[i] = new GraphicsThread( graphicsPanels[i] ) ;
+    }
+
+
+    start = new Button("Start") ;
+    stop  = new Button("Stop" ) ;
+
+    controlPanel.add( start ) ;
+    controlPanel.add( stop ) ;
+
+    mainPanel.add( controlPanel ) ;
+    mainPanel.add( displayPanel ) ;
+
+    //for ( int i = 0; i < NUM_PANELS; i++ )
+    //{
+    //  graphicsThreads[i].start();
+    //}
+  }
+
+  //----------------------------------------------------------------
+  // paint()
+  //
+  // Paint method, called whenever the application client area needs
+  // repainting.
+  //----------------------------------------------------------------
+  public void paint( Graphics g )
+  {
+    System.out.println( "Paint called" ) ;
+
+
+    for ( int i = 0; i < NUM_PANELS; i++ )
+    {
+      graphicsThreads[i].start();
+    }
+
+    //Graphics g0 = graphicsPanels[0].getGraphics() ;
+
+    //g0.drawLine( 10,10,100,100 ) ;
+  }
+
+  public void mouseDown()
+  {
+    for ( int i = 0; i < NUM_PANELS; i++ )
+    {
+      graphicsThreads[i].start();
+    }
+  }
+}

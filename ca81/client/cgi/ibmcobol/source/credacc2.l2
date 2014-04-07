@@ -1,0 +1,7 @@
+/NOFREE /NOD /NOI /NOP /MAP
+CREDACC2.OBJ
+/out:CREDACC2.EXE
+/map:CREDACC2.MAP
+os2386.lib iwzrlib.lib faacic32.lib
+CREDACC2.DEF
+

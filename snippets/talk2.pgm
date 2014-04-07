@@ -1,0 +1,78 @@
+<!--
+LICENSE AND DISCLAIMER
+----------------------
+This material contains IBM copyrighted sample programming source code.
+IBM grants you a nonexclusive license to use, execute, display,
+reproduce, distribute and prepare derivative works of this sample code.
+The sample code has not been thoroughly tested under all conditions.
+IBM, therefore, does not warrant or guarantee its reliability,
+serviceablity, or function. All sample code contained herein is provided
+to you "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE
+IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR
+PURPOSE, ARE EXPRESSLY DISCLAIMED.
+
+COPYRIGHT
+---------
+(C) Copyright IBM CORP. 1996, 1997
+All rights reserved.
+US Government Users Restricted Rights -
+Use, duplication or disclosure restricted
+by GSA ADP Schedule Contract with IBM Corp.
+Licensed Material - Property of IBM
+
+COMMENTS/QUESTIONS
+------------------
+Please send comments or questions via e-mail to Mel Rothman
+at mrothman@vnet.ibm.com
+
+THIS FILE AVAILABLE FROM:
+------------------------
+AS/400 Web Builder's Workshop's Snippets Page
+http://205.217.130.15/workshop/snippets/snippets.htm
+It is included in SAVF CGIDEVD (identified as
+SAVEFILE OF CGIDEV LIBRARY)
+-->
+/$top
+Content-type: text/html
+
+<HTML>
+
+<HEAD><TITLE>Response To Talk To Us</TITLE></HEAD>
+<BODY>
+<H1>Computer Discount House</H1>
+<HR>
+<P>Thank you, <B>/%custname%/</B>,
+for taking the time to fill out
+the information we asked for.<P>
+You entered the following data:<P>
+E-mail address: <B>/%emailadd%/</B><BR><BR>
+State: <B>/%state%/</B><BR><BR>
+Years at address: <B>/%years%/</B><BR><BR>
+You <b>have</b>
+/$ordered
+ordered from us before.<BR><BR>
+You <b>have</b>
+/$catalog
+received a catalog from us before.<P>
+/$tabletop
+<TABLE Border Width=45% center>
+<CAPTION><B>Here are our hours of operation</B></CAPTION>
+<TR><TH ALIGN="left">Day</TH><TH ALIGN="left">Hours</TH></TR>
+/$tabledata
+<TR>
+<TD ALIGN="left">/%days%/</TD><TD ALIGN="LEFT">/%HOURS%/</TD>
+</TR>
+/$tablebot
+</TABLE>
+/$endhtml
+<p>We will send out a package today explaining our products and
+services.
+<HR>
+<P>
+This page served by the <STRONG>AS/400 /%protocol%/</STRONG> server.
+<BR>
+It has been accessed <B>/%counter%/</B> times.
+</BODY>
+</HTML>
+/$not
+<b>not</b>

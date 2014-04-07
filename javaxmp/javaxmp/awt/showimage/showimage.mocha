@@ -1,0 +1,28 @@
+/* Decompiled by Mocha from showimage.class */
+/* Originally compiled from showimage.java */
+
+import java.applet.Applet;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.PrintStream;
+
+public class showimage extends Applet
+{
+    Image myImage;
+
+    public void init()
+    {
+        System.out.println("Loading image...");
+        System.out.println("Document base is " + getDocumentBase());
+        myImage = getImage(getDocumentBase(), "737-500.gif");
+    }
+
+    public void paint(Graphics g)
+    {
+        g.drawImage(myImage, 0, 0, this);
+    }
+
+    public showimage()
+    {
+    }
+}

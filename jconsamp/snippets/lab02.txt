@@ -1,0 +1,48 @@
+/*****************************************/
+public void initializeDatastore() {
+	try {
+		if(datastoreJDBC == null) 
+		{
+			System.out.println("datastore is null") ;
+			return ;
+		}	
+		datastoreJDBC.setDriver(ivjDriver.getText() ) ;
+		datastoreJDBC.setURL(ivjURL.getText() ) ;
+		datastoreJDBC.connect(ivjUserID.getText(), ivjPassword.getText() ) ;
+	} catch(Exception exception) {
+		exception.printStackTrace() ;
+	}		
+	return;
+}
+
+/*****************************************/
+
+public JDBCLogon(java.awt.Frame parent, COM.ibm.ivj.eab.data.DatastoreJDBC datastore) {
+	super(parent);
+	initialize() ;
+	initializeSpecial(datastore) ;
+	return;
+}
+
+/*****************************************/
+
+public void initializeSpecial(COM.ibm.ivj.eab.data.DatastoreJDBC datastore) {
+	datastoreJDBC = datastore ;
+  setModal(true);
+		try {
+			Class aCloserClass = Class.forName("uvm.abt.edit.WindowCloser");
+			Class parmTypes[] = { java.awt.Window.class };
+			Object parms[] = { this };
+			java.lang.reflect.Constructor aCtor = aCloserClass.getConstructor(parmTypes);
+			aCtor.newInstance(parms);
+		} catch (java.lang.Throwable exc) {};
+		setVisible(true);
+	
+	return;
+}
+
+/************************************************/
+
+
+
+

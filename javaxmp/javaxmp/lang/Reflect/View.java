@@ -1,0 +1,467 @@
+//-----------------------------------------------------------------------------
+// View.java
+//
+// A simple example of using the reflection classes and the basic
+// features of the Class class to load a class and display information
+// about the class, such as the methods and fields it declares.
+//
+//
+// This version requires Java JDK level 1.1.0 or higher.
+//
+// Demonstrates use of these classes/interfaces:
+//
+//  Class
+//  Constructor
+//  Method
+//  Modifier
+//  Object
+//
+// Author : Kelvin R Lawrence.     22nd-November-1997
+//
+// History:
+//
+//-----------------------------------------------------------------------------
+import java.lang.reflect.* ;
+
+//---------------------------------------------------------------
+// Class: View
+//
+// Simple class that loads a specified class and diplays
+// information about it.
+//
+//---------------------------------------------------------------
+
+public class View
+{
+
+  Class  c          ;    // The class file we are viewing.
+  Method [] methods ;    // The methods in the class (if any).
+  Field  [] fields  ;    // The fields in the class (if any).
+
+  //---------------------------------------------------------------------------
+  // getModifierString()
+  //
+  // Given an integer of modifier bits, decode the bits into a string
+  // that represents those bits. The bit masks are defined in the
+  // Modifiers class.
+  //---------------------------------------------------------------------------
+  public static String getModifierString( int modifier )
+  {
+    String s = "" ;
+
+    if ( (modifier & Modifier.PUBLIC) != 0 )
+    {
+      s = s + "public " ;
+    }
+
+    if ( (modifier & Modifier.PRIVATE) != 0 )
+    {
+      s = s + "private " ;
+    }
+
+    if ( (modifier & Modifier.ABSTRACT) != 0 )
+    {
+      s = s + "abstract " ;
+    }
+
+    if ( (modifier & Modifier.STATIC) != 0 )
+    {
+      s = s + "static " ;
+    }
+
+    if ( (modifier & Modifier.FINAL) != 0 )
+    {
+      s = s + "final " ;
+    }
+
+    if ( (modifier & Modifier.PROTECTED) != 0 )
+    {
+      s = s + "protected " ;
+    }
+
+    if ( (modifier & Modifier.SYNCHRONIZED) != 0 )
+    {
+      s = s + "synchronized " ;
+    }
+
+    if ( (modifier & Modifier.VOLATILE) != 0 )
+    {
+      s = s + "volatile " ;
+    }
+
+    if ( (modifier & Modifier.TRANSIENT) != 0 )
+    {
+      s = s + "transient " ;
+    }
+
+    if ( (modifier & Modifier.NATIVE) != 0 )
+    {
+      s = s + "native " ;
+    }
+
+    if ( (modifier & Modifier.INTERFACE) != 0 )
+    {
+      s = s + "interface " ;
+    }
+
+    return s ;
+  }
+
+  //---------------------------------------------------------------------------
+  // displayFields()
+  //
+  // Get a list of all fields declared by this class and display them.
+  //
+  //---------------------------------------------------------------------------
+  public void displayFields()
+  {
+    String s ;
+    int modifiers ;
+
+    System.out.println( "//-------------------" ) ;
+    System.out.println( "// Field declarations" ) ;
+    System.out.println( "//-------------------" ) ;
+
+    //-------------------------------------------------
+    // Get a list of all fields declared by this class.
+    //-------------------------------------------------
+    try
+    {
+      fields = c.getDeclaredFields() ;
+
+      for ( int i=0; i < fields.length; i++ )
+      {
+        modifiers = fields[i].getModifiers() ;
+        s = getModifierString( modifiers ) ;
+        s = s + getTypeName( fields[i].getType() ) ;
+        System.out.println( s + " " + fields[i].getName() + ";" ) ;
+        //System.out.println( fields[i].toString() ) ;
+      }
+    }
+    catch ( Exception e )
+    {
+      System.out.println( "Exception getting field info." ) ;
+      System.out.println( e.toString() ) ;
+    }
+  }
+
+
+  //---------------------------------------------------------------------------
+  // displayConstructors()
+  //
+  // Get a list of all constructors declared by this class and display them.
+  //
+  //---------------------------------------------------------------------------
+  public void displayConstructors()
+  {
+    Constructor [] cst ;
+    Class [] ptypes ;
+    String s ;
+    int modifiers ;
+
+    System.out.println( "" ) ;
+    System.out.println( "//----------------" ) ;
+    System.out.println( "// Constructor(s)." ) ;
+    System.out.println( "//----------------" ) ;
+
+    cst = c.getConstructors() ;
+
+    for ( int i=0; i<cst.length; i++)
+    {
+      //----------------------------------------
+      // Get the modifiers for this constructor.
+      //----------------------------------------
+      modifiers = cst[i].getModifiers() ;
+      s = getModifierString( modifiers ) ;
+
+      //------------------------------------------------------------------
+      // Get the name of this method, even though we know it should always
+      // be the same as the name of the class.
+      //------------------------------------------------------------------
+      s = s + " " + cst[i].getName() ;
+
+      //----------------------------------------
+      //Get the parameter types for this method.
+      //----------------------------------------
+
+      ptypes = cst[i].getParameterTypes() ;
+
+      s = s + "(" ;
+      for ( int p=0; p<ptypes.length; p++ )
+      {
+        s = s + getTypeName(ptypes[p]) ;
+
+        if ( p < ptypes.length-1 )
+        {
+          s = s + "," ;
+        }
+      }
+      s = s + ");" ;
+
+      System.out.println( s ) ;
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  // displayMethods()
+  //
+  // Get a list of all methods declared by this class and display them.
+  //
+  //---------------------------------------------------------------------------
+  public void displayMethods()
+  {
+    String s ;
+    int modifiers ;
+    Class rtype ;
+    Class [] ptypes ;
+
+    System.out.println( "//---------------------" ) ;
+    System.out.println( "// Method declarations." ) ;
+    System.out.println( "//---------------------" ) ;
+
+    //--------------------------------------------------
+    // Get a list of all methods declared by this class.
+    //--------------------------------------------------
+    try
+    {
+      methods = c.getDeclaredMethods() ;
+
+      if (methods==null)
+      {
+        System.out.println( "Method list came back null, make sure" +
+                            " all required classes are in CLASSPATH" ) ;
+        return;
+      }
+
+      for ( int i=0; i<methods.length; i++ )
+      {
+        //-----------------------------------
+        // Get the modifiers for this method.
+        //-----------------------------------
+        modifiers = methods[i].getModifiers() ;
+        s = getModifierString( modifiers ) ;
+
+        //-------------------------------------
+        // Get the return type for this method.
+        //-------------------------------------
+        rtype = methods[i].getReturnType() ;
+        s = s + " " + getTypeName(rtype);
+
+        //-----------------------------
+        // Get the name of this method.
+        //-----------------------------
+        s = s + " " + methods[i].getName() ;
+
+        //----------------------------------------
+        //Get the parameter types for this method.
+        //----------------------------------------
+
+        ptypes = methods[i].getParameterTypes() ;
+
+        s = s + "(" ;
+        for ( int p=0; p<ptypes.length; p++ )
+        {
+          s = s + getTypeName(ptypes[p]) ;
+
+          if ( p < ptypes.length-1 )
+          {
+            s = s + "," ;
+          }
+        }
+        s = s + ");" ;
+
+        System.out.println( s ) ;
+      }
+    }
+    catch ( Exception e )
+    {
+      System.out.println( "Exception getting method info." ) ;
+      System.out.println( e.toString() ) ;
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  // getTypeName()
+  //
+  // Return a string representation of a given type which is specified in terms
+  // of a Class object. The reason we need this method rather than just call
+  // the getName() method of the passed in Class directly is that the Java VM
+  // gives weird names to array data types. For arrays we have to do some
+  // special processing, for all other types we can just call getName(). For
+  // arrays we need to query the type of the array by calling the
+  // getComponentType() method which will return us another Class object that
+  // we can call getName() on. Also, to figure out how many dimensions an array
+  // has we have to call the
+  //---------------------------------------------------------------------------
+  private String getTypeName( Class cls )
+  {
+    String s = "";
+    Class  tmp ;
+    int    dimensions = 0 ;
+
+    if ( cls.isArray() )
+    {
+      tmp = cls ;
+
+      while( tmp.isArray() )
+      {
+        dimensions++ ;
+        tmp = tmp.getComponentType() ;
+      }
+      s = s + tmp.getName() ;
+
+      for ( int i=0; i<dimensions; i++ )
+      {
+        s = s + " []" ;
+      }
+      return s ;
+    }
+    else
+    {
+      return cls.getName();
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  // analyze()
+  //
+  // Overall control method, called by main() that drives the decoding of the
+  // class information.
+  //---------------------------------------------------------------------------
+  public void analyze( String classname )
+  {
+    Class [] classes ;
+    Class [] interfaces;
+    Class superclass ;
+    String s = "" ;
+
+    //--------------------------------------------------------------------
+    // Get a reference to the class and get a list of the methods and
+    // fields the class declares.
+    //--------------------------------------------------------------------
+    try
+    {
+      c = Class.forName( classname ) ;
+
+      //-------------------------------------------------
+      // Display the name of the class and its modifiers.
+      //-------------------------------------------------
+
+      int modifiers = c.getModifiers() ;
+
+      s = getModifierString( modifiers) ;
+
+      if ( c.isInterface() )
+      {
+        s = s + "Interface " ;
+      }
+      else
+      {
+        s = s + "Class " ;
+      }
+      s = s + classname  ;
+
+      //-----------------------------------------------
+      // Display the name (if any) of the superclasses.
+      //-----------------------------------------------
+
+      superclass = c.getSuperclass() ;
+
+      if ( superclass != null )
+      {
+        s = s + " extends " + getTypeName( superclass ) ;
+      }
+
+      //-------------------------------------------------
+      // Display the names of any implemented interfaces.
+      //-------------------------------------------------
+      interfaces = c.getInterfaces() ;
+
+      if (( !c.isInterface()) && (interfaces.length > 0) )
+      {
+        s= s + " implements " ;
+
+        for ( int i = 0; i<interfaces.length ; i++ )
+        {
+          s = s + getTypeName( interfaces[i] ) ;
+
+          if ( i < interfaces.length-1 )
+          {
+            s = s + "," ;
+          }
+        }
+      }
+
+
+      System.out.println( s ) ;
+
+      System.out.println( "{" ) ;
+
+      //LATER: Nested classes. For some reason JavaSoft have not implemented
+      //       this interface in the 1.1.4 JDK. It always returns 0 classes.
+      //
+      classes = c.getDeclaredClasses() ;
+      System.out.println( "// Declared classes ==> " + classes.length ) ;
+
+      //-------------------------------
+      // Display the class' field info.
+      //-------------------------------
+      displayFields() ;
+
+      //-----------------------------------------
+      // Display any constructors this class has.
+      //-----------------------------------------
+      displayConstructors() ;
+
+      //--------------------------------
+      // Display the class' method info.
+      //--------------------------------
+      System.out.println( "" ) ;
+      displayMethods() ;
+
+      //-----------------------------
+      // Display summary information.
+      //-----------------------------
+      System.out.println( "}" ) ;
+      System.out.println( "Class declares " + fields.length + " fields(s)." );
+      System.out.println( "Class declares " + methods.length + " method(s)." );
+    }
+    catch ( Exception e )
+    {
+      System.out.println( "Exception trying to process :" + classname + ".class" ) ;
+      System.out.println( e.toString() ) ;
+    }
+  }
+
+  //-------------------------------------------------------------------------
+  // main()
+  //
+  // The argument args[0] should be the name of a Java class file
+  // but without the .class extension. The class name needs to be
+  // fully specified unless it is in the current directory. Valid
+  // examples are:
+  //
+  //  java View myClass
+  //  java View java.awt.Graphics
+  //
+  //
+  //-------------------------------------------------------------------------
+  static public void main( String[] args )
+  {
+    View v = new View() ;
+
+    if ( args.length == 0 )
+    {
+      System.out.println( "Usage: View <classname>" ) ;
+      return ;
+    }
+    else
+    {
+      System.out.println( "Attempting to analyze class: " + args[0]  ) ;
+      System.out.println( "" ) ;
+
+      v.analyze( args[0] ) ;
+    }
+  }
+}
+

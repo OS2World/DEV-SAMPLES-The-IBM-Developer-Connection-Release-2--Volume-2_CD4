@@ -1,0 +1,225 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+      * This source member is a sample template.  Column 1-5 are coded
+      * to make it easy to remove records that exist only as examples
+      * and to find records that should be changed.
+      *
+      * Columns 1 - 5    Meaning
+      * --------------   -------------------------------------------
+      * Blank            Should be left in your program
+      * xxxxx            Example records (hours physical file,
+      *                  getenvp example, setting variable data, etc.)
+      * ccccc            Records that should be changed in order
+      *                  to tailor the template to your needs.
+      *
+xxxxxFhoursop   IF   E             DISK    USROPN                               Hours of operation
+      * Prototype defintions and standard system API error structure
+      /copy cgidev/qrpglesrc,prototypes
+      /copy qsysinc/qrpglesrc,qusec
+cccccDfn               S             10    INZ('HTMLSRC')                       File containing
+cccccDlib              S             10    INZ('CGIDEV')                        output HTML with
+cccccDmbr              S             10    INZ('TALK2')                         sections & variables
+     Dsection          S             10                                         section name
+     Dvarnm            S             10    dim(50)                              variable names
+     Dvarval           S            500    dim(50)                              variable values
+     Dvarln            S              5I 0 dim(50)                              variable lengths
+     Dv1               S              5i 0                                      index for prv arrays
+     Dsrcvar           S             30                                         for cvtedtcod
+     Dwork40           S             40                                         for cvtedtcod
+     Deditword         S             30                                         for cvtedtwrd
+     Deditwordln       S             10i 0                                      for cvtedtwrd
+      * Variables for getenvp subprocedure
+     Denvrcvr          s          32767                                         output: envvar conte
+     Denvrcvrln        s             10i 0 inz(%size(envrcvr))                  input: rcvr length
+     Denvrspln         s             10i 0                                      output: resp length
+     Denvrqsnm         s             30                                         input: envvar name
+     Denvrqsln         s             10i 0                                      input: ln envvar nam
+      * Constants
+     DBufSize          C                   32767                                Input & DBCvt Buf Sz
+      *
+      * Variables for getinput subprocedure
+     DInData           S          32767A                                        Area to accept input
+     DInDataLn         S             10I 0 INZ(BufSize)                         Length of Input area
+     DInActLn          S             10I 0                                      Actual length Rcvd
+     DInDataType       S              5                                         Returns GET or POST
+      *
+xxxxx * Variable for server protocol (part of getenvp example)
+xxxxxDprotocol         S             20A
+      * Variables for QtmhCvtDb API, prototyped as CvtDb.  DbFileName MUST be UPPERCASE!
+cccccDDBFileName       S             20A   INZ('DATASTRUCTCGIDEV    ')          DSFile & library
+cccccDDBDSLn           S             10I 0 INZ(%size(datastruct))               Size of DS
+     DDBActLn          S             10I 0 INZ                                  Data Ln returned
+     DDBRespCd         S             10i 0 INZ                                  Response code
+      * Variables for debugging
+     Ddbglen           s              5S 0
+     Ddbgdata          s            500
+      * Variables for calling countp subprocedure
+xxxxxDcountkey         s             20    INZ('RPG TEMPLATE')
+xxxxxDcounter          S             10S 0
+      * Data structure for QtmhCvtDb API, prototyped as CvtDb.
+cccccDDATASTRUCT     E DS
+      ****************************************************************************
+      * Mainline
+      ****************************************************************************
+     C                   eval      qusbprv = 16                                 qusec length
+      * Read skeleton output html, etc.
+     C                   callp     gethtml(fn:lib:mbr)
+      * Get input data from POST or GET.
+     C                   callp     getinput(indata:indataln:inactln:indatatype)
+      * Format the input data into the externally described data structure
+     C                   callp     CvtDb(DBFileName:InData:
+     C                                   InActLn:
+cccccC                                   datastruct:
+     C                                   DBDSLn:DBActLn:DBRespCd:QUSEC)
+      * Debug output - data structure contents
+     C                   eval      dbgdata='DS ' +
+     C                             %trimr(%subst(dbfilename:11:10)) +
+     C                             '/' + %trimr(%subst(dbfilename:1:10)) +
+cccccC                             ': ' +  datastruct
+     C                   eval      dbglen=DBDSLn
+     C                   callp     wrtdebug(dbglen:dbgdata)
+      * Debug output - data structure response code and error data structure's message id
+     C                   movel (p) DBRespCd      srcvar
+     C                   eval      work40 = cvtedtcod(srcvar: '*ZONED':
+     C                             '1': ' ': 5: 0)
+     C                   eval      dbgdata='DS ' +
+     C                             %trimr(%subst(dbfilename:11:10)) +
+     C                             '/' + %trimr(%subst(dbfilename:1:10)) +
+     C                             ': ' +  'DBRespCd ' + %trimr(work40) +
+     C                             ' Error Msg ID ' + qusei
+     C                             + ' ' + QUSEC
+     C                   eval      dbglen=DBDSLn
+     C                   callp     wrtdebug(dbglen:dbgdata)
+xxxxx * Use getenvp to get this server's protocol (illustrates getting environment variables
+xxxxxC                   eval      envrqsnm='SERVER_PROTOCOL'
+xxxxxC     ' '           checkr    envrqsnm      envrqsln
+xxxxxC                   callp     getenvp(envrcvr:envrcvrln:envrspln:
+xxxxxC                                     envrqsnm:envrqsln:qusec)
+xxxxxC                   eval      protocol=%subst(envrcvr:1:envrspln)
+xxxxx * Get updated counter for this program
+xxxxxC                   eval      counter=countp(countkey)
+      * Setup data for writing standard output.  Re-run whenever an variables change.
+     C                   exsr      setvardata
+      * Write sections of HTML.  Wrtsection handles variable substitution using the
+      * variables that have been prepared by the setvardata subroutine.
+xxxxxC                   eval      section='top'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   if        ordered = '2'
+xxxxxC                   eval      section='not'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   endif
+xxxxxC                   eval      section = 'ordered'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   if        catalog = '2'
+xxxxxC                   eval      section = 'not'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   endif
+xxxxxC                   eval      section = 'catalog'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   eval      section = 'tabletop'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   eval      section = 'tabledata'
+xxxxxC                   open      hoursop                              50
+xxxxxC                   dou       *in50 = *on
+xxxxxC                   read      hoursrec                               50
+xxxxxC                   if        *in50 = *off                                 not eof
+xxxxxC                   exsr      setvardata
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   endif
+xxxxxC                   enddo
+xxxxxC                   close     hoursop                              50
+xxxxxC                   eval      section = 'tablebot'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+xxxxxC                   eval      section='endhtml'
+xxxxxC                   callp     wrtsection(section:varnm:varval:varln)
+      * Do not delete the call to wrtsection with section name *fini.  It is needed
+      * to ensure that all output html that has been buffered gets output.
+     C                   eval      section='*fini'
+     C                   callp     wrtsection(section:varnm:varval:varln)
+     C                   eval      *inlr = *on
+      ****************************************************************************
+      * Setvardata - Sets values of variable names, contents, lengths
+      ****************************************************************************
+     C     setvardata    begsr
+xxxxxC                   eval      v1=1                                         customer name
+xxxxxC                   eval      varnm(v1)='CUSTNAME'
+xxxxxC                   eval      varval(v1)=custname
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  email address
+xxxxxC                   eval      varnm(v1)='EMAILADD'
+xxxxxC                   eval      varval(v1)=emailadd
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  state
+xxxxxC                   eval      varnm(v1)='STATE'
+xxxxxC                   eval      varval(v1)=state
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1
+xxxxxC                   eval      varnm(v1)='YEARS'                            years using edtcod
+xxxxxC                   movel(p)  years         srcvar
+xxxxxC                   eval      work40 = cvtedtcod(srcvar: '*ZONED': '1':
+xxxxxC                                          ' ': 7: 3 )
+xxxxxC                   eval      varval(v1) = work40
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  counter w/edtwrd
+xxxxxC                   eval      varnm(v1)='counter'
+xxxxxC                   movel(p)  counter       srcvar
+xxxxxC                   eval      editword = '         0-'
+xxxxxC     ' '           checkr    editword      editwordln
+xxxxxC                   eval      work40 = cvtedtwrd(srcvar: '*ZONED':
+xxxxxC                                editword : editwordln : 10)
+xxxxxC                   eval      varval(v1) = work40
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  ordered
+xxxxxC                   eval      varnm(v1)='ORDERED'
+xxxxxC                   eval      varval(v1)=ordered
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  catalog
+xxxxxC                   eval      varnm(v1)='CATALOG'
+xxxxxC                   eval      varval(v1)=catalog
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  days
+xxxxxC                   eval      varnm(v1)='DAYS'
+xxxxxC                   eval      varval(v1)=days
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  hours
+xxxxxC                   eval      varnm(v1)='HOURS'
+xxxxxC                   eval      varval(v1)=hours
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+xxxxxC                   eval      v1 = v1 + 1                                  protocol
+xxxxxC                   eval      varnm(v1)='PROTOCOL'
+xxxxxC                   eval      varval(v1)=protocol
+xxxxxC     ' '           checkr    varval(v1)    varln(v1)
+     C                   endsr

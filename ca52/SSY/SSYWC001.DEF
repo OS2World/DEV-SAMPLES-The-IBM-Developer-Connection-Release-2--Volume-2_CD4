@@ -1,0 +1,21 @@
+;*********************************************************************
+;
+; MODULE NAME        SSYWC001.DEF
+;
+; DESCRIPTIVE NAME   Windows Sample ECI program
+;
+;*********************************************************************
+
+NAME SSYWC001
+EXETYPE WINDOWS
+
+CODE MOVEABLE DISCARDABLE PRELOAD
+DATA MOVEABLE MULTIPLE PRELOAD
+
+HEAPSIZE 1024
+STACKSIZE 8192
+
+EXPORTS
+   MainWindowProc   @1           
+
+

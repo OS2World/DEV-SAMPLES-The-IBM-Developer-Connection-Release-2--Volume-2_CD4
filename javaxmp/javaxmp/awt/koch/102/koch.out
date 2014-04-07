@@ -1,0 +1,1803 @@
+Width of frame  = 300
+Height of frame = 300
+About to allocate memory
+30.0
+80.0
+150.0
+288.8
+150.0
+288.8
+270.0
+80.0
+270.0
+80.0
+30.0
+80.0
+Current depth is :: 3
+Current number of lines is 3
+*** replaceLine entered, line follows:
+30.0
+80.0
+150.0
+288.8
+*** replaceLine about to exit,new points follow:
+30.0 80.0
+70.0 149.60000000000002
+70.0 149.60000000000002
+29.86223723225224 219.2
+29.86223723225224 219.2
+110.0 219.2
+110.0 219.2
+150.0 288.8
+*** replaceLine entered, line follows:
+150.0
+288.8
+270.0
+80.0
+*** replaceLine about to exit,new points follow:
+150.0 288.8
+190.0 219.2
+190.0 219.2
+270.13776276774774 219.2
+270.13776276774774 219.2
+230.0 149.60000000000002
+230.0 149.60000000000002
+270.0 80.0
+*** replaceLine entered, line follows:
+270.0
+80.0
+30.0
+80.0
+*** replaceLine about to exit,new points follow:
+270.0 80.0
+190.0 80.0
+190.0 80.0
+150.0 10.717967697244902
+150.0 10.717967697244902
+110.0 80.0
+110.0 80.0
+30.0 80.0
+Current number of lines is 12
+*** replaceLine entered, line follows:
+270.0
+80.0
+190.0
+80.0
+*** replaceLine about to exit,new points follow:
+270.0 80.0
+243.33333333333334 80.0
+243.33333333333334 80.0
+230.0 56.90598923241498
+230.0 56.90598923241498
+216.66666666666666 80.0
+216.66666666666666 80.0
+190.0 80.0
+*** replaceLine entered, line follows:
+190.0
+80.0
+150.0
+10.717967697244902
+*** replaceLine about to exit,new points follow:
+190.0 80.0
+176.66666666666666 56.90598923241497
+176.66666666666666 56.90598923241497
+189.99999999999997 33.811978464829934
+189.99999999999997 33.811978464829934
+163.33333333333334 33.811978464829934
+163.33333333333334 33.811978464829934
+150.0 10.717967697244902
+*** replaceLine entered, line follows:
+150.0
+10.717967697244902
+110.0
+80.0
+*** replaceLine about to exit,new points follow:
+150.0 10.717967697244902
+136.66666666666666 33.811978464829934
+136.66666666666666 33.811978464829934
+110.0 33.811978464829934
+110.0 33.811978464829934
+123.33333333333333 56.90598923241497
+123.33333333333333 56.90598923241497
+110.0 80.0
+*** replaceLine entered, line follows:
+110.0
+80.0
+30.0
+80.0
+*** replaceLine about to exit,new points follow:
+110.0 80.0
+83.33333333333333 80.0
+83.33333333333333 80.0
+70.0 56.90598923241496
+70.0 56.90598923241496
+56.66666666666667 80.0
+56.66666666666667 80.0
+30.0 80.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+Current number of lines is 48
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+NaN
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+*** replaceLine entered, line follows:
+NaN
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+Paint generated
+Width of frame  = 300
+Height of frame = 300
+About to allocate memory
+30.0
+80.0
+150.0
+288.8
+150.0
+288.8
+270.0
+80.0
+270.0
+80.0
+30.0
+80.0
+Current depth is :: 3
+Current number of lines is 3
+*** replaceLine entered, line follows:
+30.0
+80.0
+150.0
+288.8
+*** replaceLine about to exit,new points follow:
+30.0 80.0
+70.0 149.60000000000002
+70.0 149.60000000000002
+29.86223723225224 219.2
+29.86223723225224 219.2
+110.0 219.2
+110.0 219.2
+150.0 288.8
+*** replaceLine entered, line follows:
+150.0
+288.8
+270.0
+80.0
+*** replaceLine about to exit,new points follow:
+150.0 288.8
+190.0 219.2
+190.0 219.2
+270.13776276774774 219.2
+270.13776276774774 219.2
+230.0 149.60000000000002
+230.0 149.60000000000002
+270.0 80.0
+*** replaceLine entered, line follows:
+270.0
+80.0
+30.0
+80.0
+*** replaceLine about to exit,new points follow:
+270.0 80.0
+190.0 80.0
+190.0 80.0
+150.0 10.717967697244902
+150.0 10.717967697244902
+110.0 80.0
+110.0 80.0
+30.0 80.0
+Current number of lines is 12
+*** replaceLine entered, line follows:
+270.0
+80.0
+190.0
+80.0
+*** replaceLine about to exit,new points follow:
+270.0 80.0
+243.33333333333334 80.0
+243.33333333333334 80.0
+230.0 56.90598923241498
+230.0 56.90598923241498
+216.66666666666666 80.0
+216.66666666666666 80.0
+190.0 80.0
+*** replaceLine entered, line follows:
+190.0
+80.0
+150.0
+10.717967697244902
+*** replaceLine about to exit,new points follow:
+190.0 80.0
+176.66666666666666 56.90598923241497
+176.66666666666666 56.90598923241497
+189.99999999999997 33.811978464829934
+189.99999999999997 33.811978464829934
+163.33333333333334 33.811978464829934
+163.33333333333334 33.811978464829934
+150.0 10.717967697244902
+*** replaceLine entered, line follows:
+150.0
+10.717967697244902
+110.0
+80.0
+*** replaceLine about to exit,new points follow:
+150.0 10.717967697244902
+136.66666666666666 33.811978464829934
+136.66666666666666 33.811978464829934
+110.0 33.811978464829934
+110.0 33.811978464829934
+123.33333333333333 56.90598923241497
+123.33333333333333 56.90598923241497
+110.0 80.0
+*** replaceLine entered, line follows:
+110.0
+80.0
+30.0
+80.0
+*** replaceLine about to exit,new points follow:
+110.0 80.0
+83.33333333333333 80.0
+83.33333333333333 80.0
+70.0 56.90598923241496
+70.0 56.90598923241496
+56.66666666666667 80.0
+56.66666666666667 80.0
+30.0 80.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+Current number of lines is 48
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+NaN
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+*** replaceLine entered, line follows:
+NaN
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0
+*** replaceLine entered, line follows:
+0.0
+0.0
+0.0
+0.0
+*** replaceLine about to exit,new points follow:
+0.0 0.0
+0.0 0.0
+0.0 0.0
+NaN 0.0
+NaN 0.0
+0.0 0.0
+0.0 0.0
+0.0 0.0

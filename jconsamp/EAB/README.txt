@@ -1,0 +1,2 @@
+- Before compiling, set CLASSPATH to .;%classpath%
+- Don't forget to copy NMAKE.exe to each machine.

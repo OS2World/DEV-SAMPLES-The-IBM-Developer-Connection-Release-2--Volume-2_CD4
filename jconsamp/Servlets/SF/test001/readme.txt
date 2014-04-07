@@ -1,0 +1,1 @@
+- Copy both test.html and TestApplet.class to X:\inetpub\wwwroot

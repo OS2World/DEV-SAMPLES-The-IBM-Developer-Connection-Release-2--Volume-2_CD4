@@ -1,0 +1,174 @@
+//-----------------------------------------------------------------------------
+// JFCFrame.java
+//
+// A simple example of using the new JFC JFrame class.
+//
+// This version requires Java JDK level 1.1.2 or higher and the Swing Set 
+// classes (typically called swing.jar) to be in the Classpath.
+//
+// Developed using Swing ver. 0.5.1 (pre-Beta)
+//
+// Demonstrates use of these classes/interfaces:
+//
+//   JFrame
+//   JPanel
+//
+// SPECIAL NOTE: The JFC definition is still not set in concrete. This
+//               sample program may need to be modified to run on later
+//               versions of the JFC. Note also that there have been
+//               significant changes between the 0.4.1 and 0.5.1 versions.
+//
+// Author : Kelvin R Lawrence.     9th-Nov-1997
+//
+// History:
+//
+//-----------------------------------------------------------------------------
+import java.awt.*;
+import java.awt.event.*;
+import java.applet.*;
+import com.sun.java.swing.*;
+
+public class JFCFrame extends JFrame implements ActionListener
+{
+  private Container client ;
+  
+  private JButton jb1 ;
+  private JButton jb2 ;
+  private JButton jb3 ;
+  
+  //-------------------------------------------------------------------------
+  // Constructor #1
+  //
+  //-------------------------------------------------------------------------
+  public JFCFrame( String s )
+  {
+    super( s ) ;
+
+    System.out.println( "Constructor called" ) ;
+
+    enableEvents( AWTEvent.WINDOW_EVENT_MASK ) ;
+
+    System.out.println( "Constructor.Frame ==>" + this.getInsets().toString() ) ;
+
+    client = this.getContentPane() ;
+
+    System.out.println( "Constructor ==> " + client.toString() ) ;
+    
+    //-----------------------------------------------------------------
+    // This is how you can set the look and feel to your preferred one.
+    //-----------------------------------------------------------------
+    try
+    {
+      //UIManager.setLookAndFeel( "com.sun.java.swing.rose.RoseLookAndFeel" ) ;
+      UIManager.setLookAndFeel( "com.sun.java.swing.basic.BasicLookAndFeel" ) ;
+      SwingUtilities.updateComponentTreeUI( this ) ;
+    }
+    catch ( Exception e )
+    {
+      System.out.println( "***ERROR: Exception setting look and feel" ) ;
+    }
+  }
+  
+  //-------------------------------------------------------------------------
+  // processEvent()
+  //
+  // Handle high level events. We need this so that the close in the title bar 
+  // will actually close the application etc.
+  //-------------------------------------------------------------------------
+  public void processEvent( AWTEvent evt )
+  {
+    
+    System.out.println( "Process event" ) ;
+
+    if ( evt.getID() == WindowEvent.WINDOW_CLOSING )
+    {
+      System.out.println( "Window about to close..." ) ;
+      System.exit(0) ;
+    }
+    else
+    {
+      super.processEvent( evt ) ;
+    }
+  }
+
+  //-------------------------------------------------------------------------
+  // actionPerformed()
+  //
+  // Handle an action for which we have registered interest.
+  //
+  //-------------------------------------------------------------------------
+  public void actionPerformed( ActionEvent aevt )
+  {
+    if ( aevt.getSource() instanceof JButton )
+    {
+      System.out.println( "actionPerformed() got called " ) ;
+
+      JButton jb = (JButton)aevt.getSource() ;
+
+      System.out.println( "Button label ==> " + jb.getText() ) ;
+
+      jb.setText( "Clicked" ) ;
+    }
+  }
+
+  //--------------------------------------------------------------------
+  // runTests()
+  //
+  //--------------------------------------------------------------------
+  public void runTests()
+  {
+    System.out.println( "In runTests()" ) ;
+    System.out.println( client.toString() ) ;
+    Dimension d = client.getSize() ;
+    System.out.println( "runTests() ==>" + d.toString() ) ;
+
+    jb1 = new JButton( "Button 1" ) ;
+    jb2 = new JButton( "Button 2" ) ;
+    jb3 = new JButton( "Button 3" ) ;
+    
+    jb1.addActionListener( this ) ;
+    jb2.addActionListener( this ) ;
+    jb3.addActionListener( this ) ;
+    
+    JPanel jp = new JPanel() ;
+
+    jp.setLayout( new GridLayout( 1,3 ) );
+    
+    jp.add(jb1) ;
+    jp.add(jb2) ;
+    jp.add(jb3) ;
+    
+    //-------------------------------------------------------------          
+    // JFC BUG ?
+    //
+    // The contents of the ContentPane only seem to show up if you
+    // force the frame to resize or if you pack() the frame. I am
+    // attempting to find out what the correct behaviour should be.
+    //-------------------------------------------------------------
+    this.setBounds( 0,0,350,350 ) ;
+
+    System.out.println( client.getLayout().toString() ) ;
+
+    client.add( "North", jp ) ;
+    
+    System.out.println( "client ==> " + client.toString() ) ;
+    System.out.println( "frame  ==> " + this.toString() ) ;
+  }
+  
+  //--------------------------------------------------------------------
+  // main()
+  //
+  //--------------------------------------------------------------------
+  static public void main( String[] args )
+  {
+     JFCFrame JFCFrameFrame ;
+
+     JFCFrameFrame = new JFCFrame( "JFC Frame test." ) ;
+
+     JFCFrameFrame.setSize( 300,300 ) ;
+     JFCFrameFrame.show() ;
+     
+     JFCFrameFrame.runTests() ;
+     
+  }
+}

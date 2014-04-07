@@ -1,0 +1,89 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+     Hnomain
+debug * For debug.  Record format = DBGRCD.  Fields = dbglen 5/0 zoned decimal, dbgdata 500
+debug * View with dsppfm libname/htmldebug.  Clear with clrpfm libname/htmldebug.
+debugFhtmldebug o    e             disk    USROPN
+
+      /copy cgidev/qrpglesrc,prototypes
+
+      * Global variables
+     Dfilestatus       s              1    inz('0')                             0=closed 1=open
+     Dcgidebug         s              1    inz(' ')                             0=closed 1=open
+
+debugC     *DTAARA       define                  cgidebug          1
+
+      ******************************************************************
+      * subprocedure isdebug: indicates whether debug is on or off '0' = off '1' = on
+      ******************************************************************
+     Pisdebug          b                   export
+     Disdebug          pi             1A
+      * Read the cgidebug data area. '1'=debug on '0' debug off
+      * '*' = in operation failed
+debugC                   in        cgidebug                             50
+     C                   if        *in50='1'
+     C                   eval      cgidebug='*'
+     C                   endif
+debugC                   return    cgidebug
+     Pisdebug          e
+      ******************************************************************
+      * subprocedure wrtdebug
+      ******************************************************************
+     Pwrtdebug         b                   export
+     Dwrtdebug         pi
+     Ddbglenin                        5S 0
+     Ddbgdatain                     500
+      * Process only if in debug status
+     C                   if        cgidebug = '0' or cgidebug = '*'
+     C                   return
+     C                   end
+
+     C                   if        cgidebug=' '
+     C                   eval      cgidebug = isdebug
+debugC                   if        cgidebug = '0' or cgidebug = '*'
+     C                   return
+     C                   endif
+     C                   endif
+     C
+debugC                   if        filestatus='0'
+debugC                   OPEN      HTMLDEBUG
+     C                   eval      filestatus='1'
+debugC                   endif
+     C                   clear                   dbgdata
+     C                   eval      dbgdata = dbgdatain
+     C                   eval      dbglen = dbglenin
+     C                   write     dbgrcd
+     Pwrtdebug         e

@@ -1,0 +1,23 @@
+The DAB class library at the CTV304 level does not correctly export
+the entry points for the class IVBDatastore required for the DAXTHRDS
+package.  The problem is seen when an application using IVBDatastore
+is dynamically linked (typically using the VB generated makefile).
+
+To fix this problem, the CTV304 level dll and library files need to
+be replaced with the updated files available in CPPODS3I.ZIP.
+Download and unzip this file, and replace the CTV304 versions of:
+  ?:\ibmcpp\lib\cppods3i.lib
+  ?:\ibmcpp\dll\cppods3i.dll
+  ?:\ibmcpp\bnd\daxscl.bnd
+It's a good idea to rename the originals first to save them.
+
+You then need to rebind this new class library to any database that
+uses it, via:
+
+  sqlbind ?:\ibmcpp\bnd\daxscl.bnd <database>
+
+This new LIB, DLL and BND combination is not binary compatible with
+the CTV304 version - you need to relink any application using this
+DLL.
+
+

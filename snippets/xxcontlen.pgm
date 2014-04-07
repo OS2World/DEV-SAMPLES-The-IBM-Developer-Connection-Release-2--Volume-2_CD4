@@ -1,0 +1,71 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+     Hnomain
+      /copy cgidev/qrpglesrc,prototypes
+      /copy qsysinc/qrpglesrc,qusec
+      ******************************************************************
+      * contlen procedure
+      ******************************************************************
+     Pcontlen          b                   export
+     Dcontlen          pi            10i 0                                      content length
+     ****************** End of data **********************************************************
+      * variables for getenvp
+     Denvrcvr          s          32767
+     Denvrcvrln        s             10i 0 inz(%size(envrcvr))                  input: rcvr length
+     Denvrspln         s             10i 0                                      output: resp length
+     Denvrqsnm         s             30                                         input: envvar name
+     Denvrqsln         s             10i 0                                      input: ln envvar nam
+      * variables for c2n
+     Dn1               s             30P 9                                      output
+     Dc                s             32                                         input
+      * variable to return to caller
+     Dcontlen          s             10I 0                                      to return to caller
+      * Variables for debugging
+     Ddbglen           s              5S 0
+     Ddbgdata          s            500
+     C                   eval      envrqsnm='CONTENT_LENGTH'
+     C     ' '           checkr    envrqsnm      envrqsln
+     C                   callp     getenvp(envrcvr:envrcvrln:envrspln:
+     C                                     envrqsnm:envrqsln:qusec)
+     C                   eval      c = %subst(envrcvr:1:envrspln)
+     C                   eval      contlen = c2n(c)
+      * Debug output
+     C                   eval      dbgdata='Content_length: ' + %trimr(c)
+     C     ' '           checkr    c             dbglen
+     C                   callp     wrtdebug(dbglen:dbgdata)
+      * Return the content length
+     C                   return    contlen
+     Pcontlen          e

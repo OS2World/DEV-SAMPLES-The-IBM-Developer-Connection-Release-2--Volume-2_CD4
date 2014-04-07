@@ -1,0 +1,6 @@
+SAMPC001.Obj
+SAMPC001.Exe
+SAMPC001.Map /NOD /CO
+os2 + llibce + CCLOS2
+SAMPC001.Def
+

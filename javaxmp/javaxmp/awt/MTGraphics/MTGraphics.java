@@ -1,0 +1,450 @@
+//-----------------------------------------------------------------------------
+// MTGraphics.java
+//
+// Experiments with multi threaded graphics.
+//
+// 
+// 
+// 
+//
+// 
+// 
+// 
+//
+// Author : Kelvin R Lawrence.     27th-February-1997
+//
+// History:
+//
+//-----------------------------------------------------------------------------
+
+import java.awt.* ;
+import java.applet.* ;
+import java.util.*;
+
+//-----------------------------------------------------------------
+// Class: GraphicsThread
+//
+// A worker thread class that implements the actual drawing code
+// that will be done. If the thread yield mode is enabled then
+// the thread will pause after it has drawn 10 graphics objects.
+// If the thread yield feature is not enabled then the thread
+// will just keep drawing. This allows us to compare the
+// behaviour of graphics scheduling on different operating systems.
+// 
+//-----------------------------------------------------------------
+class GraphicsThread extends Thread 
+{
+  Panel pnl      ;
+  boolean sleepEnable ;
+  Graphics g     ;
+  int ctr = 0    ;
+  MTGraphics mtg ;
+
+  //--------------------------------------------------------------------
+  //
+  // Constructor: GraphicsThread()
+  //
+  // 
+  //--------------------------------------------------------------------
+  GraphicsThread( Panel p, boolean s, MTGraphics m )
+  {
+    pnl = p ;
+    sleepEnable = s ;
+    mtg = m ;
+  }
+
+  //--------------------------------------------------------------------
+  // run()
+  //
+  // This method is automatically called when a new GraphicsThread object  
+  // is created as it extends the Thread class.
+  //--------------------------------------------------------------------
+  public void run()
+  {
+    Random rnd = new Random() ;
+    int x1,x2,y1,y2 ;
+
+    int width  = pnl.size().width ;
+    int height = pnl.size().height ;
+
+    //System.out.println( "width  = " + width ) ;
+    //System.out.println( "height = " + height ) ;
+
+    Graphics g = pnl.getGraphics() ;
+
+    System.out.println( "New graphics thread is running" ) ;  
+
+    //------------------------------------------------------------------------
+    // Draw some graphics. The two loops are used so that in the case where the
+    // threads are voluntarily going to sleep we can have a minimum number of
+    // graphics objects that will be drawn before a thread goes to sleep. That
+    // is the purpose of the inner loop.
+    //------------------------------------------------------------------------
+    for ( int i = 0; i < 500; i++ )
+    {
+      for ( int j = 0; j < 5; j++ )
+      {
+        x1 = rnd.nextInt() %  width  ;
+        x2 = rnd.nextInt() %  width  ;
+        y1 = rnd.nextInt() %  height ;
+        y2 = rnd.nextInt() %  height ;
+
+        ctr++;
+
+        g.setColor( new Color( Math.abs(rnd.nextInt() % 255)
+                             , Math.abs(rnd.nextInt() % 255)
+                             , Math.abs(rnd.nextInt() % 255) )) ;
+
+        g.drawLine( x1,y1,x2,y2 ) ;
+        g.setColor( Color.black ) ;
+        g.fillRect( 0,0,30,15 ) ;
+        g.setColor( Color.white ) ;
+        g.drawString( Integer.toString( ctr ) ,0, 10 ) ;
+      }
+
+      //-----------------------------------------------------------------------
+      // If the thread yield flag is set then go to sleep now and allow another
+      // thread to run.
+      //-----------------------------------------------------------------------
+      try
+      {
+        if ( sleepEnable )
+        {
+          Thread.sleep(10) ;
+        }
+      }
+      catch( InterruptedException e )
+      {
+        System.out.println( "Thread was interrupted" ) ;
+        return ;
+      }
+    }
+
+    int n = mtg.threadDoneNotify() ;
+
+    g.fillRect( 0,0,width,height ) ;
+    g.setColor( Color.black ) ;
+    g.drawString( "Done! " + Integer.toString(n) ,0, 10 ) ;
+
+  }
+}
+
+//---------------------------------------------------------------
+// Class: MTGraphics
+//
+// Main class. Creates the display panels and starts the graphics
+// drawing threads.
+// 
+//---------------------------------------------------------------
+public class MTGraphics extends Applet
+{
+  final int MAX_PANELS = 64 ;
+  final int DEFAULT_NUM_PANELS = MAX_PANELS ;
+  final int NUM_ROWS = 8 ;
+  final int NUM_COLS = 8 ;
+
+  int numPanels = DEFAULT_NUM_PANELS ;
+
+  int numFinished = 0 ;
+
+  Panel[] graphicsPanels;
+  Thread[] graphicsThreads;
+
+  Button start ;
+  Button stop  ;
+  Button sleepOn  ;
+  Button sleepOff ;
+  Button addThread ;
+  Button refresh ;
+  Button removeThread ;
+  Label  threadsCount ;
+
+  Panel mainPanel ;
+  Panel displayPanel ;
+  Panel controlPanel ;
+
+  boolean initialised = false ;
+
+  boolean threadYields = true ;
+
+  //----------------------------------------------------------
+  // init()
+  //
+  // Init routine. Called whenever the applet is first loaded.
+  //----------------------------------------------------------
+  public void init()
+  {
+    System.out.println( "init() method called" ) ;
+
+    Dimension appSize = this.size() ;
+
+    System.out.println( "Applet window width  = " + appSize.width ) ;
+    System.out.println( "Applet window height = " + appSize.height ) ;
+
+    //----------------------------------------------------------
+    // Create the key panels that the application will be using.
+    //----------------------------------------------------------
+    mainPanel    = new Panel() ;
+    displayPanel = new Panel() ;
+    controlPanel = new Panel() ;
+
+    //---------------------------------------------------------------
+    // Specify which layout manager each of the key panels is to use.
+    //---------------------------------------------------------------
+    this.setLayout( new BorderLayout() ) ;
+    controlPanel.setLayout( new FlowLayout() ) ;
+    mainPanel.setLayout( new BorderLayout() ) ;
+    displayPanel.setLayout( new GridLayout( NUM_ROWS,NUM_COLS,5,5 ) ) ;
+
+    //------------------------------------------------------------------
+    // Allocate space for the graphics panel objects and thread objects.
+    //------------------------------------------------------------------
+    graphicsPanels  = new Panel[numPanels] ;
+    graphicsThreads = new Thread[numPanels] ;
+
+    //--------------------------------------------------------------------------
+    // Create all of the graphics panel objects into which the graphics threads
+    // will draw.
+    //--------------------------------------------------------------------------
+    for ( int i = 0; i < numPanels; i++ )
+    {
+      graphicsPanels[i] = new Panel() ;
+      graphicsPanels[i].setBackground( Color.black ) ;
+      displayPanel.add( graphicsPanels[i] ) ;
+    }
+
+    //------------------------------------------------------------------------
+    // Create the various button objects and add them to the control panel.
+    // Initially the stop button is disabled, it will be enabled when the 
+    // start button is pressed.
+    //------------------------------------------------------------------------
+    start        = new Button("Start") ;
+    stop         = new Button("Stop" ) ;
+    sleepOn      = new Button("Enable thread yields" ) ;
+    sleepOff     = new Button("Disable thread yields" ) ;
+    addThread    = new Button("+") ;
+    removeThread = new Button("-") ;
+    refresh      = new Button("Erase all") ;
+    threadsCount = new Label( Integer.toString(DEFAULT_NUM_PANELS) ) ;
+
+    stop.disable() ;
+    sleepOn.disable() ;
+    addThread.disable() ;
+
+    controlPanel.add( start ) ;
+    controlPanel.add( stop ) ;
+    controlPanel.add( refresh ) ;
+    controlPanel.add( sleepOn ) ;
+    controlPanel.add( sleepOff ) ;
+    controlPanel.add( addThread ) ;
+    controlPanel.add( removeThread ) ;
+    controlPanel.add( threadsCount ) ;
+
+    //------------------------------------------------------------------
+    // Add the display panel and the control panel to the main panel and
+    // then add the main panel to the applet frame itself.
+    //------------------------------------------------------------------
+    mainPanel.add( "Center", displayPanel ) ;
+    mainPanel.add( "South" , controlPanel ) ;
+
+    this.add( "Center", mainPanel ) ;
+    this.show();
+
+  }
+
+  //----------------------------------------------------------------
+  // paint()
+  //
+  // Paint method, called whenever the application client area needs
+  // repainting.
+  //----------------------------------------------------------------
+  public void paint( Graphics g )
+  {
+    System.out.println( "Paint called" ) ;
+  }
+
+  //----------------------------------------------------------------
+  // action()
+  //
+  // Method, called whenever the user clicks on a button etc.
+  // In partcular, this is where we control the starting and 
+  // stopping of the graphics threads.
+  // 
+  //----------------------------------------------------------------
+  public boolean action( Event evt, Object what )
+  {
+    System.out.println( "Action method called" );
+
+    System.out.println( "Button pressed was : " + what ) ;
+
+    if ( evt.id == Event.ACTION_EVENT )
+    {
+      if ( evt.target == start )
+      {
+        //----------------------------------------------------------------
+        // Create all of the graphics threads and then start them running.
+        // Note, the two 'for' loops are used rather than one so that we
+        // can start all of the threads as close to at the same time as 
+        // possible.
+        //----------------------------------------------------------------
+        System.out.println( "Starting graphics threads..." ) ;
+
+        for ( int i = 0; i < numPanels; i++ )
+        {
+          //-----------------------------------------------------------------
+          // Create the new threads and reset all of the graphics panels.
+          // We reset the panels here so that all threads will start drawing
+          // with their panel in the same state.
+          //-----------------------------------------------------------------
+          graphicsThreads[i] = new GraphicsThread( graphicsPanels[i]
+                                                 , threadYields 
+                                                 , this ) ;
+        }
+
+        refreshPanels() ;
+
+        for ( int i = 0; i < numPanels; i++ )
+        {
+          graphicsThreads[i].start();
+        }
+
+        //------------------------------------------------------------
+        // Now that the threads are running, disable the start button
+        // and enable the stop button.
+        //------------------------------------------------------------
+        start.disable() ;
+        stop.enable() ;
+        refresh.disable() ;
+        //addThread.disable() ;
+        //removeThread.disable() ;
+
+
+        return true ;
+      }
+      else if ( evt.target == stop )
+      {
+        //---------------------------
+        // Stop all graphics threads.
+        //---------------------------
+
+        for ( int i = 0; i < numPanels; i++ )
+        {
+          graphicsThreads[i].stop();
+        }
+
+        stop.disable() ;
+        start.enable() ;
+        refresh.enable() ;
+
+        numFinished = 0 ;
+        //addThread.enable() ;
+        //removeThread.enable() ;
+
+        return true ;
+      }
+      else if ( evt.target == sleepOn )
+      {
+        //---------------------------------
+        // Enable the thread yield feature.
+        //---------------------------------
+        threadYields = true ;
+        sleepOn.disable() ;
+        sleepOff.enable() ;
+
+        return true ;
+      }
+      else if ( evt.target == sleepOff )
+      {
+        //----------------------------------
+        // Disable the thread yield feature.
+        //----------------------------------
+        threadYields = false ;
+        sleepOn.enable() ;
+        sleepOff.disable() ;
+
+        return true ;
+      }
+      else if ( evt.target == addThread )
+      {
+        //----------------------------------------
+        // Increase the number of running threads.
+        //----------------------------------------
+        if ( numPanels < MAX_PANELS )
+        {
+          numPanels++ ;
+
+          if ( numPanels == MAX_PANELS )
+          {
+            addThread.disable() ;
+          }
+          else
+          {
+            removeThread.enable() ;
+          }
+        }
+
+        threadsCount.setText( Integer.toString(numPanels) ) ;
+      }
+      else if ( evt.target == removeThread )
+      {
+        //----------------------------------------
+        // Decrease the number of running threads.
+        //----------------------------------------
+
+        if ( numPanels > 1 )
+        {
+          numPanels-- ;
+          threadsCount.setText( Integer.toString(numPanels) ) ;
+
+          if ( numPanels == 1 )
+          {
+            removeThread.disable() ;
+          }
+          else 
+          { 
+            addThread.enable() ;
+          }
+        }
+      }
+      else if ( evt.target == refresh )
+      //---------------------------------------------------------
+      // Reset all of the panels by erasing them with the current
+      // background colour.
+      //---------------------------------------------------------
+      {
+        refreshPanels() ;
+      }
+    }
+
+    return false ;
+  }
+
+  //----------------------------------------------------------------
+  // refreshPanels()
+  //
+  // Erase all of the graphics panels contents.
+  //----------------------------------------------------------------
+  void refreshPanels()
+  {
+    Graphics g;
+    Dimension d ;
+
+    for ( int i = 0; i < MAX_PANELS; i++ )
+    {
+      g = graphicsPanels[i].getGraphics() ;
+      d = graphicsPanels[i].size() ;
+      g.clearRect( 0,0,d.width,d.height ) ;
+    }
+  }
+
+  //----------------------------------------------------------------
+  // threadDoneNotify()
+  //
+  //----------------------------------------------------------------
+  synchronized int threadDoneNotify()
+  {
+    numFinished++ ;
+
+    return numFinished ;
+  }
+}

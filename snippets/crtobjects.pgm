@@ -1,0 +1,145 @@
+/*   LICENSE AND DISCLAIMER                                            */
+/*   ----------------------                                            */
+/*   This material contains IBM copyrighted sample programming source   */
+/*   code.  IBM grants you a nonexclusive license to use, execute,      */
+/*   display, reproduce, distribute and prepare derivative works of     */
+/*   this sample code.  The sample code has not been thoroughly tested  */
+/*   under all conditions.  IBM, therefore, does not warrant or         */
+/*   guarantee its reliability, serviceablity, or function.  All        */
+/*   sample code contained herein is provided to you "AS IS." ALL       */
+/*   IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED       */
+/*   WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR        */
+/*   PURPOSE, ARE EXPRESSLY DISCLAIMED.                                 */
+/*                                                                      */
+/*   COPYRIGHT                                                          */
+/*   ---------                                                          */
+/*   (C) Copyright IBM CORP. 1996, 1997                                 */
+/*   All rights reserved.                                               */
+/*   US Government Users Restricted Rights -                            */
+/*   Use, duplication or disclosure restricted                          */
+/*   by GSA ADP Schedule Contract with IBM Corp.                        */
+/*   Licensed Material - Property of IBM                                */
+/*                                                                      */
+/*   COMMENTS/QUESTIONS                                                 */
+/*   ------------------                                                 */
+/*   Please send comments or questions via e-mail to Mel Rothman        */
+/*   at mrothman@vnet.ibm.com                                           */
+/*                                                                      */
+/*   THIS FILE AVAILABLE FROM:                                          */
+/*   ------------------------                                           */
+/*   AS/400 Web Builder's Workshop's Snippets Page                     */
+/*   http://205.217.130.15/workshop/snippets/snippets.htm               */
+/*   It is included in SAVF CGIDEVD (identified as                      */
+/*   SAVEFILE OF CGIDEV LIBRARY)                                        */
+/* REXX Procedure to create objects */
+crtlib=CGIDEV /* Default library into which to create objects*/
+srclib=CGIDEV /* Default library from which to get source */
+
+/* RPG Modules */
+cmd = 'CRTRPGMOD MODULE('crtlib'/'TEMPLATE') SRCFILE('srclib'/QRPGLESRC) SRCMBR('TEMPLATE') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXC2H') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXC2H') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXC2N') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXC2N') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXDEBUG') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXDEBUG') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXEDTCOD') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXEDTCOD') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXEDTWRD') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXEDTWRD') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXH2C') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXH2C') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXINPUT') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXINPUT') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXPARSE') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXPARSE') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXWRKHTML') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXWRKHTML') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXWRTBUFF') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXWRTBUFF') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'XXXCOUNT') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXCOUNT') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'CONTLEN') SRCFILE('srclib'/QRPGLESRC) SRCMBR('XXXCONTLEN') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'GETENV') SRCFILE('srclib'/QRPGLESRC) SRCMBR('GETENV') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'STDIN') SRCFILE('srclib'/QRPGLESRC) SRCMBR('STDIN') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'STDOUT') SRCFILE('srclib'/QRPGLESRC) SRCMBR('STDOUT') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTRPGMOD MODULE('crtlib'/'COUNT') SRCFILE('srclib'/QRPGLESRC) SRCMBR('COUNT') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+
+/* CL Modules */
+cmd = 'CRTCLMOD MODULE('crtlib'/'XXXOVRHTML') SRCFILE('srclib'/QCLSRC) SRCMBR('XXXOVRHTML') DBGVIEW(*SOURCE)'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+
+/* Service program */
+cmd = 'CRTSRVPGM SRVPGM('crtlib'/'CGISRVPGM') MODULE('srclib'/XXX*)'
+cmd = cmd  'SRCFILE('srclib'/QSRVSRC) SRCMBR('CGISRVPGM') BNDSRVPGM(QTCP/QTMHCGI)'
+cmd = cmd  'AUT(*EXCLUDE)'
+cmd
+
+/* ILE Programs */
+cmd = 'CRTPGM PGM('crtlib'/'TEMPLATE') MODULE('crtlib'/'TEMPLATE')'
+cmd = cmd 'BNDDIR('srclib'/TEMPLATE) ACTGRP(*NEW) AUT(*EXCLUDE)'
+cmd
+'GRTOBJAUT' crtlib'/TEMPLATE *PGM QTMHHTP1  *USE'
+cmd = 'CRTPGM PGM('crtlib'/'GETENV') MODULE('crtlib'/'GETENV')'
+cmd = cmd 'BNDDIR('srclib'/TEMPLATE) ACTGRP(*NEW) AUT(*EXCLUDE)'
+cmd
+'GRTOBJAUT' crtlib'/GETENV *PGM QTMHHTP1  *USE'
+cmd = 'CRTPGM PGM('crtlib'/'STDIN') MODULE('crtlib'/'STDIN')'
+cmd = cmd 'BNDDIR('srclib'/TEMPLATE) ACTGRP(*NEW) AUT(*EXCLUDE)'
+cmd
+'GRTOBJAUT' crtlib'/STDIN *PGM QTMHHTP1  *USE'
+cmd = 'CRTPGM PGM('crtlib'/'STDOUT') MODULE('crtlib'/'STDOUT')'
+cmd = cmd 'BNDDIR('srclib'/TEMPLATE) ACTGRP(*NEW) AUT(*EXCLUDE)'
+cmd
+'GRTOBJAUT' crtlib'/STDOUT *PGM QTMHHTP1  *USE'
+cmd = 'CRTPGM PGM('crtlib'/'COUNT') MODULE('crtlib'/'COUNT')'
+cmd = cmd 'BNDDIR('srclib'/TEMPLATE) ACTGRP(*NEW) AUT(*EXCLUDE)'
+cmd
+'GRTOBJAUT' crtlib'/COUNT *PGM QTMHHTP1  *USE'
+
+/* Bound RPG Programs */
+cmd = 'CRTBNDRPG PGM('crtlib'/'RMVSRCRPG') SRCFILE('srclib'/QRPGLESRC) SRCMBR('RMVSRCRPG') DFTACTGRP(*NO)'
+cmd = cmd 'BNDDIR(*NONE) ACTGRP(*CALLER) DBGVIEW(*SOURCE) AUT(*EXCLUDE)'
+cmd
+'GRTOBJAUT' crtlib'/RMVSRCRPG *PGM QTMHHTP1  *EXCLUDE'
+
+/* CL Programs */
+'CRTCLPGM PGM('crtlib'/'CGIDEBUG') SRCFILE('srclib'/QCLSRC) SRCMBR('CGIDEBUG') AUT(*EXCLUDE)'
+'GRTOBJAUT' crtlib'/CGIDEBUG *PGM QTMHHTP1  *EXCLUDE'
+'CRTCLPGM PGM('crtlib'/'RMVSRCRCDS') SRCFILE('srclib'/QCLSRC) SRCMBR('RMVSRCRCDS') AUT(*EXCLUDE)'
+'GRTOBJAUT' crtlib'/RMVSRCRCDS *PGM QTMHHTP1  *EXCLUDE'
+'CRTCLPGM PGM('crtlib'/'REXXDRIVER') SRCFILE('srclib'/QCLSRC) SRCMBR('REXXDRIVER') AUT(*EXCLUDE)'
+'GRTOBJAUT' crtlib'/REXXDRIVER *PGM QTMHHTP1  *USE'
+
+/* Commands */
+cmd = 'CRTCMD CMD('crtlib'/'CGIDEBUG') PGM('crtlib'/'CGIDEBUG') SRCFILE('srclib'/QCMDSRC) SRCMBR('CGIDEBUG')'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+cmd = 'CRTCMD CMD('crtlib'/'RMVSRCRCDS') PGM('crtlib'/'RMVSRCRCDS') SRCFILE('srclib'/QCMDSRC) SRCMBR('RMVSRCRCDS')'
+cmd = cmd 'AUT(*EXCLUDE)'
+cmd
+exit

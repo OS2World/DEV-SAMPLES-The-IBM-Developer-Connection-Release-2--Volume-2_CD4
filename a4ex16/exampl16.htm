@@ -1,0 +1,68 @@
+/*
+<br>
+<head>
+<title>Program that is replacement for isnan()</title>
+</head>
+
+
+<h1>Program that is replacement for isnan()</h1>
+
+<h2>Description</h2>
+<p>This function checks if the passed parameter is not a number (NaN).
+
+If the exponent of an AS/400 double (which is 8 byte) is all 1's and fraction that is not all 0's then it is infinite. Bits in an AS/400 double are:
+
+           0     sign
+           1:11  exponent
+           12:63 fraction
+                                                                    
+Bit 0 is the leftmost bit.
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed V3R6 system and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+ */
+/************************************************************************/
+/*                                                                      */
+/* test case:    isnan.c                                                */
+/*                                                                      */
+/* objective:    isnan() workaround                                     */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTCMOD and then bind the   */
+/*               module with other modules using isnan() to create      */
+/*               program object.                                        */
+/*                                                                      */
+/************************************************************************/
+
+#include <stdio.h>
+
+typedef struct {
+    unsigned long lobits;
+    unsigned long hibits;
+    } BITMASK;
+
+typedef union {
+    BITMASK bm;
+    double  dv;
+    } OVERLAY;
+
+#define EXPBITS  0x7FF00000
+#define ALLZEROS 0x00000000
+#define CHKEXP   0x000FFFFF
+
+
+int isnan( double fres ) {
+
+    OVERLAY value;
+
+    value.dv = fres;
+    if ( ( (value.bm.lobits & EXPBITS) == EXPBITS )  &&
+		 ( ( (value.bm.lobits & CHKEXP)  != ALLZEROS ) ||
+		 ( value.bm.hibits != ALLZEROS ) ) )
+        return( 1 ); /* Yes, it is not a number NaN */
+    else
+		return( 0 ); /* it is a number */
+}

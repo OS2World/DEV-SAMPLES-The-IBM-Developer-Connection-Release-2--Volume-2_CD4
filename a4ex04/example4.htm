@@ -1,0 +1,259 @@
+/*
+<br>
+<head>
+<title>Program that uses condition variables</title>
+</head>
+
+
+<h1>Program that uses condition variables</h1>
+
+<p>The program demonstrates the situation in which many threads are waiting for a condition to occur and another thread wakes up the threads by calling following functions:
+<ul>
+<li>pthread_cond_signal() to wake up one thread waiting for the condition
+<li>pthread_cond_broadcast() to wake up all the threads waiting for the condition
+</ul>
+
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed on V3R1 system and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+ */
+/********************************************************************/
+/*                                                                  */
+/* test case:     thread_cond.c                                     */
+/*                                                                  */
+/* objective:     Test semantics of pthread_cond_wait()             */
+/*                   and pthread_cond_broadcast()                   */
+/*                                                                  */
+/* scenario:      Create a condition variable                       */
+/*                Create a mutex                                    */
+/*                Create waiter threads                             */
+/*                Wait for all waiter threads to start              */
+/*                      Each waiter thread locks mutex              */
+/*                      Each waiter thread time waits on condition  */
+/*                       which implicitly unlocks the mutex         */
+/*                Signal condition variable to wake a single thread */
+/*                Broadcast condition variable to wake all threads  */
+/*                Join to all waiter threads                        */
+/*                      Each waiter thread is signalled             */
+/*                      Each waiter thread unlocks mutex aquired    */
+/*                       by pthread_cond_wait                       */
+/*                Destroy condition variable                        */
+/*                Destroy mutex                                     */
+/*                                                                  */
+/* description:   This demo is a valid case where many threads are  */
+/*                   waiting on a condition variable and another    */
+/*                   thread wakes up all the threads by issuing     */
+/*                   first a pthread_cond_signal() to wake up one   */
+/*                   thread, then a call to pthread_cond_broadcast  */
+/*                   to wake up all threads waiting on the condition*/
+/*                                                                  */
+/* internal routines:   waiter_thread()                             */
+/*                                                                  */
+/* external routines:   pthread_create()                            */
+/*                      pthread_join()                              */
+/*                      pthread_cancel()                            */
+/*                      pthread_detach()                            */
+/*                      pthread_cond_init()                         */
+/*                      pthread_cond_timedwait()                    */
+/*                      pthread_cond_signal()                       */
+/*                      pthread_mutex_init()                        */
+/*                      pthread_mutex_destroy()                     */
+/*                      pthread_mutex_lock()                        */
+/*                      pthread_mutex_unlock()                      */
+/*                      gettimeofday()                              */
+/*                      sleep()                                     */
+/*                                                                  */
+/* usage notes:  Compile this program using CRTCMOD and CRTCPAPGM   */
+/*               (V3R1) or CRTPTHPGM (V3R2 or V3R6)                 */
+/*               Call it with no parameters. Output goes only       */
+/*               to the screen.                                     */
+/*                                                                  */
+/********************************************************************/
+ 
+#include <pthread.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <signal.h>
+#include <errno.h>
+ 
+/* Global constants                                                  */
+#define  THREAD_COUNT   10
+ 
+/* Prototype of child threads                                        */
+static void *waiter_thread(void *);
+ 
+/* Global variables for all threads to access                        */
+static pthread_cond_t   cond;
+static pthread_mutex_t  mutex;
+
+/* volatile so that this variable gets immediately stored on each    */
+/* set/reference by a thread.  We don't want a thread changing the   */
+/* value and the compiler optimizing out any stores or loads         */
+static volatile int count;
+
+
+int main(int argc, char *argv[])
+{
+    int                  i, j;
+    int                  status;
+    int                 *join_status;
+    pthread_t            threads[THREAD_COUNT];
+    int                  threadparm[THREAD_COUNT];
+    struct timeval       current_time;
+
+    /* Initialize the count resource before any threads created. No     */
+    /* serialization is necessary                                       */
+    count = THREAD_COUNT;
+    printf("main: Entering %s\n", argv[0]);
+
+    /* Initialize the condition variable                                */
+    printf("main: Create a condition\n");
+    status = pthread_cond_init(&cond, pthread_condattr_default);
+    if (status < 0) {
+        printf("main: Create condition failed = %d\n", errno);
+        exit(1);
+      }
+
+    /* Create the mutex to be used in conjunction with the condition    */
+    printf("main: Create a mutex\n");
+    status = pthread_mutex_init(&mutex, pthread_mutexattr_default);
+    if (status < 0)  {
+        printf("main: Create mutex failed = %d\n", errno) ;
+        /* Be sure to clean up resources                                 */
+        ( void )pthread_cond_destroy(&cond);
+        return(1);
+      } /* endif */
+
+    printf("main: Create threads that will wait on the cond\n");
+    for ( i = 0; i < THREAD_COUNT ; i++) {
+        /* Pass an integer to the thread indicating which thread number  */
+        /* it is. Note that the pointer points to storage that will be   */
+        /* alive for the entire life of the thread                       */
+        threadparm[i] = i;
+        status = pthread_create(&threads[i], pthread_attr_default,
+                                (pthread_startroutine_t)waiter_thread,
+                                (void *)&threadparm[i]);
+        if (status < 0)  {
+            /* Create thread failed - break from loop and quit           */
+            printf("main: Create thread # %d failed - terminate\n"
+                   "main: Destroy condition variable and mutex\n", i);
+            /* Be sure to clean up resources                             */
+            ( void )pthread_cond_destroy(&cond);
+            ( void )pthread_mutex_destroy(&mutex);
+            return(1);
+          } /* endif */
+      } /* endfor */
+
+    printf("main: Sleep until all waiter threads are blocked on cond_wait\n");
+    while ( count ) {
+        sleep(2);
+      } /* endwhile */
+
+    gettimeofday(&current_time, NULL);
+    printf("main: Current time in seconds = %d before pthread_cond_signal\n",
+           current_time.tv_sec);
+
+    /* use pthread_cond_signal to wake up a single thread from the    */
+    /* pthread_cond_wait that they are all blocked on                 */
+    status = pthread_cond_signal(&cond);
+    if (status < 0) {
+        printf("main: Signal of cvar failed\n");
+        ( void )pthread_cond_destroy(&cond);
+        ( void )pthread_mutex_destroy(&mutex);
+        return(1);
+      } /* endif */
+
+    /* Wait for a short time to convince ourselves that only one thread*/
+    /* woke up from the cond_wait                                      */
+    sleep(5);        
+
+    gettimeofday(&current_time, NULL);
+    printf("main: Current time in seconds = %d before pthread_cond_broadcast\n",
+           current_time.tv_sec);
+    /* Wake up all of the rest of the threads that are waiting on the  */
+    /* condition                                                       */
+    status = pthread_cond_broadcast(&cond);
+    if (status < 0)  {
+        /* Broadcast failed - cancel all threads                       */
+        printf("main: Broadcast to all threads failed terminate\n");
+        /* Be sure to clean up resources                               */
+        ( void )pthread_cond_destroy(&cond);
+        ( void )pthread_mutex_destroy(&mutex);
+        return(1);
+      } /* endif */
+
+    /* Be sure to clean up resources                                    */
+    printf("main: Testcase successful\n");
+    ( void ) pthread_cond_destroy(&cond);
+    ( void ) pthread_mutex_destroy(&mutex);
+    return(0);
+} /* end */
+ 
+ 
+/********************************************************************/
+/* function:      waiter_thread                                     */
+/*                                                                  */
+/* description:   Thread which blocks on a condition variable via   */
+/*                   the pthread_cond_wait() call.                  */
+/*                                                                  */
+/********************************************************************/
+void *waiter_thread(void *parm)
+{
+    int                  status;
+    struct timeval       current_time;
+    int                  tnum = *(int *)parm;  /* Get the int parameter  */
+
+    /* Print out some startup information                                */
+    printf("wt #%d: Entering waiter thread\n", tnum);
+    gettimeofday(&current_time, NULL);
+    printf("wt #%d: Current time in secs = %d\n", tnum, current_time.tv_sec);
+
+    /* We need to lock the mutex for the cond wait. We'll use the        */
+    /* mutex for both the condition and serializing access to the count  */
+    /* variable which could represent some process scoped resource       */
+    printf("wt #%d: Lock the mutex\n", tnum);
+    status = pthread_mutex_lock(&mutex);
+    if (status < 0) {
+        printf("wt #%d: Mutex lock failed = %d\n", tnum, errno);
+        exit(1);   /* kill the whole application                         */
+      }
+
+    count--;
+
+    /* Wait for the condition to 'happen'. When the condition happens,   */
+    /* the main thread will wake us up via a pthread_cond_signal or      */
+    /* pthread_cond_broadcast on this condition. We don't know/care which*/
+    printf("wt #%d: Entering cond wait\n", tnum);
+    status = pthread_cond_wait(&cond, &mutex);
+    if (status < 0) {
+        printf("wt #%d: Completed wait with errno = %d\n", tnum, errno);
+        exit(1);   /* kill the whole application                         */
+      }
+
+    /* We made it here so we know that the condition has 'happened'      */
+    /* We would normally do whatever specific processing that this       */
+    /* condition required us to do. Note that we have the mutex that is  */
+    /* associated with the condition locked. We can use this for         */
+    /* serialization for resources represented by that condition/mutex   */
+    gettimeofday(&current_time, NULL);
+    printf("wt #%d: Current time after wait = %d\n",
+           tnum, current_time.tv_sec);
+
+    /* Unlock the mutex before returning so this mutex won't get         */
+    /* and so that another thread can lock it                            */
+    status = pthread_mutex_unlock(&mutex);
+    if (status < 0) {
+        printf("wt #%d: Unlock mutex errno = %d\n", tnum, errno);
+        exit(1);   /* kill the whole application                         */
+      }
+
+    /* No return data on this thread                                     */
+    return(NULL);
+}  /* end */

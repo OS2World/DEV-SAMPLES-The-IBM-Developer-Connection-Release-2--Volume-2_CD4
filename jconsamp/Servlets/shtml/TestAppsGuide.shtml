@@ -1,0 +1,10 @@
+<HTML>
+<APPLET CODE=sdm.util.TickerTape.class WIDTH=400 HEIGHT=30>
+</APPLET>
+<P><P>
+<SERVLET NAME="AppsGuide for Java" CODE="AppsGuid.class">
+</SERVLET>
+<P>
+<P>
+Powered by IBM Solution Developers in Austin, Texas (1998)
+</HTML>

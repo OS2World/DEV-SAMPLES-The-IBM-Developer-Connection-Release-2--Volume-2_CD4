@@ -1,0 +1,130 @@
+/*
+<br>
+<head>
+<title>Program that gets and sets value of environment variable</title>
+</head>
+
+
+<h1>Program that gets and sets value of environment variable</h1>
+
+<p>This program displays the value of an environment variable and then sets the environment variable to a new value.
+
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed on V3R1 system and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+ */
+/************************************************************************/
+/*                                                                      */
+/* test case:    env_var.c                                              */
+/*                                                                      */
+/* objective:    putenv/getenv semantics demo/example                   */
+/*                                                                      */
+/* scenario:     main(): getenv()                                       */
+/*                       putenv()    OR                                 */
+/*                                                                      */
+/*               main(): getenv()                                       */
+/*                                                                      */
+/* description:  Use getenv and putenv to display the value of an       */
+/*               environment variable and then to set it to a new       */
+/*               value.                                                 */
+/*               OR                                                     */
+/*               Use getenv to display a single environment variable    */
+/*                                                                      */
+/*               Note: environment variables are useable from multiple  */
+/*                     threads but this is a single threaded demo       */
+/*                                                                      */
+/* internal routines: main                                              */
+/*                                                                      */
+/* external routines: getenv                                            */
+/*                    putenv                                            */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTBNDC                     */
+/*               Call it with one parameter to display the environment  */  
+/*               variable with that name                                */
+/*               Call it with two parameters to set the environment     */
+/*               variable indicated by the first parameter to the       */  
+/*               value represented by the second parameter              */  
+/*                                                                      */  
+/************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <qp0z1170.h>
+
+#define BUFLEN 1024
+extern char **environ;
+
+int main(int argc, char *argv[])
+{
+    int      num=0;             /* counter                           */
+    int      rc;                /* API return code                   */
+    int      l1, l2;            /* lengths of the two parameters     */
+    char     *envvar=NULL;      /* pointer to an environment variable*/
+    char     **envvaridx=NULL;  /* pointer to an envvar pointer      */
+    char     envstring[BUFLEN]; /* buffer to construct putenv request*/
+
+    /* Show a small usage message        */
+    if ((argc != 2) && (argc != 3)) {
+        printf("Usage: %s <ENV_VAR> <new_value>\n OR \n"
+               "Usage: %s <ENV_VAR>\n", argv[0], argv[0]);
+        printf("Sets an environment variable to a user requested\n"
+               "value\n"
+               "OR\nDisplays the value of a single environment variable\n");
+        exit(1);
+      }
+
+    if (argc == 2) {
+        /* called to just display the environment variables */
+        envvar = getenv(argv[1]);
+        if (envvar == NULL) {
+            printf("No environment varaible %s set\n",
+                   argv[1]);
+          }
+        else {
+            printf("Environment variable: %s\n", envvar);
+          }
+        return(0);
+      }
+    
+    /* ELSE, Called to set an environment variable                          */
+     
+    /* Check the size of the parameters and construct a string of the       */
+    /* form "VAR=string" which is valid input to putenv                     */
+    l1 = strlen(argv[1]);
+    l2 = strlen(argv[2]);
+    if (l1+l2+2 >= BUFLEN) {
+        printf("Only 1024 characters allowed total\n");
+        exit(1);
+      }
+    memcpy(envstring, argv[1], l1);
+    envstring[l1] = '=';
+    memcpy(&envstring[l1+1], argv[2], l2);
+    envstring[l1+l2+1]='\0';
+
+    /* Now that we've got the string built, lets see if the environment     */
+    /* variable was already set just for fun                                */
+    envvar = getenv(argv[1]);
+    if (envvar == NULL) {
+        printf("Setting NEW environment variable %s\n",
+               envstring);
+      }
+    else {
+        printf("ReSetting OLD environment variable from: %s\n to %s\n",
+               envvar, envstring);
+      }
+
+    /* Now actually set the environment variable                            */
+    rc = putenv(envstring);
+    if (rc < 0) {
+        printf("putenv failed, errno = %d\n", errno);
+        return(-1);
+      }
+    printf("Environment variable set\n");
+    return(0);
+}

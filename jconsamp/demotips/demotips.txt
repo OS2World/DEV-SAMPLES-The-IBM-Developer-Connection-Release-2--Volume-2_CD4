@@ -1,0 +1,14 @@
+To demo lab02 (JDBC--AppsGuideEntry.java and JDBCLogon.java):
+	- net start db2
+	- net start db2ntsecserver
+	- db2jstrt
+	- open up a db2 command window and, db2 connect to appsguid
+	
+	Ensure the following packages are in the Web Server's html subdirectory
+		- COM.ibm.sdm.appsguide (with a capital COM--some browsers are case sensitive)
+		- COM.ibm.sdm.toolbox (GroupboxPanel)
+		- sdm.util (TickerTape)
+		- Isvapps (IsvappsMgr)
+		
+	Finally, ensure that X:\SQLLIB\JAVA\db2java.zip is in the classpath of the
+	client machine.

@@ -1,0 +1,122 @@
+<HTML>
+<TITLE>The MVS ICS CICS ESA Interface
+</TITLE>
+
+<BODY>
+<CENTER>
+<img src="/gif_path/CICSESA.gif" 
+alt="CICS/ESA 4.1 Application Server">
+<H1>The MVS Internet Connection Server CICS/ESA EXCI Interface</H1>
+</CENTER>
+<P>
+<HR>                                                               
+<P>                                                                                    
+
+<P>This page gives guidance on the <A HREF="#inst">Installation</A> and 
+the <A HREF="#exe">Execution</A> of the CICS EXCI CGI sample program.
+
+<P>To use the CICS EXCI CGI sample you need to :
+<OL>
+<LI>Save this HTML file into the directory from which your Web Server 
+retrieves HTML pages giving it the file extension 'html'.
+<LI>Retrieve CICSESA.gif  into the directory from which your Web Server 
+retrieves images.
+<P><STRONG>Note: </STRONG>Remember to use 'binary' mode where applicable 
+when transferring gif images.<P>
+<LI>Retrieve EXCICGI.c to your MVS 5.2.2 system and follow the 
+<A HREF="#inst">instructions</A> below.
+<LI>Adapt this HTML page as <A HREF="#inst">described below</A>.
+</OL>
+
+<P>This page provides access to a sample CGI program that invokes 
+CICS by using the CICS External Call Interface or EXCI.
+The EXCI was introduced in CICS/ESA version 4.1 and is
+supported by all subsequent versions. The use of the
+EXCI interface is documented in the CICS/ESA External CICS
+Interface manual which is document number SC33-1390-00.
+Section 7.4 of the EXCI manual describes the operation of
+the EXCI sample programs as well as the installation steps required
+to use them.
+You should read <STRONG>AT LEAST</STRONG> this section of the EXCI 
+manual. 
+<P>Prior to running the 
+<A HREF="http://server_name/cgi-bin/excicgi">MVS ICS CICS 
+EXCI CGI sample</A>
+you <STRONG>MUST</STRONG> follow the installation steps documented in 
+the manual above and verify the installation as described.
+<P>
+<HR>
+<P>
+<H2><A name="inst">Installation Notes</A></H2>
+<P>To adapt this page edit the HTML source and replace 'gif_path' with         
+the directory path from which your Web Server will retrieve CICSESA.gif        
+and replace 'server_name' with the DNS name or IP address of you Web           
+Server.                                                                        
+
+<P>EXCICGI.c is the C program which implements the EXCI CGI function. 
+This program must be translated with the CICS translator specifying the 
+EXCI option.
+
+<P>EXCICGI.c can be complied and link edited from within the OpenEdition
+environment. To achieve this ensure that the OpenEdition compiler, C89, 
+is correctly set up and follow these steps :
+<OL>
+<LI>Copy the translated EXCICGI.c source into your working HFS 
+directory.
+<LI>Copy the C language EXCI copybook DFHXCPLH into your working HFS 
+directory as dfhxcplh.h
+<LI>Create a file named 'Makefile' in your working HFS directory and 
+using OEDIT edit following make commands into it by 
+editing away all the other HTML source of this page.
+<P><STRONG>Note : </STRONG>if you use a 'cut & paste' type operation instead
+of an edit, as suggested above, to  
+extract the Makefile commands, ensure that the TAB boundaries are
+preserved as otherwise errors will be generated during the Make processing.
+<PRE>
+#Makefile to compile the CICS CGI sample code.
+
+CC=c89
+AR=ar
+CFLAGS=-O -W0,"LANGLVL(EXTENDED)"
+LIB1=-L./
+LIB2=-lc -lm -l"//'CICS.HLQ.SDFHEXCI'"
+
+all: excicgi
+
+excicgi: excicgi.o
+	$(CC) -o excicgi $(LIB1) excicgi.o	$(LIB2)
+
+clean:
+	rm -f *.o *.a excicgi
+
+</PRE>
+<LI>Change 'CICS.HLQ' within the Makefile to be the high level qualifier
+used for the CICS datasets in your environment.
+<LI>Issue the 'make' command from the shell command line in your working 
+HFS directory to perform the compile.
+<LI>Copy, using the cp command, the executable produced 'excicgi' to the
+HFS directory from which your Web Server will resolve CGI requests, 
+this is usually the cgi-bin directory.
+<LI>Ensure that the CICS EXCI Runtime function is accessible from the 
+OpenEdition environment, the most reliable way of ensuring this is to 
+place the modules from the Library SDFHEXCI into the LPA.
+</OL>
+
+<P><Strong>Note :</Strong> Help on copying files between TSO and the HFS 
+can be found in the MVS/ESA OpenEdition MVS User's Guide (SC23-3013-02).
+
+<P>You are now ready to drive the EXCICGI program. Initialise CICS and 
+enable the EXCI environment as described in the CICS/ESA External CICS 
+Interface manual. Point your Web Browser at this page initially, and use
+the 'links' to invoke EXCICGI.  Remember to specify the APPLID of your 
+CICS system in upper case when prompted to do so by a fill out form.
+                                                                                    
+<P>
+<H2><A name="exe">Execution</A></H2>
+<CENTER>
+<A HREF="http://server_name/cgi-bin/excicgi">Click here to 
+continue with the execution of the CGI sample
+</A>                                                                 
+</CENTER>
+<HR>
+</BODY>

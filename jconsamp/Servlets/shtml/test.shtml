@@ -1,0 +1,6 @@
+<HTML>
+Some sample text...
+<SERVLET NAME="FormDisplayServlet" CODE="FormDisplayServlet.class">
+</SERVLET>
+Some more sample text...
+</HTML>

@@ -1,0 +1,10 @@
+SYNWC001.exe: SYNWC001.obj SYNWC001.res SYNWC001.def
+   link /nod /co SYNWC001,SYNWC001,SYNWC001,slibcew libw CCLWIN,SYNWC001.def
+   rcw SYNWC001.res
+
+SYNWC001.res: SYNWC001.rc SYNWC001.h
+   rcw -r SYNWC001.rc
+
+SYNWC001.obj: SYNWC001.c SYNWC001.h
+   cl /c /AS /Gsw /Zp /Zi /Od SYNWC001.c
+

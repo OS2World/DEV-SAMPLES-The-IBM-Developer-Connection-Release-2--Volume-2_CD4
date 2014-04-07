@@ -1,0 +1,12 @@
+[COMPILER]
+
+INCLUDEDIRS=
+COMPILE=concur|capture,javac %f
+MAKE=concur|capture,
+DEBUG=concur|capture,jdb %n
+EXECUTE=concur|capture,java %n
+USER1=
+USER2=
+
+[FILES]
+C:\krl\java\clocks\WorldClocks.java

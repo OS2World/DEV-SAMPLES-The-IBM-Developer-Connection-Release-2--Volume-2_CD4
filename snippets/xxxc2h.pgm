@@ -1,0 +1,64 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+      * Procedure char2hex
+      * ------------------
+      * Input: one-byte character field.
+      * Output two-byte character field containing two hex digits that represent the input character
+      *
+      * Example:      eval      two = char2hex('A')      returns the characters C1
+      *
+     Hnomain
+      /copy cgidev/qrpglesrc,prototypes
+     P char2hex        B                   EXPORT
+     D char2hex        PI             2
+     D    char                        1    VALUE
+     D                 ds
+     Dhex                            16    INZ('0123456789ABCDEF')
+     Dhexa                            1    dim(16)
+     D                                     OVERLAY(hex)
+     Dtwobytes                        2
+     Dbyte1                           1    OVERLAY(twobytes:1)
+     Dbyte2                           1    OVERLAY(twobytes:2)
+     Dnbr1                            5I 0 INZ(0)
+     Dthechar                         1    OVERLAY(nbr1:2)
+     Dnbr2                            5I 0 INZ(0)
+     C                   move      char          thechar
+     C     nbr1          div       16            nbr1
+     C                   mvr                     nbr2
+     C                   eval      byte1 = hexa(nbr1 + 1)
+     C                   eval      byte2 = hexa(nbr2 + 1)
+     C                   return    twobytes
+     P                 E

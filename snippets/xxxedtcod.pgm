@@ -1,0 +1,85 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+      * Convert from numeric to character using an edit code
+      * -----------------------------------------------------
+      * Input: see interface definition, below
+      * Output: 32 bytes, left justified edited data.
+      *
+     Hnomain
+      * Prototype defintions and standard system API error structure
+      /copy cgidev/qrpglesrc,prototypes
+      /copy qsysinc/qrpglesrc,qusec
+      *
+     Pcvtedtcod        B                   EXPORT
+     Dcvtedtcod        PI            40
+     D    srcvar                     30    VALUE
+     D    srcvartype                 10    VALUE
+     D    edtcode                     1    VALUE
+     D    floatcur                    1    VALUE
+     D    prec                       10i 0 VALUE
+     D    dec                        10i 0 VALUE
+     Dmask             S            256
+     Dmasklen          S             10i 0
+     Drcvlen           S             10i 0
+     Dzerofill         S              1
+     Drtnvar           S             40
+     Drtnvarlen        S             10i 0 INZ(40)
+      *
+     C                   eval      qusbprv = 16                                 qusec length
+      * Convert edit code
+     C                   call      'QECCVTEC'
+     C                   parm                    mask
+     C                   parm                    masklen
+     C                   parm                    rcvlen
+     C                   parm                    zerofill
+     C                   parm                    edtcode
+     C                   parm                    floatcur
+     C                   parm                    prec
+     C                   parm                    dec
+     C                   parm                    qusec
+      * Edit the data
+     C                   call      'QECEDT'
+     C                   parm                    rtnvar
+     C                   parm                    rcvlen
+     C                   parm                    srcvar
+     C                   parm                    srcvartype
+     C                   parm                    prec
+     C                   parm                    mask
+     C                   parm                    masklen
+     C                   parm                    zerofill
+     C                   parm                    qusec
+     C                   return                  rtnvar
+     P                 E

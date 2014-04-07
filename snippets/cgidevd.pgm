@@ -1,0 +1,772 @@
+
+
+  THE CGIDEV LIBRARY
+
+  Last revised on March 10, 1997
+
+
+  Mel Rothman
+  mrothman@vnet.ibm.com
+
+  IBM AS/400 Custom Technology Center
+  G2V/025-2
+  Rochester, MN 55901
+
+
+
+
+  Contents
+  ------------------------------------------------------------------------------
+
+
+  1.  LICENSE, DISCLAIMER, COPYRIGHT NOTICE, QUESTION, COMMENTS
+  LICENSE AND DISCLAIMER
+  COPYRIGHT
+  COMMENTS/QUESTIONS
+
+  2.  HOW TO OBTAIN THE CGIDEV LIBRARY
+
+  3.  OVERVIEW
+
+  4.  THE ILE RPG TEMPLATE
+  Functions provided by the CGISRVPGM program
+    Output HTML external to the program
+    Browser input
+    Escape sequence handling
+    Buffered standard output
+    Debugging facilities
+    Numeric field editing
+    Page-hit counter
+    Other functions
+  Object List
+
+  5.  THE REXX TEMPLATE
+  Overview
+  Synopsis of REXX template's functions
+    Error handling
+    Standard input
+    ASCII escape sequence conversion
+    Parsing
+    Stem variable creation
+    Buffered standard output
+    Global variables
+    Debugging facilities
+    Interactive execution
+  Other objects used by the REXX template
+
+  6.  INSTALLING THE CGIDEV LIBRARY FROM SAVED LIBRARY CGIDEVD
+
+
+
+
+
+
+  1.  LICENSE, DISCLAIMER, COPYRIGHT NOTICE, QUESTION, COMMENTS
+  ------------------------------------------------------------------------------
+
+
+  The following applies to each CGIDEV library source code member.
+
+
+  LICENSE AND DISCLAIMER
+  ----------------------
+
+  This material contains IBM copyrighted sample programming source code.
+  IBM grants you a nonexclusive license to use, execute, display,
+  reproduce, distribute and prepare derivative works of this sample
+  code.  The sample code has not been thoroughly tested under all
+  conditions.  IBM, therefore, does not warrant or guarantee its
+  reliability, serviceablity, or function.  All sample code contained
+  herein is provided to you "AS IS." ALL IMPLIED WARRANTIES, INCLUDING
+  BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND
+  FITNESS FOR A PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.
+
+
+  COPYRIGHT
+  ---------
+
+    (C) Copyright IBM CORP. 1996, 1997
+    All rights reserved.
+    US Government Users Restricted Rights -
+    Use, duplication or disclosure restricted
+    by GSA ADP Schedule Contract with IBM Corp.
+    Licensed Material - Property of IBM
+
+
+  COMMENTS/QUESTIONS
+  ------------------
+
+  Please send comments or questions via e-mail to Mel Rothman at
+  mrothman@vnet.ibm.com
+
+
+  2.  How to obtain the CGIDEV library
+  ------------------------------------------------------------------------------
+
+
+  This library can be obtained via the AS/400 Web Builder's Workshop on
+  the Worldwide Web (http://www.as400.ibm.com/workshop/webbuild.htm).
+  Click on the Code Snippets link under the Resources heading.
+
+  Then click on either Complete List or Search.  If searching, look for
+  author = Mel Rothman.
+
+  Each snippet can be viewed by clicking on its link.
+
+  Only the following two snippets need be downloaded:
+
+
+       Title           Type
+       ---------       -------
+       SAVEFILE OF     SAVF
+       CGIDEV LIBRARY
+
+       CGIDEVD         README (this file)
+
+
+  The CGIDEVD savefile contains all the components of the CGIDEV
+  library, including the README file.  You should download or print the
+  README file separately in order to have access to the installation
+  instructions (see 6, "Installing the CGIDEV library from saved library
+  CGIDEVD," below).
+
+  When downloading, your browser may assume that each file's name is
+  SENDFILE.PGM, which is the name of the CGI program performing the
+  download.  Replace SENDFILE.PGM with the name of the file being
+  downloaded.  For example, when downloading CGIDEVD.SAVF, change
+  SENDFILE.PGM to CGIDEVD.SAVF (or CGIDEVD.SAV if your computer does not
+  support long file names).
+
+
+  3.  Overview
+  ------------------------------------------------------------------------------
+
+
+  The CGIDEV library is distributed as a savefile, CGIDEVD/CGIDEVD.  In
+  addition, individual source file members are available for viewing and
+  downloading.  To be sure that you have all the pieces, it is
+  recommended that you obtain the savefile and install all the pieces
+  from it (see 6, "Installing the CGIDEV library from saved library
+  CGIDEVD").
+
+  Its purpose is to provide two CGI programming templates, one written
+  in ILE RPG, one in REXX, either of which can be used to create new CGI
+  programs.
+
+  Modules, programs, service programs and commands are distributed only
+  in source form.  A REXX procedure is provided to facilitate compiling
+  these objects (see 6, "Installing the CGIDEV library from saved
+  library CGIDEVD").
+
+
+  4.  The ILE RPG Template
+  ------------------------------------------------------------------------------
+
+
+  The sample ILE RPG CGI template program is called TEMPLATE.
+
+  The TEMPLATE extensively uses the ILE RPG and ILE CL routines
+  contained in the CGISRVPGM service program.  This service program, its
+  modules, and their source files all are included in the CGIDEV
+  library.
+
+  Because most of the required CGI functions are performed by the
+  CGISRVPGM service program, the mainline TEMPLATE program's source is
+  compact (about 180 lines including comments and sample logic; about 50
+  - 55 lines after removing comments and sample logic).
+
+  The CGIDEV library's source file members are commented to assist you
+  in understanding their functions.  You might want to start with the
+  TEMPLATE member in the CGIDEV/QRPGLESRC file and then move on to the
+  XXX* members in CGIDEV/QRPGLESRC.
+
+
+
+  Functions provided by the CGISRVPGM program
+  -------------------------------------------
+
+
+  Output HTML external to the program
+
+  Output HTML is stored in a source member, which is processed by the
+  service program's gethtml and wrtsection subprocedures.  Most HTML
+  changes can be made in the source member without modifying or
+  recompiling the CGI program.
+
+  All reading, parsing, formatting, managing sections, etc., is
+  performed by the service program, thus relieving the programmer of
+  these tedious and error-prone tasks.
+
+  The CGISRVPGM supports the following useful HTML source file features:
+
+  1.  The file can be organized as multiple, named sections, each of
+      which can be sent to the browser multiple times with the
+      wrtsection subprocedure.  A section record has the characters /$
+      in columns 1 and 2 and the section name in columns 3 through 12.
+      For example, as is done in the sample TEMPLATE program, if you
+      wish to output a table, you can define a section called tabledata
+      and under control of a programmed loop, call the wrtsection
+      subprocedure for each row to be written.
+
+          /$tabledata
+
+          <TR>
+
+          <TD ALIGN="left">/%days%/</TD><TD ALIGN="LEFT">/%hours%/</TD>
+
+          </TR>
+
+
+
+          ... next section
+
+  2.  HTML records can contain variable names, which, at execution-time,
+      are replaced with program-supplied data.  For example:
+
+          <TD ALIGN="left">/%days%/</TD><TD ALIGN="LEFT">/%hours%/</TD>
+
+      At execution-time, the values contained in the program's days and
+      hours fields replace the corresponding names found between the /%
+      and %/ delimiters in the HTML source file.  See TEMPLATE's
+      setvardata subroutine to see how to prepare data to use this
+      function.
+
+
+  Browser input
+
+  The template reads the browser's input using the getinput
+  subprocedure.  If the request method is POST, the input is read from
+  standard input.  If the request method is GET, the input is read from
+  the QUERY_STRING environment variable.
+
+  Before returning the data to your program, getinput uses the cgiparse
+  subprocedure to convert any escaped characters from their ASCII code
+  points to the corresponding EBCDIC code points using the
+  QUSRSYS/QAEUSBB1 translate table (if you wish to use a different
+  translate table, make the appropriate changes to the XXXPARSE member
+  in CGIDEV/QRPGLESRC).
+
+  In explanation, HTTP (HyperText Transfer Protocol), requires that
+  certain characters be sent as escape sequences in the format %hh,
+  where hh is two hexadecimal characters.  For example, a comma is sent
+  as %2C, where 2C is the ASCII codepoint for a comma.  The AS/400
+  Internet Connection HTTP server does not translate the %2C to a %6B,
+  the EBCDIC codepoint for a comma.  If %2C were to be passed into the
+  QtmhCvtDb application program interface (API), the %2C would be
+  translated to the wrong EBCDIC character.
+
+
+  Escape sequence handling
+
+  The cgiparse subprocedure converts ASCII escape sequences into EBCDIC
+  escape sequences.  Although cgiparse is not directly referenced in the
+  TEMPLATE program, it can be used if necessary.
+
+
+  Buffered standard output
+
+  HTML bound for the browser is buffered by the service program,
+  reducing the number of calls to QtmhWrStout, thus improving
+  performance.
+
+  The HTTP server requires that data sent to its standard output have no
+  more than 254 characters without a newline character.
+
+  The service program, prior to sending its buffered output to the
+  browser, searches for runs of more than 254 characters without a
+  newline character.  When found, blanks are replaced with newline
+  characters until there are no more blanks or there are no more runs of
+  more than 254 characters without a newline character.
+
+
+  Debugging facilities
+
+  The cgidebug subprocedure writes debugging information into the
+  debugging physical file, htmldebug.  Cgidebug is used by several of
+  the service program's subprocedures; you can add debug output of your
+  own.  No output is generated unless debug output has been turned on by
+  the CGIDEBUG *ON command.
+
+
+  Numeric field editing
+
+  AS/400-generated numeric data must be converted to strings before
+  being sent to the browser.  The following routines provide this
+  function:
+
+  1.  cvtedtcod accepts an AS/400 numeric variable and an edit code and
+      produces an edited string, suitable for output to a web browser.
+
+      Similarly, cvtedtwrd accepts an AS/400 numeric variable and an
+      edit word and produces an edited string.
+
+      Sample uses of cvtedtcod and cvtedtwrd are in the setvardata
+      subroutine found in CGIDEV/QRGPLESRC's TEMPLATE member.
+
+
+  Page-hit counter
+
+  The countp subprocedure keeps track of page hits using a keyed
+  physical file, CGICOUNT.  A key (page name, program name, etc.) is
+  passed to countp.  It adds one to the existing count for that key and
+  returns the updated counter.  If the key doesn't exit, a new record,
+  initialized to 1, is added to the file and 1 is returned to the
+  caller.
+
+
+  Other functions
+
+  The service program also provides the following utility functions:
+
+  1.  char2hex converts a character to two hexadecimal characters
+
+  2.  hex2char converts two hexadecimal characters to one character
+
+  3.  c2n converts a character string to a 30/9 packed number.
+
+      C2n usually won't be used for converting browser input because
+      QtmhCvtDb (called by the template's cvtdb routine) handles this.
+      C2n is used to convert the CONTENT_LENGTH environment variable.
+      It is also available for you to use.
+
+
+  Object List
+  -----------
+
+  This is a brief description of the objects that comprise the template,
+  its source, and related tools and files.  (CGISRVPGM), or
+
+  TEMPLATE *PGM          Sample CGI program.
+
+  CGISRVPGM *SRVPGM      Service program that includes many CGI
+                         programming functions
+
+  CGIDEBUG *CMD, *PGM    Command for controlling TEMPLATE's built-in
+                         debugging facilities (*ON *OFF *DSP *DSPDATA
+                         *CLRDATA)
+
+  RMVSRCRCDS *CMD *PGM   Used to remove specified records from source
+                         file members.
+
+  RMVSRCRPG *PGM         RPG program used by RMVSRCRCDS command.
+
+  TEMPLATE *BNDDIR       Contains references to service program
+                         QTCP/QTMHCGI and CGIDEV/CGISRVPGM.  Used with
+                         the BNDDIR parameter of the CRTPGM command to
+                         create new CGI programs.
+
+  QRPGLESRC              ILE RPG source file
+
+                         o   Members starting with XXX are components of
+                             the CGISRVPGM service program.
+
+                         o   PROTOTYPES contains all the prototypes
+                             required by programs using the CGISRVPGM
+                             service program.
+
+  QCLSRC                 CL source file
+
+                         o   XXXOVRHTML a component of the CGISRVPGM
+                             service program.
+
+                         o   members for other supplied CL programs
+
+  QCMDSRC                command source file
+
+                         o   members for supplied commands
+
+  HTMLSRC source file
+
+                         o   members TALK1 and TALK2, used by the sample
+                             TEMPLATE program.
+
+                         o   member MENU, a menu containing links to
+                             TALK1 as well as to DEMO,
+                                   a form for the REXX sample, DEMO.
+
+  QDDSSRC source file
+
+                         o   member DATASTRUCT, source for DATASTRUCT
+                             physical file used by the sample TEMPLATE
+                             program
+
+                         o   member HOURSOP, source for HOURSOP physical
+                             file used by the sample TEMPLATE program
+
+                         o   member HTMLDEBUG, source for HTMLDEBUG, the
+                             physical file containing debugging
+                             information.
+
+  QSRVSRC source file
+
+                         o   member CGISRVPGM, binding language source
+                             for creating CGISRVPGM service program.
+
+
+                             Used in the following command:
+
+                                 CRTSRVPGM  SRVPGM(CGIDEV/CGISRVPGM) +
+                                       MODULE(CGIDEV/XXX*) +
+                                       SRCFILE(CGIDEV/QSRVSRC) +
+                                       TEXT('CGISRVPGM service program') +
+                                       BNDSRVPGM(QTCP/QTMHCGI)
+
+  README source file
+
+                         o   member CGIDEVD, this file
+
+
+
+  5.  THE REXX TEMPLATE
+  ------------------------------------------------------------------------------
+
+
+
+  Overview
+  --------
+
+  NOTE: BECAUSE REXX AND THE AS/400 INTERNET CONNECTION HTTP SERVER DO
+  NOT HANDLE STANDARD INPUT AND STANDARD OUTPUT COMPATIBLY, THE REXX
+  PULL AND SAY COMMANDS SHOULD NOT BE USED IN CGI SCRIPTS.  IF THEY ARE
+  USED, UNPREDICTABLE RESULTS WILL OCCUR, INCLUDING FUNCTION CHECKS IN
+  THE HTTP SERVER.
+
+  To enable compatibility with the HTTP server, the REXX template,
+  described below, performs standard input and standard output
+  operations by calling ILE-RPG programs (included in the CGIDEV
+  library) which in turn use the HTTP server's QtmhRdStin and
+  QtmhWrStout APIs.  An additional ILE-RPG program, GETENV, can be used
+  to get environment variables' contents.  GETENV uses the QtmhGetEnv
+  API.
+
+  One more time: DO NOT USE PULL AND SAY IN REXX CGI PROGRAMS.  Use the
+  template-provided getparse and sayh procedures.
+
+  Because REXX procedures are not program objects, they cannot be
+  invoked as CGI programs.  Instead, a CL program, REXXDRIVER is invoked
+  with a parameter containing the name of the REXX procedure to be run.
+  Here is how the REXX procedure DEMO is invoked from an HTML form:
+
+
+      <FORM METHOD="POST" ACTION="/CGIDEVPGM/REXXDRIVER.PGM?DEMO">
+
+
+  The sample REXX template program, TEMPLATE, is found in source file
+  QREXSRC.  TEMPLATE is only a shell, meant to be copied and modified
+  with the addition of your own logic.
+
+  DEMO, also in QREXSRC, is a functional example, built upon a copy of
+  the TEMPLATE shell. It uses an HTML form, DEMO, found in source file
+  HTMLSRC.
+
+  See the comments in the TEMPLATE source member for detailed
+  information about how the template works.
+
+
+  Synopsis of REXX template's functions
+  -------------------------------------
+
+
+  Error handling
+
+  Traps and handle errors using standard REXX facilities.
+
+
+  Standard input
+
+  Reads input from standard input, using QtmhRdStin via a called ILE RPG
+  program, STDIN.  The template assumes that all browser input comes via
+  the POST method.
+
+
+  ASCII escape sequence conversion
+
+  Converts any ASCII escape sequences to the correct EBCDIC character
+  using the QUSRSYS/QAEUSBB1 translate table.  If you wish to use a
+  different translate table, modify the code in the gettable procedure.
+
+
+  Parsing
+
+  Parses the input, converts plus signs to blanks, and returns several
+  variables to your mainline code:
+
+  alldata        the standard input string minus any imbedded
+                 end-of-line characters and any trailing '00'x
+                 characters.
+
+  alldataln      length of alldata
+
+  data.          a stem variable with each occurrence representing one
+                 input variable in the form varname=value and data.0
+                 being the number of variables contained in the standard
+                 input.
+
+  varname.       a stem variable with each occurrence representing the
+                 name of one input variable.
+
+  value.         a stem variable with each occurrence containing the
+                 value of a variable.
+
+
+  Stem variable creation
+
+  Creates a stem variable for each variable found in the input.  For
+  example, if the input data stream contained the string
+  color=blue&color=red&color=green, then stem variable color is created
+  as follows:
+
+      color.0 = 3
+      color.1 = 'blue'
+      color.2 = 'red'
+      color.3 = 'green'
+
+
+  Buffered standard output
+
+  Provides buffered standard output via the sayh procedure.  Before
+  exiting a REXX CGI, be sure to execute the following instruction to
+  ensure that all output is sent to the browser:
+
+
+      call sayh '(((((flush'
+
+
+
+  Global variables
+
+  An initialization procedure sets up many global variables in stem
+  variable g., including the procedure's name, source file, and library,
+  the job type, and a several work variables.
+
+
+  Debugging facilities
+
+  The CGIDEBUG program, mentioned in the RPG section above, is also used
+  by the RPG programs STDIN, STDOUT, and GETENV, called by the REXX
+  template.  Therefore, when CGIDEBUG *ON has been executed, procedures
+  based on the REXX template will output debugging data for standard
+  input, standard output, and environment variables.  To view the
+  debugging data, execute CGIDEBUG *DSPDATA.
+
+
+  Interactive execution
+
+  The REXX template detects whether it is executing in a batch job (from
+  the browser) or an interactive job (e.g. executed from the command
+  line with the STRREXPRC command).  This facilitates the use of REXX's
+  trace instruction for debugging.
+
+  If the job is interactive, the keyboard and display are used to
+  simulate HTTP input and output.  First, the procedure prompts the user
+  to key-enter the simulated standard input.  Then it processes the data
+  normally and writes the simulated standard output to the display.
+  Note that no environment variables can be found when running
+  interactively because environment variables are set by HTTP, which is
+  not active when running interactively.
+
+
+  Other objects used by the REXX template
+  ---------------------------------------
+
+  STDIN      *PGM     Uses QtmhRdStin to get standard input from the
+                      HTTP server
+
+  STDOUT     *PGM     Uses QtmhWrStout to write standard output to the
+                      HTTP server
+
+  GETENV     *PGM     Uses QtmhGetEnv to get environment variables set
+                      by the HTTP server
+
+  COUNT      *PGM      Uses countp from the CGISRVPGM service program to
+                      increment page-hit counters.
+
+
+
+  6.  Installing the CGIDEV library from saved library CGIDEVD
+  ------------------------------------------------------------------------------
+
+
+  The following instructions assume save file CGIDEVD contains saved
+  library CGIDEVD which is to restored into library CGIDEV.
+
+  1.  On the AS/400, CRTLIB CGIDEV
+
+  2.  On the AS/400, CRTSAVF CGIDEV/CGIDEVD
+
+  3.  Assuming that CGIDEVD.SAVF was downloaded as CGIDEVD.SAV:
+
+      FTP CGIDEVD.SAV in binary mode to CGIDEV/CGIDEVD.SAVF
+
+
+          ftp
+          open system_name
+          user
+          your username
+          your password
+          cd cgidev
+          binary
+          lcd local_directory
+          put cgidevd.sav cgidevd.savf
+          quit
+
+
+  4.  Restore library CGIDEV from SAVF CGIDEVD.
+
+
+          RSTLIB SAVLIB(CGIDEVD) +
+                 DEV(*SAVF) +
+                 SAVF(CGIDEV/CGIDEVD) +
+                 RSTLIB(CGIDEV)
+
+
+  5.  Modules, programs, service programs, and commands are not
+      compiled.
+
+      A REXX procedure, CRTOBJECTS, is provided to perform the
+      compilations.  It assumes that the source and target libraries are
+      CGIDEV.  These assumptions can be overridden by changing the
+      following statements at the top of CRTOBJECTS:
+
+
+          crtlib=CGIDEVD /* Default library into which to create objects*/
+          srclib=CGIDEVD /* Default library from which to get source */
+
+
+      To run CRTOBJECTS:
+
+
+          STRREXPRC SRCMBR(CRTOBJECTS) SRCFILE(CGIDEV/QREXSRC)
+
+
+  6.  To enable access to files and programs in CGIDEV, make sure that
+      the following records are in your HTTP configuration file.
+
+
+          Pass /CGIDEV/*     /QSYS.LIB/CGIDEV.LIB/*
+          Exec /CGIDEVPGM/*  /QSYS.LIB/CGIDEV.LIB/*
+
+
+  7.  To run either the RPG TEMPLATE program or the REXX DEMO procedure
+      from a browser, go to the following URL:
+
+
+          http://your.system's.address/CGIDEV/HTMLSRC.FILE/MENU.MBR
+
+
+      Then, click on the appropriate link.
+
+  8.  To run the RPG TEMPLATE program from a browser without using the
+      menu in 7., above, go to the the following URL:
+
+
+          http://your.system's.address/CGIDEV/HTMLSRC.FILE/TALK1.MBR
+
+
+  9.  To run the sample REXX program, DEMO, from a browser without using
+      the menu, above, go to the following URL:
+
+
+          http://your.system's.address/CGIDEV/HTMLSRC.FILE/DEMO.MBR
+
+
+  10. If you prefer to serve HTML from the root file system, substitute
+      your preferred directory for /htmlsrc, and the member name for
+      XXXXX in the sample, below.  For production, this is probably a
+      good idea because HTML is served faster from the root file system
+      than from the QSYS.LIB file system.
+
+      a.  Use CPYTOSTMF to copy XXXXX.MBR to a directory.  For example,
+          assuming you want to use the directory /htmlsrc
+
+
+              CPYTOSTMF
+                 FROMMBR('/QSYS.LIB/CGIDEV.LIB/HTMLSRC.FILE/XXXXX.MBR') +
+                 TOSTMF('/htmlsrc/XXXXX.htm') STMFOPT(*ADD)
+
+
+      b.  Make sure the directory is accessible from the browser.  For
+          the above example, the following line should be in the HTTP
+          configuration file.
+
+
+              Pass /htmlsrc/*
+
+
+      c.  Access the HTML from a browser with:
+
+
+              http://your.system's.name/htmlsrc/XXXXX.htm
+
+
+  11. To use TEMPLATE as the source for a new program:
+
+      a.  Create your program's externally described data structure by
+          creating its DDS source.  Then use the create physical file
+          (CRTPF) command to create the physical file that will be used
+          as an externally described data structure.  If the file is not
+          to contain any data, you can use MBR(*NONE) on the CRTPF
+          command.
+
+      b.  Copy member CGIDEV/QRPGLESRC.TEMPLATE to a new source file
+          member:  for example, NEWPROG.
+
+      c.  Columns 1 - 5 of each record are coded to indicate the
+          record's purpose.  blanks = do not change or remove the
+          record.  ccccc = change the record to tailor the program to
+          meet your requirements.  xxxxx = the record is part of the
+          sample code and can/should be removed.
+
+          Note: Command RMVSRCRCDS can be used to remove source records
+          that contain user specified strings.
+
+          Here is the RMVSRCRCDs command to remove the sample code from
+          source member, NEWPROG, copied from TEMPLATE.
+
+
+              Source file  . . . . . . . . . . SRCFILE  > QRPGLESRC
+                Library:. . . . . . . . . . .          >   CGIDEV
+              Member name  . . . . . . . . . . MEMBER   > NEWPROG
+              From column  . . . . . . . . . . FROMCOL  > 1
+              To column  . . . . . . . . . . . TOCOL    > 5
+              Search string (case-sensitive)   STRING   > 'xxxxx'
+
+
+      d.  Add your logic and make other appropriate changes.
+
+      e.  Create the module NEWPROG (CRTRPGMOD)
+
+      f.  Create the program NEWPROG (CRTPGM) using the CGIDEV/TEMPLATE
+          binding directory (contains references to two service
+          programs: QTCP/QTMHCGI and CGIDEV/CGISRVPGM).
+
+
+              CRTPGM CGIDEV/NEWPROG MODULE(*PGM) +
+                     BNDDIR(CGIDEV/TEMPLATE) +
+                     ACTGRP(*NEW)
+
+
+  12. Security considerations
+
+      a.  The HTTP server's QTMHHTP1 user profile should have the
+          following authorities to QSYS.LIB file system objects:
+
+          1)  Objects not required for CGI processing:  excluded via
+              *EXCLUDE for *PUBLIC
+
+          2)  CGI programs:  *USE
+
+          3)  Objects that are read-only: *USE
+
+          4)  Objects that are not read-only: *CHANGE or a user-defined
+              set of authorities (e.g. *OBJOPR *READ *UPD)
+
+      b.  The QTMHHTP1 user profile should have *RX data authorities and
+          *OBJREF object authority for files to be read from the
+          non-QSYS.LIB portions of the integrated file system.
+          Exceptions should be made only as required by the application.
+
+      c.  *PUBLIC should have *EXCLUDE authority for all CGI programs,
+          all QSYS.LIB objects and all non-QSYS.LIB files.
+
+

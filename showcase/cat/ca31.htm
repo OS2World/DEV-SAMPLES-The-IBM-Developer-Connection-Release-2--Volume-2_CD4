@@ -1,0 +1,83 @@
+<html>
+<head>
+<base target="_blank">
+<title>REXX to CICS Interface for OS/2 (M1)</title>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="../../template.css" TITLE="onlinebook">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="0000FF" alink="800080" vlink="800080">
+<h2>REXX to CICS Interface for OS/2 (M1)</h2>
+<p>This product is located on Member Disc 1.<br>
+<br>
+<!--<P>
+<BIG><b>CA31: A REXX to CICS for OS/2 Interface (RxCICS)</b></BIG>
+<BR>
+Version: CA31
+<P>
+<b>Platform:</b> OS/2-->
+<P>
+CICS for OS/2 provides an excellent capability to connect personal work stations to CICS hosts thereby allowing workstation programs to link to host programs and to access host data through the distributed program link (DPL). However, traditional CICS for OS/2 programs are bound to a 3270-terminal-type interface i.e. they are not able to directly use the graphical features available on an OS/2 workstation.
+<P>
+The External Call Interface (ECI) provided with CICS for OS/2 and CICS Client for OS/2 and the External Transaction Initiation (ETI) provided with CICS for OS/2 allow access to CICS facilities and data from non-CICS applications running either under OS/2 in the same workstation as the CICS for OS/2 system or
+(for ECI) on a client in a CICS for OS/2 client/server configuration. It is therefore possible to develop graphical user interface (GUI) front ends for CICS applications using OS/2 Presentation Manager or other presentation systems.
+<P>
+Before the functionality provided by the ECI facility can be used it is necessary to write a native OS/2 application for this pupose. This can involve a certain amount of learning time depending upon the experience of the programmer and the tools used to build the application.
+<P>
+REXX, on the other hand, is a language which allows for easy and highly efficient programming. A particularly useful feature is the ability to execute any OS/2 program as an external command. This allows for the fast prototyping of relatively complex applications within a short period of time. In addition, the native function set of REXX can be extended through the concept of external functions. Thus, even though REXX has no native PM interface, there are several products and tools available (Hockware's VISPRO/REXX, Watcoms Visual REXX, VREXX2 (an EWS package) and DRREXX from the DRIALOG package on OS2TOOLS)
+which extend the REXX language to include PM programming features.
+<P>
+Prior to CICS Client for OS/2 V1.1, however, there was no REXX interface to ECI for OS/2 and there remains no REXX interface to the ETI. The ability to provide the combination of REXX programming with easy access to host data would therefore be an attractive feature in many network environments consisting of personal workstations connected to CICS hosts.
+<P>
+This SupportPac provides this capability via a Dynamic Link Library (RxECI) which can be accessed from REXX as an external function. This DLL can be used from both a CICS OS/2 client and a CICS for OS/2 server. The additional ETI interface feature can be used from a server only, and is provided in the DLL RxETI. A prototype DLL (RXEPI.DLL) for the EPI interface is also provided.
+<P>
+Systems Specialists providing the service of prototyping an application using RxCICS should be skilled to specialist level in CICS - CICS for OS/2 and be familiar with REXX programming.
+<P>
+<BIG><b>Web Sites:</b></BIG>
+<UL>
+<LI> <A HREF="http://www.hursley.ibm.com/cics/txppacs/ca31.html">www.hursley.ibm.com/cics/txppacs/ca31.html</A>
+<LI> <A HREF="http://www.hursley.ibm.com/cics/txppacs/txpc1.html">www.hursley.ibm.com/cics/txppacs/txpc1.html</A>
+</UL>
+<P>
+
+<BIG><b>Further Details on CA31:</b></BIG>
+<P>
+It is envisaged that RxCICS can be used to undertake fast prototyping of an
+application to demonstrate how CICS for OS/2 can be used to provide a solution
+to a particular business problem.
+<UL>
+<LI>RxCICS requires OS/2 REXX to be installed in addition to CICS for OS/2 Version 2.0 or later or CICS Client for OS/2.
+<LI>When installed on a CICS for OS/2 Version 2.0.1 system, Corrective Service Disk 5 must be installed for REXX ECI calls to work correctly on the CICS for OS/2 Server (REXX ECI calls from a CICS for OS/2 distributed client or CICS Client for OS/2 are not affected).
+<LI>A REXX ECI interface, with samples and based on this SupportPac, was introduced into the CICS Client for OS/2 at Version 1.1 and later. The calling convention is different between the two versions and thus you will need to modify both sets of samples if you want to use them in conjunction with the other ECI interface.
+<LI>The ETI interface was not ported but will work with either CICS for OS/2 V2 or Transaction Server for OS/2.
+</UL>
+<H2>Installation Instructions</H2>
+
+<!-- cd start -->
+
+<H3>To Install from the CD:</H3>
+
+<OL>
+<LI>Recursively copy the contents of \ca31 on the CD to your hard drive.
+</LI>
+<LI>Refer to \ca31\readme for more information.
+</LI>
+
+</OL>
+
+<!-- cd end -->
+
+
+
+
+
+<p>
+<b>Related Information:</b>
+<ul>
+<li><a target="_self" href="ca02.htm">CICS Bitmap and Icon Files (M4)</a></li>
+<li><a target="_self" href="ca50.htm">CICS Client for OS/2 - Native OS/2 ECI Samples (M4)</a></li>
+<li><a target="_self" href="ca51.htm">CICS Client for OS/2 - OS/2 PM ECI Samples (M4)</a></li>
+<li><a target="_self" href="ca81.htm">CICS Client for OS/2 CGI Samples (M4)</a></li>
+<li><a target="_self" href="cicscos2.htm">CICS Client for OS/2 V2.0.4 (P1)</a></li>
+<li><a target="_self" href="ts4os2.htm">CICS Transaction Server for OS/2 Warp, V4.1 (P1)</a></li>
+</ul>
+</body>
+</html>

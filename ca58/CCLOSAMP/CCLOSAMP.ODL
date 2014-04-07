@@ -1,0 +1,45 @@
+// cclosamp.odl : type library source for cclosamp.exe
+
+// This file will be processed by the Make Type Library (mktyplib) tool to
+// produce the type library (cclosamp.tlb).
+
+[ uuid(427208B3-5754-11D0-9DF8-0004AC3638DC), version(1.0) ]
+library Cclosamp
+{
+	importlib("stdole32.tlb");
+	
+
+	//  Primary dispatch interface for CcloSamp
+	
+	[ uuid(427208B8-5754-11D0-9DF8-0004AC3638DC), hidden ]
+	dispinterface IcloSamp
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CcloSamp)
+			//}}AFX_ODL_PROP
+			
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CcloSamp)
+			[id(1)] void SetServer(BSTR server, BSTR userid, BSTR password);
+			[id(2)] BSTR GetInfo();
+			[id(3)] BSTR GetServerName(short index);
+			[id(4)] BSTR GetServerDesc(short index);
+			[id(5)] DATE GetDate();
+			//}}AFX_ODL_METHOD
+
+	};
+
+	//  Class information for CcloSamp
+
+	[ uuid(427208B9-5754-11D0-9DF8-0004AC3638DC) ]
+	coclass Sample
+	{
+		[default] dispinterface IcloSamp;
+	};
+
+	//{{AFX_APPEND_ODL}}
+};

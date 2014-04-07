@@ -1,0 +1,30 @@
+
+
+A Java stored procedure is defined in the database using the following statement: 
+   CREATE PROCEDURE PARTS_ON_HAND (IN  PARTNUM  INTEGER, 
+                                  OUT COST     DECIMAL(7,2), 
+                                  OUT QUANTITY INTEGER)
+                    EXTERNAL NAME 'parts!onhand' 
+                    LANGUAGE JAVA PARAMETER STYLE DB2GENERAL;
+A Java application calls this stored procedure using the following code fragment: 
+  ... 
+  CallableStatement stpCall ;
+ 
+  String sql = "CALL PARTS_ON_HAND ( ?,?,? )" ;
+ 
+  stpCall = con.prepareCall( sql ) ; /* con is the connection */
+ 
+  stpCall.setInt( 1, variable1 ) ;
+  stpCall.setBigDecimal( 2, variable2 ) ;
+  stpCall.setInt( 3, variable3 ) ;
+ 
+  stpCall.registerOutParameter( 2, Types.DECIMAL, 2 ) ;
+  stpCall.registerOutParameter( 3, Types.INTEGER ) ;
+ 
+  stpCall.execute() ;
+ 
+  variable2 = stpCall.getBigDecimal(2) ;
+  variable3 = stpCall.getInt(3) ;
+  ...  
+This application code fragment will invoke the Java method onhand in class parts since the procedure-name specified on the CALL statement is found in the database and has the external name 'parts!onhand'. 
+

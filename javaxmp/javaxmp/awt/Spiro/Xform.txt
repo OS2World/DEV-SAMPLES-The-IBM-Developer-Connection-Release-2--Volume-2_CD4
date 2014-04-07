@@ -1,0 +1,46 @@
+1 0 0
+0 1 0
+0 0 1
+
+m10 double
+m11 double
+m12 double
+m20 double
+m21 double
+m22 double
+m30 int
+m31 int
+m32 int
+
+[x,y,1] * M
+
+ x` = x * m10 + y * m11 + 1 * m12
+ y` = x * m20 + y * m21 + 1 * m22
+ 1' = 1 * 0   + 1 * 0   + 1 * 1
+
+
+Translation
+
+m30 is the x amount to add.
+m31 is the y amount to add.
+
+[10,10,1] 1  0 1           x` = 10 * 1 + 10 * 0 + 10 = 20 ;
+          0  1 0           y` = 10 * 0 + 10 * 1 + 50 = 60 ;
+         10 50 1
+
+
+
+
+Scale
+
+m10 is the x multiplier.
+m21 is the y multiplier.
+
+[10,10,1]  10  0 0         x` = 10 * 10 + 10 *  0 + 0 = 100 ;
+            0 50 0         y` = 10 *  0 + 10 * 50 + 0 = 500 ;
+            0  0 1
+
+
+Rotation
+
+Shear

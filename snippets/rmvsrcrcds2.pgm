@@ -1,0 +1,101 @@
+/*   LICENSE AND DISCLAIMER                                            */
+/*   ----------------------                                            */
+/*   This material contains IBM copyrighted sample programming source   */
+/*   code.  IBM grants you a nonexclusive license to use, execute,      */
+/*   display, reproduce, distribute and prepare derivative works of     */
+/*   this sample code.  The sample code has not been thoroughly tested  */
+/*   under all conditions.  IBM, therefore, does not warrant or         */
+/*   guarantee its reliability, serviceablity, or function.  All        */
+/*   sample code contained herein is provided to you "AS IS." ALL       */
+/*   IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED       */
+/*   WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR        */
+/*   PURPOSE, ARE EXPRESSLY DISCLAIMED.                                 */
+/*                                                                      */
+/*   COPYRIGHT                                                          */
+/*   ---------                                                          */
+/*   (C) Copyright IBM CORP. 1996, 1997                                 */
+/*   All rights reserved.                                               */
+/*   US Government Users Restricted Rights -                            */
+/*   Use, duplication or disclosure restricted                          */
+/*   by GSA ADP Schedule Contract with IBM Corp.                        */
+/*   Licensed Material - Property of IBM                                */
+/*                                                                      */
+/*   COMMENTS/QUESTIONS                                                 */
+/*   ------------------                                                 */
+/*   Please send comments or questions via e-mail to Mel Rothman        */
+/*   at mrothman@vnet.ibm.com                                           */
+/*                                                                      */
+/*   THIS FILE AVAILABLE FROM:                                          */
+/*   ------------------------                                           */
+/*   AS/400 Web Builder's Workshop's Snippets Page                     */
+/*   http://205.217.130.15/workshop/snippets/snippets.htm               */
+/*   It is included in SAVF CGIDEVD (identified as                      */
+/*   SAVEFILE OF CGIDEV LIBRARY)                                        */
+             PGM (&QUALFILE &MBR &FROMCOL &TOCOL &STRING)
+             DCL        VAR(&QUALFILE) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&FILE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MBR) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&FROMCOL) TYPE(*DEC) LEN(3)
+             DCL        VAR(&TOCOL) TYPE(*DEC) LEN(3)
+             DCL        VAR(&STRING) TYPE(*CHAR) LEN(80)
+/* THE FOLLOWING VARIABLES ARE USED FOR BUBBLING MESSAGES UP TO THIS */
+/* PROGRAM'S REQEUESTER.                                             */
+             DCL        VAR(&MSGKEY) TYPE(*CHAR) LEN(4) VALUE('    +
+                          ') /* Message key.  Blank means, move +
+                          messages by message type rather than +
+                          message key. */
+             DCL        VAR(&MSGTYPES) TYPE(*CHAR) LEN(30) +
+                          VALUE('*COMP     *DIAG     *INFO     ') +
+                          /* Types of messages to move. */
+             DCL        VAR(&NBRTYPESD) TYPE(*DEC) LEN(5) VALUE(3) +
+                          /* Number of message types (decimal +
+                          format) */
+             DCL        VAR(&NBRTYPESB) TYPE(*CHAR) LEN(4) /* Number +
+                          of message types, binary format */
+             DCL        VAR(&PGMMSGQ) TYPE(*CHAR) LEN(10) VALUE(*) +
+                          /* Starting program message queue (this +
+                          program) */
+             DCL        VAR(&PGMSTACKD) TYPE(*DEC) LEN(5) VALUE(1) +
+                          /* Where to send messages relative to +
+                          this program's message queue (decimal +
+                          format).  1 means send to this program's +
+                          requester. */
+             DCL        VAR(&PGMSTACKB) TYPE(*CHAR) LEN(4) /* Binary +
+                          format for previous variable, &PGMSTACKD. */
+             DCL        VAR(&ERROR) TYPE(*CHAR) LEN(16) +
+                          VALUE(X'00000010000000004040404040404000') +
+                          /* Place for APIs to place error +
+                          information. */
+/* MSGID EXTRACTED FROM &ERROR */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7) /* Message +
+                          ID, extracted from &ERROR */
+             MONMSG     MSGID(CPF4168 CPF5143) EXEC(GOTO +
+                          CMDLBL(SIGNOFF)) /* Error on device */
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERROR))
+/* MAINLINE PROGRAM STARTS HERE */
+             CHGVAR     VAR(&FILE) VALUE(%SST(&QUALFILE 1 10))
+             CHGVAR     VAR(&LIB) VALUE(%SST(&QUALFILE 11 10))
+             CHKOBJ     OBJ(&LIB/&FILE) OBJTYPE(*FILE) MBR(&MBR) +
+                          AUT(*CHANGE)
+             OVRDBF     FILE(SOURCEFILE) TOFILE(&LIB/&FILE) MBR(&MBR)
+             CALL       PGM(RMVSRCRPG) PARM(&FROMCOL &TOCOL &STRING)
+/* MAINLINE PROGRAM ENDS HERE */
+             RETURN
+ ERROR:      CHGVAR     VAR(%BIN(&NBRTYPESB)) VALUE(&NBRTYPESD)
+             CHGVAR     VAR(%BIN(&PGMSTACKB)) VALUE(&PGMSTACKD)
+             CALL       PGM(QMHMOVPM) PARM(&MSGKEY &MSGTYPES +
+                          &NBRTYPESB &PGMMSGQ &PGMSTACKB &ERROR)
+             CHGVAR     VAR(&MSGID) VALUE(%SST(&ERROR 9 7))
+             IF         COND(&MSGID *NE ' ') THEN(GOTO +
+                          CMDLBL(APIERROR))
+             CALL       PGM(QMHRSNEM) PARM(&MSGKEY &ERROR)
+             CHGVAR     VAR(&MSGID) VALUE(%SST(&ERROR 9 7))
+             IF         COND(&MSGID *NE ' ') THEN(GOTO +
+                          CMDLBL(APIERROR))
+ SIGNOFF:    SIGNOFF    LOG(*LIST)
+             RETURN
+ APIERROR:   SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Call to +
+                          a system message handling API failed.  +
+                          See previous messages') MSGTYPE(*ESCAPE)
+             ENDPGM

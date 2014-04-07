@@ -1,0 +1,2 @@
+- Copy both test.html and TestApplet.class to X:\inetpub\wwwroot
+- Copy IOStreamServlet to Web server's Servlet subdirectory

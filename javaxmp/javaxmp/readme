@@ -1,0 +1,40 @@
+TITLE
+Java Example Code
+
+DESCRIPTION
+Illustrates principles of Java Abstract Window Toolkit and Java Foundation
+Classes programming. Used as a teaching aid to accompany seminars and
+presentations given by Kelvin Lawrence and Dan Becker.
+
+AUTHORS
+Kelvin R. Lawrence, Daniel O. Becker
+
+INFORMATION
+These samples are provided as is as a learning tool only.They reflect the
+work I have done to teach myself and others the Java programming language
+and are in no way intended to be used in any way other than as an aid to
+learning the Java programming language.
+
+No support or warranty is implied or available.
+
+When you unzip the file "javaxmp.zip" the following directory structure
+is created:
+
+  awt       -  AWT specific samples.
+  images    -  Icons used by some samples
+  jfc       -  Java Foundation Class (JFC) specific samples.
+  lang      -  Language package related programs
+  misc      -  Miscellaneous (non sample) stuff.
+  network   -  Network specific samples.
+  util      -  Utility class samples.
+
+Please see the file readme in the images directory for specific information
+relative to the icons in that directory.
+
+Please send comments or questions to my e-mail ID, klawrenc@us.ibm.com
+or beckerdo@us.ibm.com.
+
+Thanks,
+Kelvin R. Lawrence Nov 17th, 1997
+Dan Becker April 3rd, 1998
+

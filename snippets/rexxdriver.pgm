@@ -1,0 +1,39 @@
+/*   LICENSE AND DISCLAIMER                                            */
+/*   ----------------------                                            */
+/*   This material contains IBM copyrighted sample programming source   */
+/*   code.  IBM grants you a nonexclusive license to use, execute,      */
+/*   display, reproduce, distribute and prepare derivative works of     */
+/*   this sample code.  The sample code has not been thoroughly tested  */
+/*   under all conditions.  IBM, therefore, does not warrant or         */
+/*   guarantee its reliability, serviceablity, or function.  All        */
+/*   sample code contained herein is provided to you "AS IS." ALL       */
+/*   IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED       */
+/*   WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR        */
+/*   PURPOSE, ARE EXPRESSLY DISCLAIMED.                                 */
+/*                                                                      */
+/*   COPYRIGHT                                                          */
+/*   ---------                                                          */
+/*   (C) Copyright IBM CORP. 1996, 1997                                 */
+/*   All rights reserved.                                               */
+/*   US Government Users Restricted Rights -                            */
+/*   Use, duplication or disclosure restricted                          */
+/*   by GSA ADP Schedule Contract with IBM Corp.                        */
+/*   Licensed Material - Property of IBM                                */
+/*                                                                      */
+/*   COMMENTS/QUESTIONS                                                 */
+/*   ------------------                                                 */
+/*   Please send comments or questions via e-mail to Mel Rothman        */
+/*   at mrothman@vnet.ibm.com                                           */
+/*                                                                      */
+/*   THIS FILE AVAILABLE FROM:                                          */
+/*   ------------------------                                           */
+/*   AS/400 Web Builder's Workshop's Snippets Page                     */
+/*   http://205.217.130.15/workshop/snippets/snippets.htm               */
+/*   It is included in SAVF CGIDEVD (identified as                      */
+/*   SAVEFILE OF CGIDEV LIBRARY)                                        */
+             PGM        PARM(&REXXPROC)
+             DCL        VAR(&REXXPROC) TYPE(*CHAR) LEN(10)
+/* Run REXX Procedure */
+             STRREXPRC  SRCMBR(&REXXPROC)
+             MONMSG     MSGID(CPF0000) /* Ignore any errors */
+             ENDPGM

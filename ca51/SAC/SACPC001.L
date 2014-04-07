@@ -1,0 +1,6 @@
+SACPC001.Obj
+SACPC001.Exe
+SACPC001.Map /NOD /CO
+os2 + llibce + CCLOS2
+SACPC001.Def
+

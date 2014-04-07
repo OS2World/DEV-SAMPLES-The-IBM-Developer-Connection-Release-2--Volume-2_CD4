@@ -1,0 +1,141 @@
+<!************** CICS Client Classes ******************************************
+//
+// FILE NAME:    ECIVBS.HTM
+//
+// DESCRIPTION:  OO CICS Client sample, HTML with VBScript
+//
+// (C) Copyright International Business Machines Corp. 1995,1996
+//                                                                    
+// This is an example application which demonstrates how to use the OO CICS
+// Client External Call Interface (ECI). It is intended for use with Microsoft
+// Internet Explorer on Windows 95 and Windows NT.
+//                                                                    
+// It does not demonstrate all the techniques required for a large application.
+// It is not a template and should not be used as the foundation for your next
+// next mission critical application.      
+//                                                                    
+//*****************************************************************************
+!>
+<HTML>
+<HEAD>
+<title>
+CICS OO ECI with ActiveX/VBScript
+</title>
+</HEAD>
+<BODY>
+<h1>
+CICS OO ECI with ActiveX/VBScript
+</h1><br><br>
+<p>Requires Microsoft Internet Explorer V3.0 or later and CICS Client V2.0 
+(with beta, available from the CICS home page) or later
+installed on the client machine
+<p>Microsoft ActiveX Contol Pad was used to add the active content to this page,
+available from the Microsoft Home page.
+<p>You may need to adjust your security options to allow the loading of the
+CICS OLE objects.
+<br><br><hr>
+    <OBJECT ID="cmdList" WIDTH=96 HEIGHT=32
+     CLASSID="CLSID:D7053240-CE69-11CD-A777-00DD01143C57">
+        <PARAM NAME="Caption" VALUE="List Servers">
+        <PARAM NAME="Size" VALUE="2540;847">
+        <PARAM NAME="FontCharSet" VALUE="0">
+        <PARAM NAME="FontPitchAndFamily" VALUE="2">
+        <PARAM NAME="ParagraphAlign" VALUE="3">
+    </OBJECT>
+<br><br>
+    <OBJECT ID="lstServers" WIDTH=387 HEIGHT=75
+     CLASSID="CLSID:8BD21D20-EC42-11CE-9E0D-00AA006002F3">
+        <PARAM NAME="ScrollBars" VALUE="3">
+        <PARAM NAME="DisplayStyle" VALUE="2">
+        <PARAM NAME="Size" VALUE="10231;1976">
+        <PARAM NAME="MatchEntry" VALUE="0">
+        <PARAM NAME="FontName" VALUE="Courier New">
+        <PARAM NAME="FontCharSet" VALUE="0">
+        <PARAM NAME="FontPitchAndFamily" VALUE="2">
+    </OBJECT>
+<br><br>
+    <SCRIPT LANGUAGE="VBScript">
+<!--
+Sub cmdList_Click()
+call lstServers.Clear()
+count = myECI.ServerCount()
+lblStatus.Caption = CStr(count)
+for i = 1 to count
+   name=myECI.ServerName(i)
+   sl = len(name)
+   sp = space(20-sl)
+   call lstServers.AddItem(name & sp & myECI.ServerDesc(i))
+next
+cmdConnect.Enabled = True
+cmdList.Enabled = False
+lstServers.Selected(0) = True
+end sub
+-->
+    </SCRIPT>
+    <SCRIPT LANGUAGE="VBScript">
+<!--
+Sub cmdConnect_Click()
+cclSync = 0
+cclAvail = 1
+selno = lstServers.ListCount()
+if selno = -1 then
+   lblStatus.Caption = "No Server selected - try again"
+else
+   for i = 0 to selno -1
+      if lstServers.Selected(i) = True then
+         serverSelected = Trim(Left(lstServers.List(i),20))
+      end if
+   next
+   lblStatus.Caption = serverSelected
+   call myConn.Details(serverSelected, "SYSAD", "SYSAD")
+   call myFlow.SetSyncType(cclSync) 
+   myConn.Status(myFlow)
+   lblStatus.Caption = myConn.ServerStatusText()
+end if
+
+end sub
+-->
+    </SCRIPT>
+    <OBJECT ID="cmdConnect" WIDTH=96 HEIGHT=32
+     CLASSID="CLSID:D7053240-CE69-11CD-A777-00DD01143C57">
+        <PARAM NAME="VariousPropertyBits" VALUE="25">
+        <PARAM NAME="Caption" VALUE="Status">
+        <PARAM NAME="Size" VALUE="2540;847">
+        <PARAM NAME="FontEffects" VALUE="1073750016">
+        <PARAM NAME="FontCharSet" VALUE="0">
+        <PARAM NAME="FontPitchAndFamily" VALUE="2">
+        <PARAM NAME="ParagraphAlign" VALUE="3">
+    </OBJECT>
+    <SCRIPT LANGUAGE="VBScript">
+<!--
+Sub lstServers_Click()
+lblStatus.Caption = "Click on 'Status'"
+end sub
+-->
+    </SCRIPT>
+
+<OBJECT ID="lblSpacer" WIDTH=39 HEIGHT=24
+ CLASSID="CLSID:978C9E23-D4B0-11CE-BF2D-00AA003F40D0">
+    <PARAM NAME="Size" VALUE="1000;635">
+    <PARAM NAME="FontCharSet" VALUE="0">
+    <PARAM NAME="FontPitchAndFamily" VALUE="2">
+</OBJECT>
+    <OBJECT ID="lblStatus" WIDTH=445 HEIGHT=27
+ CLASSID="CLSID:978C9E23-D4B0-11CE-BF2D-00AA003F40D0">
+    <PARAM NAME="Size" VALUE="11783;706">
+    <PARAM NAME="FontName" VALUE="Courier New">
+    <PARAM NAME="FontHeight" VALUE="200">
+    <PARAM NAME="FontCharSet" VALUE="0">
+    <PARAM NAME="FontPitchAndFamily" VALUE="2">
+</OBJECT>
+    <OBJECT ID="myECI"
+     CLASSID="CLSID:1B7203EE-66CD-11CF-AD44-08005AE45CA1">
+    </OBJECT>
+    <OBJECT ID="myFlow"
+     CLASSID="CLSID:1B7203F1-66CD-11CF-AD44-08005AE45CA1">
+    </OBJECT>
+    <OBJECT ID="myConn"
+     CLASSID="CLSID:1B7203EB-66CD-11CF-AD44-08005AE45CA1">
+    </OBJECT>
+</HTML>
+</BODY>

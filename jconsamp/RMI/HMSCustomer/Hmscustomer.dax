@@ -1,0 +1,202 @@
+DAX103 GA 1.0
+SE 22: 1 0 D:\AdvJava\Eab\Dax
+DB 7: 1 HMS 1
+TBL 38: 1 27: 1 HMSCUSTOMER MNIX HMS 1 0: 0: 0
+COL 34: 1 CUSTOMER_ID 0: 7: 1 10 0: 20 0 N
+COL 33: 1 FIRST_NAME 0: 7: 1 10 0: 40 0 Y
+COL 24: 1 MI 0: 7: 1 10 0: 2 0 Y
+COL 32: 1 LAST_NAME 0: 7: 1 10 0: 40 0 Y
+COL 32: 1 ADDRESS1 0: 7: 1 10 0: 100 0 Y
+COL 32: 1 ADDRESS2 0: 7: 1 10 0: 100 0 Y
+COL 27: 1 CITY 0: 7: 1 10 0: 50 0 Y
+COL 28: 1 STATE 0: 7: 1 10 0: 20 0 Y
+COL 33: 1 POSTALCODE 0: 7: 1 10 0: 10 0 Y
+COL 28: 1 PHONE 0: 7: 1 10 0: 20 0 Y
+PKEY 15: 1 1 CUSTOMER_ID
+CLS 265: 1 Hmscustomer Hmscusto Hmscustomer 1 0 1 0: 0 0: 0 0: 27: 1 HMSCUSTOMER MNIX HMS 1 0: 1 4 4 1 jdbc:db2:HMS COM.ibm.db2.jdbc.app.DB2Driver 0 106: Copyright IBM, 1997
+Hotel Management Server demonstration for Advanced Java Topics
+Owner:  Mickey Nix, SDM Hmscustomer 1
+ATTR 85: 1 CUSTOMER_ID customer_id 1 String 1 1 2 40: This attribute is mapped to CUSTOMER_ID.
+ATTR 82: 1 FIRST_NAME first_name 1 String 1 0 2 39: This attribute is mapped to FIRST_NAME.
+ATTR 58: 1 MI mi 1 String 1 0 2 31: This attribute is mapped to MI.
+ATTR 79: 1 LAST_NAME last_name 1 String 1 0 2 38: This attribute is mapped to LAST_NAME.
+ATTR 76: 1 ADDRESS1 address1 1 String 1 0 2 37: This attribute is mapped to ADDRESS1.
+ATTR 76: 1 ADDRESS2 address2 1 String 1 0 2 37: This attribute is mapped to ADDRESS2.
+ATTR 64: 1 CITY city 1 String 1 0 2 33: This attribute is mapped to CITY.
+ATTR 67: 1 STATE state 1 String 1 0 2 34: This attribute is mapped to STATE.
+ATTR 82: 1 POSTALCODE postalcode 1 String 1 0 2 39: This attribute is mapped to POSTALCODE.
+ATTR 67: 1 PHONE phone 1 String 1 0 2 34: This attribute is mapped to PHONE.
+UDM 964: 1 retrieve 1 1 0 33: Retrieve a row from the database. 10 10
+ 243: SELECT
+            FIRST_NAME,
+            MI,
+            LAST_NAME,
+            ADDRESS1,
+            ADDRESS2,
+            CITY,
+            STATE,
+            POSTALCODE,
+            PHONE
+      FROM %QUAL%HMSCUSTOMER WHERE CUSTOMER_ID = ?
+ 33: 1 param1 7: 1 10 0: 20 0 N 1 0: 0
+ 33: 1 param2 7: 1 10 0: 40 0 Y 5 0: 0
+ 32: 1 param3 7: 1 10 0: 2 0 Y 5 0: 0
+ 33: 1 param4 7: 1 10 0: 40 0 Y 5 0: 0
+ 34: 1 param5 7: 1 10 0: 100 0 Y 5 0: 0
+ 34: 1 param6 7: 1 10 0: 100 0 Y 5 0: 0
+ 33: 1 param7 7: 1 10 0: 50 0 Y 5 0: 0
+ 33: 1 param8 7: 1 10 0: 20 0 Y 5 0: 0
+ 33: 1 param9 7: 1 10 0: 10 0 Y 5 0: 0
+ 34: 1 param10 7: 1 10 0: 20 0 Y 5 0: 0
+ 24: 1 customer_id String 1 2
+ 23: 1 first_name String 5 2
+ 15: 1 mi String 5 2
+ 22: 1 last_name String 5 2
+ 21: 1 address1 String 5 2
+ 21: 1 address2 String 5 2
+ 17: 1 city String 5 2
+ 18: 1 state String 5 2
+ 23: 1 postalcode String 5 2
+ 18: 1 phone String 5 2
+UDM 1223: 1 add 1 1 0 26: Add a row to the database. 10 10
+ 514: INSERT INTO %QUAL%HMSCUSTOMER (
+                  CUSTOMER_ID,
+                  FIRST_NAME,
+                  MI,
+                  LAST_NAME,
+                  ADDRESS1,
+                  ADDRESS2,
+                  CITY,
+                  STATE,
+                  POSTALCODE,
+                  PHONE )
+          VALUES (?,
+                  ?,
+                  ?,
+                  ?,
+                  ?,
+                  ?,
+                  ?,
+                  ?,
+                  ?,
+                  ?)
+ 33: 1 param1 7: 1 10 0: 20 0 N 1 0: 0
+ 33: 1 param2 7: 1 10 0: 40 0 Y 1 0: 0
+ 32: 1 param3 7: 1 10 0: 2 0 Y 1 0: 0
+ 33: 1 param4 7: 1 10 0: 40 0 Y 1 0: 0
+ 34: 1 param5 7: 1 10 0: 100 0 Y 1 0: 0
+ 34: 1 param6 7: 1 10 0: 100 0 Y 1 0: 0
+ 33: 1 param7 7: 1 10 0: 50 0 Y 1 0: 0
+ 33: 1 param8 7: 1 10 0: 20 0 Y 1 0: 0
+ 33: 1 param9 7: 1 10 0: 10 0 Y 1 0: 0
+ 34: 1 param10 7: 1 10 0: 20 0 Y 1 0: 0
+ 24: 1 customer_id String 1 2
+ 23: 1 first_name String 1 2
+ 15: 1 mi String 1 2
+ 22: 1 last_name String 1 2
+ 21: 1 address1 String 1 2
+ 21: 1 address2 String 1 2
+ 17: 1 city String 1 2
+ 18: 1 state String 1 2
+ 23: 1 postalcode String 1 2
+ 18: 1 phone String 1 2
+UDM 180: 1 delete 1 1 0 31: Delete a row from the database. 1 1
+ 51: DELETE FROM %QUAL%HMSCUSTOMER WHERE CUSTOMER_ID = ?
+ 33: 1 param1 7: 1 10 0: 20 0 N 1 0: 0
+ 24: 1 customer_id String 1 2
+UDM 772: 1 addHMSCustomer 1 0 1 28: This method is user defined. 10 10
+ 51: INSERT INTO Hmscustomer VALUES(?,?,?,?,?,?,?,?,?,?)
+ 33: 1 param1 7: 1 10 0: 20 0 N 1 0: 0
+ 33: 1 param2 7: 1 10 0: 40 0 N 1 0: 0
+ 32: 1 param3 7: 1 10 0: 2 0 N 1 0: 0
+ 33: 1 param4 7: 1 10 0: 40 0 N 1 0: 0
+ 34: 1 param5 7: 1 10 0: 100 0 N 1 0: 0
+ 34: 1 param6 7: 1 10 0: 100 0 N 1 0: 0
+ 33: 1 param7 7: 1 10 0: 50 0 N 1 0: 0
+ 33: 1 param8 7: 1 10 0: 20 0 N 1 0: 0
+ 33: 1 param9 7: 1 10 0: 10 0 N 1 0: 0
+ 34: 1 param10 7: 1 10 0: 20 0 N 1 0: 0
+ 24: 1 customer_id String 1 1
+ 23: 1 first_name String 1 1
+ 15: 1 mi String 1 1
+ 22: 1 last_name String 1 1
+ 21: 1 address1 String 1 1
+ 21: 1 address2 String 1 1
+ 17: 1 city String 1 1
+ 18: 1 state String 1 1
+ 23: 1 postalcode String 1 1
+ 18: 1 phone String 1 1
+UDM 92: 1 deleteAllCustomers 1 0 1 28: This method is user defined. 0 0
+ 23: DELETE FROM Hmscustomer
+UDM 185: 1 deleteCustomerWithId 1 0 1 28: This method is user defined. 1 1
+ 45: DELETE FROM Hmscustomer WHERE CUSTOMER_ID = ?
+ 33: 1 param1 7: 1 10 0: 20 0 N 1 0: 0
+ 24: 1 customer_id String 1 1
+UDM 838: 1 getCustomerWithId 1 0 1 28: This method is user defined. 11 11
+ 47: SELECT * FROM Hmscustomer WHERE CUSTOMER_ID = ?
+ 33: 1 param1 7: 1 10 0: 20 0 N 1 0: 0
+ 34: 1 result1 7: 1 10 0: 20 0 N 5 0: 0
+ 34: 1 result2 7: 1 10 0: 40 0 Y 5 0: 0
+ 28: 1 MI 7: 1 10 0: 2 0 Y 5 0: 0
+ 34: 1 result4 7: 1 10 0: 40 0 Y 5 0: 0
+ 36: 1 ADDRESS1 7: 1 10 0: 100 0 Y 5 0: 0
+ 36: 1 ADDRESS2 7: 1 10 0: 100 0 Y 5 0: 0
+ 31: 1 CITY 7: 1 10 0: 50 0 Y 5 0: 0
+ 32: 1 STATE 7: 1 10 0: 20 0 Y 5 0: 0
+ 37: 1 POSTALCODE 7: 1 10 0: 10 0 Y 5 0: 0
+ 32: 1 PHONE 7: 1 10 0: 20 0 Y 5 0: 0
+ 20: 1 cust_id String 1 1
+ 24: 1 CUSTOMER_ID String 5 1
+ 23: 1 FIRST_NAME String 5 1
+ 15: 1 MI String 5 1
+ 22: 1 LAST_NAME String 5 1
+ 21: 1 ADDRESS1 String 5 1
+ 21: 1 ADDRESS2 String 5 1
+ 17: 1 CITY String 5 1
+ 18: 1 STATE String 5 1
+ 23: 1 POSTALCODE String 5 1
+ 18: 1 PHONE String 5 1
+UDM 887: 1 updateCustomerWithId 1 0 1 28: This method is user defined. 10 10
+ 159: UPDATE Hmscustomer SET FIRST_NAME = ?, MI = ?, LAST_NAME = ?, ADDRESS1 = ?, ADDRESS2 = ?, CITY = ?, STATE = ?,  POSTALCODE = ?, PHONE = ? WHERE CUSTOMER_ID = ?
+ 33: 1 param1 7: 1 10 0: 40 0 N 1 0: 0
+ 32: 1 param2 7: 1 10 0: 2 0 N 1 0: 0
+ 33: 1 param3 7: 1 10 0: 40 0 N 1 0: 0
+ 34: 1 param4 7: 1 10 0: 100 0 N 1 0: 0
+ 34: 1 param5 7: 1 10 0: 100 0 N 1 0: 0
+ 33: 1 param6 7: 1 10 0: 50 0 N 1 0: 0
+ 33: 1 param7 7: 1 10 0: 20 0 N 1 0: 0
+ 33: 1 param8 7: 1 10 0: 10 0 N 1 0: 0
+ 33: 1 param9 7: 1 10 0: 20 0 N 1 0: 0
+ 34: 1 param10 7: 1 10 0: 20 0 N 1 0: 0
+ 23: 1 first_name String 1 1
+ 15: 1 mi String 1 1
+ 22: 1 last_name String 1 1
+ 21: 1 address1 String 1 1
+ 21: 1 address2 String 1 1
+ 17: 1 city String 1 1
+ 18: 1 state String 1 1
+ 23: 1 postalcode String 1 1
+ 18: 1 phone String 1 1
+ 24: 1 customer_id String 1 1
+UDM 749: 1 getAllCustomers 1 0 1 28: This method is user defined. 10 10
+ 25: SELECT * FROM Hmscustomer
+ 34: 1 result1 7: 1 10 0: 20 0 N 5 0: 0
+ 34: 1 result2 7: 1 10 0: 40 0 Y 5 0: 0
+ 28: 1 MI 7: 1 10 0: 2 0 Y 5 0: 0
+ 34: 1 result4 7: 1 10 0: 40 0 Y 5 0: 0
+ 36: 1 ADDRESS1 7: 1 10 0: 100 0 Y 5 0: 0
+ 36: 1 ADDRESS2 7: 1 10 0: 100 0 Y 5 0: 0
+ 31: 1 CITY 7: 1 10 0: 50 0 Y 5 0: 0
+ 32: 1 STATE 7: 1 10 0: 20 0 Y 5 0: 0
+ 37: 1 POSTALCODE 7: 1 10 0: 10 0 Y 5 0: 0
+ 32: 1 PHONE 7: 1 10 0: 20 0 Y 5 0: 0
+ 24: 1 CUSTOMER_ID String 5 1
+ 23: 1 FIRST_NAME String 5 1
+ 15: 1 MI String 5 1
+ 22: 1 LAST_NAME String 5 1
+ 21: 1 ADDRESS1 String 5 1
+ 21: 1 ADDRESS2 String 5 1
+ 17: 1 CITY String 5 1
+ 18: 1 STATE String 5 1
+ 23: 1 POSTALCODE String 5 1
+ 18: 1 PHONE String 5 1

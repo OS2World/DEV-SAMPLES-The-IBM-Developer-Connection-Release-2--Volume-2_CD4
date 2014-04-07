@@ -1,0 +1,522 @@
+/*
+<br>
+<head>
+<title>Sockets client and a server that uses Threads, Spawn, Fork or inline processing of requests</title>
+</head>
+
+
+<h1>Sockets client and a server that uses Threads, Spawn, Fork or inline processing of requests</h1>
+
+<h2>Description</h2>
+<p>This example provides a simple sockets client and server program. The server program (SOCKSRV) provided here is a single source/multiple function example program. When you compile the server, you can define symbols to get different server behavior.  The client program compiles simply, using no options. Neither the client nor the server perform an ASCII to EBCDIC or multiple language convertion.
+<p>For the server:
+<ul>
+<li>Define nothing to have the server process the client request and return the results.
+
+<li>Define <strong>THREADS</strong> to have the server start a new thread which processes the request and returns the results while the server main thread waits for more clients.
+
+<li>Define <strong>SPAWN</strong> to have the server spawn a new process which inherits socket descriptors, environment variables, user profile, etc. The new child process handles the client request while the original server process (daemon) returns to waiting for more clients.
+
+<li>Define <strong>AIXFORK</strong> if you want to compile the server on AIX and use fork to start a new process which inherits socket descriptors, environment variables, user profile, etc. The new child process handles the client request while the original server process (daemon) returns to waiting for more clients.
+</ul>
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  After splitting this file into the two sperate source files, Send the programs to your AS/400 and compile it using the development facilities supplied there.  This program was developed and tested on an Version 3 Release 6 system with the CPA Toolkit for threads. If you have the appropriate spawn and threads support loaded via the CPA Toolkit, it should work on a V3R1 and V3R2 system as well.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<h2>This is the Server (SOCKSRV):</h2>
+<xmp>
+ */
+/************************************************************************/
+/*                                                                      */
+/* test case:    socket_srv.c                                           */
+/*                                                                      */
+/* objective:    Show how to use sockets to write a server program      */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTBNDC or CRTPTHPGM (if    */
+/*               THREADS is defined).                                    */
+/*                                                                      */  
+/************************************************************************/
+
+/* Define THREADS, SPAWN, AIXFORK or nothing to create a server
+   that services requests with pthreads, spawned processes,
+   using fork, or inline respectively
+   */
+#ifdef THREADS
+#include <pthread.h>
+#endif
+#ifdef SPAWN
+#include <sys/signal.h>
+#include <spawn.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#endif
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+/* In some releases the runtime provides getenv is a noop. (v3r1 and v3r2) */
+/* In those releases, qp0z1170.h will ensure we get the write mapping      */
+/* of getenv to the actual environment variable functions.                 */
+#include <qp0z1170.h>
+
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
+/* Global constants                                                  */
+/* Global constants                                                  */
+#define SERVER_PORT    3770
+#define BUFFER_LENGTH  80
+char REQUEST_DATA[] =
+"SOCK CLIENT REQUEST DATA: DO THIS FOR ME.... PLEASE!?";
+char RESPONSE_DATA[] =
+"SOCK SERVER RESPONSE DATA: NO WAY, I'M JUST A LOWLY DAEMON!";
+
+#ifdef SPAWN
+#define handleclientchild "/QSYS.LIB/KULACK.LIB/SOCKSRV.PGM"
+#define handleclientparm  "zz--HaNdLeClIeNt--zz"
+#endif
+
+typedef struct clientdata {
+  struct sockaddr_in    cli_addr;
+  int                   connection;
+} clientdata_t;
+
+void *handleclient(void *parm);
+
+int main(int argc, char *argv[])
+{
+    int         sd;                 /* socket descriptor                    */
+    int         rc;
+    int         i;
+    int         on = 1;
+    int         new_sd;             /* accepted connection socket descriptor*/
+    int         cli_len;
+    struct sockaddr_in  my_addr;    /* my address                           */
+    struct sockaddr_in  cli_addr;   /* clients address                      */
+    clientdata_t *client = NULL;    /* Data for the client being served     */
+#if defined AIXFORK || defined SPAWN
+    pid_t       childpid;
+#endif
+#ifdef THREADS
+    pthread_t   threadid;
+#endif
+#ifdef SPAWN
+    int                   fd_count=0;
+    int                   fd_map[1] = { SPAWN_FDCLOSED };
+    struct inheritance    inherit;
+    struct inheritance   *inh = &inherit;
+    /************************************************************************/
+    /* If we're the spawned child, we expect to be called as:               */
+    /*     LIB/SOCKSRV handleclientparm                                     */
+    /* According to our agreed plan with the parent, the descriptor to      */
+    /* handle will be stored in an environment variable, as will the        */
+    /* IP address of the client:                                            */
+    /*   CLIENTIP=x.y.z.q                                                   */
+    /*   CLIENTFD=descriptor                                                */
+    /************************************************************************/
+    /* argv[0] gets overwritten */
+    char                 *cargv[3] = {
+      handleclientparm, handleclientparm, NULL };
+    char                 clientip[50] = "CLIENTIP";
+    char                 clientfd[50] = "CLIENTFD";
+    char                 *cenvp[3] = { clientip,
+                                       clientfd,
+                                       NULL };
+#endif
+
+#ifdef SPAWN
+    /************************************************************************/
+    /* If spawn is defined, this guy can be a parent (deamon) or a child    */
+    /* Normally, you'd want a seperate program for the child so that this   */
+    /* type of logic isn't needed. This is for example purposes             */
+    /************************************************************************/
+    if ((argc == 2) &&
+        (!memcmp(argv[1], handleclientparm, sizeof(handleclientparm)))) {
+      /* Yup, we're the spawned child! */
+      printf("daemon spawn: processing child\n");
+      client = (clientdata_t *)malloc(sizeof(clientdata_t));
+      client->cli_addr.sin_addr.s_addr = inet_addr(getenv(clientip));
+      client->connection = atoi(getenv(clientfd));
+   
+      handleclient(client);
+      client = NULL;  /* handleclient free's the storage                    */
+      exit(0);
+    }
+
+    /* else, we're not the spawned child, just continue as a daemon         */
+#endif
+   
+    printf("daemon: Entering\n");    
+#ifdef THREADS
+   /* Prestart some threads so the next ones are FAST                       */
+   for (i=0; i < 3; ++i) {
+     rc = pthread_create(&threadid, PTHREAD_ATTR_DEFAULT, NULL, NULL);
+     if ( rc ) {
+       printf("daemon: Failed pre-starting a thread, errno = %d\n", errno);
+     }
+   }
+#endif
+     
+   sd = socket(AF_INET, SOCK_STREAM, 0);
+   if ( sd < 0 ) {
+       printf("server: Socket create failed with a errno = %d\n", errno);
+       exit(1);
+     } /* endif */
+ 
+   memset((void *)&my_addr, 0, sizeof(my_addr));
+   my_addr.sin_family = AF_INET;
+   /* Well known port */
+   my_addr.sin_port = htons((short)3770);
+    /* we 'monitor' all interfaces on this host*/
+   my_addr.sin_addr.s_addr = INADDR_ANY;  
+
+   /* Give this socket the well known endpoint name that we've just filled */
+   /* in.                                                                  */
+   /* Note that if you run this daemon more than once, you may get an error*/
+   /* on the bind because after the program ends, the OS maintains the port*/
+   /* in an open state until (2*Maximum Segment Life) has expired. This    */
+   /* allows packets which may have been lost to arrive with no problems   */
+   
+   /* To prevent this, we'll use setsockopt, soreuseaddr                   */
+   rc = setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
+   if ( rc ) {
+     perror("daemon: failed to set SO_REUSEADDR\n");
+   }
+                   
+   rc = bind(sd, (struct sockaddr *)&my_addr, sizeof(my_addr));
+   if ( rc ) {
+       printf("daemon: bind call failed, errno = %d\n", errno);
+       exit(1);
+     }
+
+   /* allow connection requests to be queued before dropping them         */
+   rc = listen(sd, 5);
+   if ( rc ) {
+       perror("daemon: Return code incorrect from listen");
+       exit(1);
+     } /* endif */
+
+   /* wait for a connection request and accept it, creating a new         */
+   /* connected endpoint                                                  */
+   new_sd = -1;
+   
+   /***********************************************************************/
+   /* On AIX or other unix systems, this daemon would call fork.          */
+   /* On the AS/400, this daemon can do a couple of things:               */
+   /* 1) Service the request, then terminate, serving no more clients     */
+   /* 2) Call spawn, to start another program in the background, passing  */
+   /*    the connected new_sd to the client for handling.                 */
+   /* 3) Be a threaded program and call pthread_create to handle the new  */
+   /*    connection.                                                      */
+   /***********************************************************************/
+#ifdef AIXFORK
+   do {
+       cli_len = sizeof(cli_addr); /* input/output field */
+       printf("daemon: waiting for connections\n");
+       /* If we're comming through here after forking off the server */
+       /* We'll close his descriptor so we don't muck with it        */
+       (void)close(new_sd);
+       new_sd = accept(sd, (struct sockaddr *)&cli_addr, &cli_len);
+       if (new_sd < 0) {
+           perror("daemon: accept failed\n");
+           exit(1);
+         }
+       /* Fork off the request processing part of the daemon */
+        childpid = fork();
+     } while (childpid);
+   
+   client = (clientdata_t *)malloc(sizeof(clientdata_t));
+   memcpy(&client->cli_addr, &cli_addr, sizeof(cli_addr));
+   client->connection = new_sd;
+   
+   handleclient(client);
+   client = NULL;               /* handle client will clean up the storage*/
+#else
+  
+#if !defined THREADS && !defined SPAWN
+   /***********************************************************************/
+   /* Simple daemon handles one client request at a time.                 */
+   /***********************************************************************/
+   cli_len = sizeof(cli_addr); /* input/output field */
+   new_sd = 0;
+   /* Handle clients forever in an inline fashion, one at a time          */
+   while (new_sd >= 0) {
+     new_sd = accept(sd, (struct sockaddr *)&cli_addr, &cli_len);
+     if (new_sd < 0) {
+       perror("daemon: accept failed\n");
+       exit(1);
+     }
+   
+     client = (clientdata_t *)malloc(sizeof(clientdata_t));
+     memcpy(&client->cli_addr, &cli_addr, sizeof(cli_addr));
+     client->connection = new_sd;
+   
+     handleclient(client);
+     client = NULL; /*handleclient() cleans up storage and closes new_sd    */
+   }
+#endif /* !THREADS and !SPAWN */
+     
+#ifdef THREADS
+   /***********************************************************************/
+   /* We'll be a multi threaded server. After each connection, we need    */
+   /* to pass the parms to a new thread in a thread safe fashion, then    */
+   /* go back to waiting                                                  */
+   /* In a real world environment, we wouldn't start a thread for such a  */
+   /* short handleclient() function, but this is an appropriate example   */
+   /***********************************************************************/
+   do {     
+     cli_len = sizeof(cli_addr); /* input/output field */
+     new_sd = accept(sd, (struct sockaddr *)&cli_addr, &cli_len);
+     if (new_sd < 0) {
+       perror("daemon: accept failed\n");
+       exit(1);
+     }
+   
+     client = (clientdata_t *)malloc(sizeof(clientdata_t));
+     memcpy(&client->cli_addr, &cli_addr, sizeof(cli_addr));
+     client->connection = new_sd;
+     
+     rc = pthread_create(&threadid, PTHREAD_ATTR_DEFAULT,
+                         handleclient, client);
+     if ( rc ) {
+       printf("daemon: Failed creating thread, errno = %d\n", errno);
+       exit(1);
+     }
+     printf("daemon: Created thread [tid = %d]\n", threadid);
+     /* In a real threaded app, we need to pthread_detach or pthread_join */
+     rc = pthread_detach(&threadid);
+     if ( rc ) {
+       printf("daemon: failed to detach the thread\n");
+       exit(1);
+     }
+     client = NULL;             /* The thread will clean this storage up  */
+   } while (1);
+#endif  /*THREADS server*/
+
+#ifdef SPAWN
+   cli_len = sizeof(cli_addr); /* input/output field */
+   new_sd = 0;
+   /* Handle clients forever one at a time                                */
+   while (new_sd >= 0) {
+     new_sd = accept(sd, (struct sockaddr *)&cli_addr, &cli_len);
+     if (new_sd < 0) {
+       perror("daemon: accept failed\n");
+       exit(1);
+     }
+     
+     /********************************************************************/
+     /* Setup the environment of the child                               */
+     sprintf(clientfd, "CLIENTFD=%d", 0);
+     sprintf(clientip, "CLIENTIP=%s", inet_ntoa(cli_addr.sin_addr));
+     printf("Env:\n%s\n%s\n", clientfd, clientip);
+   
+     /* Close ALL file descriptors in the child except for the new_sd    */
+     /* new_sd will be mapped to descriptor 0 in the child               */
+     fd_map[0] = new_sd;
+     fd_count = 1;
+   
+     /* No tricky inheritence being done except the descriptors above    */
+     memset(inh, 0, sizeof(struct inheritance));
+   
+     childpid = spawn( handleclientchild, fd_count, fd_map,
+                       inh, cargv, cenvp );
+     if ((int)childpid < 0) {
+       printf("Failed to spawn child at: err=%d\n%s\n", errno,
+              handleclientchild);
+     }
+     fd_map[0] = SPAWN_FDCLOSED;
+     fd_count = 0;
+     /* Note that we could wait for the child here using wait/waitpid   */
+     /* but that would defeat the purpose of starting it asynchronously */
+     /* a more correct solution would be to use sigaction() to handle   */
+     /* the SIGCHLD signal and call wait() from the handler.            */
+
+     /* Now that the child has a descriptor to this socket, we'll       */
+     /* close ours                                                      */
+     close(new_sd);
+   }
+#endif  /*SPAWN path*/
+   
+#endif
+   
+   if (client != NULL) {
+     free(client);
+   }
+   return 0;
+} /* end */
+
+
+
+void *handleclient(void *parm)
+{
+  char          buffer[BUFFER_LENGTH];
+  clientdata_t *client = (clientdata_t *)parm;
+  int           rc;
+  
+   /* Now, we're out of the daemon and into the server */
+   printf("server: Client on socket=%d, from %.8x\n",
+          client->connection, client->cli_addr.sin_addr.s_addr);
+   
+   if ((rc = read(client->connection, buffer, BUFFER_LENGTH)) < 0) {
+       perror("server: Bad return code from read");
+       close(client->connection);
+       return NULL;
+   }
+   if (rc == 0) {
+       printf("Connection reset by peer\n");
+       close(client->connection);
+       return NULL;
+   }
+
+   printf("server: read request:\n %s\n", buffer);
+
+   /* expect to get a null       */
+   if (memcmp(REQUEST_DATA, buffer, strlen(REQUEST_DATA)+1)) {
+       perror("server: Bad data from client!\n");
+       close(client->connection);
+       return NULL;
+   }
+   
+   /* write the NULL                                                  */
+   if ((rc = write(client->connection, RESPONSE_DATA,
+                       strlen(RESPONSE_DATA)+1)) < 0) {
+       perror("server: Bad return code from write\n");
+       close(client->connection);
+       return NULL;
+   }
+
+   rc = close(client->connection);
+   if ( rc ) {
+       perror("server: Return code incorrect for close\n");
+   }
+   
+   close(client->connection);
+   free(client);
+   printf("server: client service complete\n");   
+   return NULL;
+}
+/*
+</xmp>
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<h2>This is the Client (SOCKCLI):</h2>
+<xmp>
+*/
+/************************************************************************/
+/*                                                                      */
+/* test case:    socket_cli.c                                           */
+/*                                                                      */
+/* objective:    Show how to use sockets to write a client program      */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTBNDC.                    */
+/*                                                                      */  
+/************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
+/* Global constants                                                  */
+#define SERVER_PORT    3770
+#define BUFFER_LENGTH  80
+char REQUEST_DATA[] =
+"SOCK CLIENT REQUEST DATA: DO THIS FOR ME.... PLEASE!?";
+char RESPONSE_DATA[] =
+"SOCK SERVER RESPONSE DATA: NO WAY, I'M JUST A LOWLY DAEMON!";
+
+
+int main(int argc, char *argv[])
+{
+    int                  sd;                    /* socket descriptor */
+    int                  status;
+    char                 buffer[BUFFER_LENGTH];
+    struct sockaddr_in   server_addr;
+
+    if (argc != 2) {
+        printf("Usage: client <IP address destination>\n");
+        exit(1);
+      }
+
+    printf("client:  Entering\n");
+
+    printf("client Create socket \n");
+    sd = socket(AF_INET, SOCK_STREAM, 0);
+    if ( sd < 0 ) {
+        printf("client Socket create failed with a errno = %d\n", errno);
+        exit(1);
+      } /* endif */
+
+    /* Note: Since we are a client, we don't care exactly which port  */
+    /* this connection originates from. If this was a datagram socket */
+    /* we would follow the EXACT same logic. The port number that gets*/
+    /* allocated by the OS is an ephemeral or temporary one.          */
+
+    /* Here I'm going to determin where to send the request            */
+    /* Note that there are several ways to do this, I've chosen the    */
+    /* The easiest way which is a hardcoded 'well known port' and take */
+    /* the system address                                              */
+
+    /* other alternatives are to use 'getservbyname' to retrieve the   */
+    /* port number from the /etc/services file. You still have to know */
+    /* the target machine name or ip address unless you want to use    */
+    /* a data gram socket and broadcast a query. (yucky)               */
+    memset((void *)&server_addr, 0, sizeof(server_addr));
+    /* This is all the info we need to target the other side of the    */
+    /* connection. Info about this side of the connection will be      */
+    /* filled in by the OS when the connect is done. The ephemeral port*/
+    /* that this connection came from                                  */
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons((short)SERVER_PORT);
+    server_addr.sin_addr.s_addr = inet_addr(argv[1]);
+
+    if ((status = connect(sd, (struct sockaddr *)&server_addr,
+                          sizeof(server_addr))) < 0) {
+        perror("client: Bad return code from connect");
+        exit(1);
+      }
+
+    /* write the NULL                                                  */
+    /* could use send or other output operations, but after a connect  */
+    /* and when using a connection oriented socket, this is easier     */
+    /* same goes for write                                             */
+    if ((status = write(sd, REQUEST_DATA, sizeof(REQUEST_DATA))) < 0) {
+        perror("client: Bad return code from write");
+        exit(1);
+      }
+
+    /* read the NULL                                                  */
+    if ((status = read(sd, buffer, BUFFER_LENGTH)) < 0) {
+        perror("client: Bad return code from read");
+        exit(1);
+      }
+   if (status == 0) {
+       printf("Connection reset by peer\n");
+       exit(1);
+     }
+
+    printf("client: Received response data:\n       %s\n", buffer);
+
+    /* expect to get a null       */
+    if (memcmp(RESPONSE_DATA, buffer, sizeof(RESPONSE_DATA))) {
+        printf("client: Bad data from server!\n");
+        exit(1);
+      }
+
+
+    status = close(sd);
+    if (status < 0) {
+        printf("client: error on close\n");
+      }
+    return(0);
+} /* end */
+ 

@@ -1,0 +1,42 @@
+/*
+<br>
+<head>
+<title>Program that is replacement for usleep()</title>
+</head>
+
+<h1>Program that is replacement for usleep()</h1>
+
+<p>
+This function suspends the current process for a duration of specified microseconds.
+
+<p>
+The function converts the specified microseconds into MI time and then waits for the duration of MI time.
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed and tested on V3R1, V3R2 and V3R6 systems. 
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+*/
+/************************************************************************/
+/*                                                                      */
+/* test case:    usleep.c                                               */
+/*                                                                      */
+/* objective:    usleep() workaround                                    */
+/*                                                                      */
+/* usage notes:  Compile this module using CRTCMOD and then bind the    */
+/*               module with other modules using usleep() to create     */
+/*               program object.                                        */
+/*                                                                      */  
+/************************************************************************/
+#include <miproces.h>
+
+int usleep( Us )
+unsigned int Us;
+{
+    _MI_Time        mt;
+
+    mitime( &mt, 0, 0, 0, Us / 10000);
+    waittime( &mt, 0 );
+}

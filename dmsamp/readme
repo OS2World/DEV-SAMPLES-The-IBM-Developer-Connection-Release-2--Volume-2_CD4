@@ -1,0 +1,36 @@
+VisualBuilder Direct Manupulation Sample
+========================================
+
+An DM sample application and source files are sitting in this directory.
+The DM is from container control to entry field.
+
+1. Making runtime environment
+   1.1 Creating the CARINV Database
+       -Open an OS/2 window.
+       -Change to this directory. (for example "cd dragdrop")
+       -Issue the command "DBBLD d" where d is the drive letter where DB2
+        should build the database.
+        (ie. 'dbbld e' will build it on your E drive.)
+   1.2 Bind
+       - Open an OS/2 window
+       - invoke "nmake -a -f carv.mak"
+
+2. Running the sample
+   2.1 Invoke RUN.CMD from command prompt.
+   2.2 Drag a container object from a container in a source window,
+       drag it to the entry field in a target window.
+   2.3 Drop it on a entry field.
+
+3. File description
+   dbview.*     Source window related files.
+                Files are created by VB.
+   applform.*   Target window related files.
+                Files are created by VB,
+                except for applform.hpv and applform.cpv.
+   optdmsrc.*   DM source handler codes.
+                optdmsrc.lib is attached to a container control of dbview.
+   optdmtgt.*   DM target handler codes.
+                optdmtgt.lib is attached to entry fields of applform.
+   carv.*       CARINV db related files.
+                Files are created by data access builder.
+

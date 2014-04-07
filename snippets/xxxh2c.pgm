@@ -1,0 +1,70 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+      * Procedure hex2char
+      * ------------------
+      * Input: two byte character field, each byte containing hex digits 0 through F.
+      * Output one-byte character field containing the character represented by the two hex digits.
+      * Output is x'00' if either input hex digit is invalid.
+      *
+      * Example:      eval      c = hex2char('F0')      returns the character '0'
+      *
+     Hnomain
+      /copy cgidev/qrpglesrc,prototypes
+     P hex2char        B                   EXPORT
+     D hex2char        PI             1
+     D    chars                       2    VALUE
+     D                 ds
+     Dhex                            16    INZ('0123456789ABCDEF')
+     Dhexa                            1    dim(16)
+     D                                     OVERLAY(hex)
+     Dtwobytes                        2
+     Dbyte1                           1    OVERLAY(twobytes:1)
+     Dbyte2                           1    OVERLAY(twobytes:2)
+     Dindex                           5I 0
+     Drtnchar                         1    OVERLAY(index:2)
+     DI1                              5I 0 INZ(1)
+     DI2                              5I 0 INZ(1)
+     Drtnval                          1
+     C                   eval      twobytes = chars
+     C     byte1         lookup    hexa(I1)                               98
+     C     byte2         lookup    hexa(I2)                               99
+     C                   if        *in98 AND *in99
+     C                   eval      index =  (i1-1) * 16 + (i2-1)
+     C                   else
+     C                   eval      index  =  0
+     C                   end
+     C                   RETURN    rtnchar
+     P                 E

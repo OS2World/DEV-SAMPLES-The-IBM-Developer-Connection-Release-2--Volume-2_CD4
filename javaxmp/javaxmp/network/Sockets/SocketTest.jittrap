@@ -1,0 +1,36 @@
+import java.net.*;
+import java.io.*;
+
+public class SocketTest
+{
+   ServerSocket srv ;
+
+   public SocketTest(int port)
+   {
+   }
+
+   public void runTests()
+   {
+     srv = new ServerSocket( 6000 ) ;
+
+     System.out.println( "Waiting for someone to connect to me..." ) ;
+
+     try
+     {
+       srv.accept() ;
+     }
+     catch ( IOException e )
+     {
+       System.out.println( "IO Exception" ) ;
+     }
+
+     System.out.println( "Returned from accept()" ) ;
+   }
+
+   static public void main( String[] args )
+   {
+     SocketTest s = new SocketTest() ;
+
+     s.runTests() ;
+   }
+}

@@ -1,0 +1,13 @@
+REGEDIT
+; This .REG file may be used by your SETUP program.
+;   If a SETUP program is not available, the entries below will be
+;   registered in your InitInstance automatically with a call to
+;   CWinApp::RegisterShellFileTypes and COleObjectFactory::UpdateRegistryAll.
+
+
+HKEY_CLASSES_ROOT\Cclosamp.Document = Cclosa Document
+HKEY_CLASSES_ROOT\Cclosamp.Document\CLSID = {427208B2-5754-11D0-9DF8-0004AC3638DC}
+
+HKEY_CLASSES_ROOT\CLSID\{427208B2-5754-11D0-9DF8-0004AC3638DC} = Cclosa Document
+HKEY_CLASSES_ROOT\CLSID\{427208B2-5754-11D0-9DF8-0004AC3638DC}\LocalServer32 = CCLOSAMP.EXE
+HKEY_CLASSES_ROOT\CLSID\{427208B2-5754-11D0-9DF8-0004AC3638DC}\ProgId = Cclosamp.Document

@@ -1,0 +1,78 @@
+/************** CICS Client Classes *****************************************
+ *                                                                          
+ * FILE NAME:    ECISAMP.CCS
+ *                                                                         
+ * DESCRIPTION:  OO CICS Client OLE Automation Server Sample, server program
+ *
+ * 17H7605, 17H7616, 17H7627, 17H7638
+ * (C) Copyright International Business Machines Corp. 1996
+ *                                                                    
+ * This is an example application which demonstrates how to use the OO CICS
+ * Client External Call Interface (ECI). It provides a simple server program
+ * for use with the sample OLE Automation Server CCLOSAMP.
+ *                                                                    
+ * This program does not demonstrate all the techniques required for a large
+ * application. It is not a template and should not be used as the foundation
+ * for your next mission critical application.      
+ ****************************************************************************/
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char date[9];
+    char time[9];
+    char applid[8];
+    char info[40];
+} Commarea;
+
+
+void main (void) {
+
+    char* dfhCA = 0;
+    Commarea* commarea;
+
+    char abs_time[8];
+    long year;
+    char opsys = ' ';
+    char release[4];
+    char prodname [40];
+
+    /* Get the CICS EIB address */
+    EXEC CICS ADDRESS EIB ( dfheiptr );
+    /* Get the CICS commarea address */                               
+    EXEC CICS ADDRESS COMMAREA ( dfhCA );
+    commarea = (Commarea*)dfhCA;
+
+   /*  Build the commarea for output */
+    memset(commarea,0x0,sizeof(Commarea));
+
+    /* Query the date and time from CICS */
+    EXEC CICS ASKTIME ABSTIME(abs_time);
+    EXEC CICS FORMATTIME ABSTIME(abs_time)
+         DDMMYY(commarea->date) TIME(commarea->time) YEAR(year);
+    sprintf(&(commarea->date[4]),"%d",year ); /* replace with 4-digit year! */
+
+    /* Query system information from CICS */
+    EXEC CICS INQUIRE SYSTEM OPSYS(opsys) RELEASE(release);
+
+    switch (opsys) {
+    case 'A':
+        strcpy(prodname,"CICS/6000 Version");
+        break;
+    case 'P':
+        strcpy(prodname,"CICS OS/2 Version");
+        break;
+    case 'X':
+        strcpy(prodname,"CICS/ESA Version");
+        break;
+    default:
+        strcpy(prodname,"Unknown CICS");
+        break;
+    }
+
+    sprintf(commarea->info,"%s %c%c Release %c%c",
+            prodname,release[0],release[1],release[2],release[3]);
+
+    EXEC CICS RETURN;
+}
+

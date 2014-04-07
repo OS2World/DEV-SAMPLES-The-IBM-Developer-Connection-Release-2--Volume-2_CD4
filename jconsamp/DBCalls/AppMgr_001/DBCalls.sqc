@@ -1,0 +1,166 @@
+/*
+(c) Copyright IBM Corp. 1997  All rights reserved.
+
+These sample programs are owned by International Business Machines
+Corporation or one of its subsidiaries ("IBM") and are copyrighted and
+licensed, not sold.
+
+You may copy, modify, and distribute these sample programs in any
+form without payment to IBM,  for any purpose including developing,
+using, marketing or distributing programs that include or are
+derivative works of the sample programs.
+
+The sample programs are provided to you on an "AS IS" basis, without
+warranty of any kind.  IBM HEREBY EXPRESSLY DISCLAIMS ALL WARRANTIES,
+EITHER EXPRESS OR IMPLIED, INCLUDING , BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+Some jurisdictions do not allow for the exclusion or limitation of
+implied warranties, so the above limitations or exclusions may not
+apply to you.  IBM shall not be liable for any damages you suffer
+as a result of using, modifying or distributing the sample programs
+or their derivatives.
+
+Each copy of any portion of this/these sample program(s) or any
+derivative work, must include a the above copyright notice and warranty.
+*/
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sqlenv.h>
+#include <sql.h>
+#include "util.h"
+#include "appsguid.h"
+
+
+EXEC SQL INCLUDE SQLCA;
+EXEC SQL BEGIN DECLARE SECTION; 
+      	char product_id[11] ;
+      	char product_name[41] ;
+      	char short_name[11] ;
+		char description[81] ;
+		char supplier_id[11] ;
+		char url[81] ;
+		long int count ;
+EXEC SQL END DECLARE SECTION;
+
+  
+#define  CHECKERR( CE_STR )   if ( check_error ( CE_STR, &sqlca ) != 0 ) return 1;
+
+
+BOOL connect( char * pDatabase, char * pUserID, char * pPassword )
+{
+	EXEC SQL BEGIN DECLARE SECTION; 
+      	char database[13];
+      	char userid[9];
+      	char password[19];
+   	EXEC SQL END DECLARE SECTION;
+
+	printf( "About to connect to %s...\n", pDatabase ) ;
+
+	strcpy ( userid, pUserID );
+      strcpy ( password, pPassword );
+	strcpy ( database, pDatabase ) ;
+      EXEC SQL CONNECT TO :database USER :userid USING :password ; 
+	  CHECKERR ( "CONNECT TO DATABASE" );
+
+	return 0 ;		
+}
+
+
+
+BOOL insertProduct( char * pProduct_ID, char * pProduct_Name, 
+				 char * pShort_Name, char * pDescription,
+				 char * pSupplier_ID, char * pUrl )
+{
+	printf( "About to add %s to ISVAPPS database...\n", pProduct_Name ) ;
+
+	strcpy ( product_id, pProduct_ID ) ;
+	strcpy ( product_name, pProduct_Name ) ;
+	strcpy ( short_name, pShort_Name ) ;
+	strcpy ( description, pDescription ) ;
+	strcpy ( supplier_id, pSupplier_ID ) ;
+	strcpy ( url, pUrl ) ;
+
+      EXEC SQL INSERT INTO ISVAPPS 
+			VALUES ( :product_id, :product_name, :short_name, 
+				   :description, null, null, null, null, null, null,
+				   :supplier_id, null, :url, null ) ; 
+	  CHECKERR ( "INSERT INTO TABLE" );
+
+	
+	return 0 ;
+}	
+
+BOOL getProduct( PProduct pProduct )
+{
+	
+	strcpy( product_id, pProduct->product_id ) ;
+	printf( "About to select a product with id of %s\n", pProduct->product_id ) ;
+
+	EXEC SQL SELECT  PRODUCT_NAME, SHORT_NAME, DESCRIPTION, SUPPLIER_ID
+			INTO :product_name, :short_name, :description, :supplier_id
+			FROM ISVAPPS WHERE PRODUCT_ID = :product_id ;
+	  CHECKERR ( "SELECT FROM TABLE BY ID" );
+
+	strcpy( pProduct->product_name, product_name ) ;
+	strcpy( pProduct->short_name, short_name ) ;
+	strcpy( pProduct->description, description ) ;
+	strcpy( pProduct->supplier_id, supplier_id ) ;
+	return 0 ;
+
+}
+
+long int queryCount( )
+{
+	EXEC SQL SELECT COUNT(*) 
+		INTO :count
+		FROM isvapps ;
+	   CHECKERR( "COUNT" ) ;
+
+	return count ;	
+}
+
+BOOL queryProductIDsAndNames( char * pBuffer )
+{
+	
+ 	EXEC SQL DECLARE c1 CURSOR FOR  
+            SELECT PRODUCT_ID, PRODUCT_NAME FROM isvapps ;
+            
+
+   	EXEC SQL OPEN c1;  
+   		CHECKERR ("OPEN CURSOR") ;
+
+   	do {
+      	EXEC SQL FETCH c1 INTO :product_id, :product_name ;  
+      	if (SQLCODE != 0) break;
+		strcat( pBuffer, product_id ) ;
+		strcat( pBuffer, " " ) ;
+		strcat( pBuffer, product_name ) ;
+		strcat( pBuffer, ";" ) ;
+      	
+   	} while ( true );
+
+   	EXEC SQL CLOSE c1;  
+   		CHECKERR ("CLOSE CURSOR");
+
+	return 0 ;
+		
+}
+
+
+BOOL commit( BOOL bool )
+{
+	if( bool )
+	{
+		EXEC SQL COMMIT ;
+			CHECKERR( "COMMIT" ) ;
+	}
+	else
+	{
+		EXEC SQL ROLLBACK ;
+			CHECKERR( "ROLLBACK" ) ;
+	}
+}

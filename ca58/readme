@@ -1,0 +1,185 @@
+ ---------------------------------------------------------------------
+Ý                                                                     Ý
+Ý  MODULE NAME      CA58.ZIP                                          Ý     
+Ý                                                                     Ý
+Ý  DESCRIPTIVE NAME CICS Clients for Windows - Sample ECI OLE         Ý
+Ý                   Automation Server                                 Ý
+Ý                                                                     Ý     
+Ý  Statement:       Licensed Materials - Property of IBM              Ý     
+Ý                   CA58 SupportPac                                   Ý 
+Ý                   (c) Copyright IBM Corp. 1997                      Ý     
+Ý                   All rights reserved.                              Ý
+Ý                                                                     Ý
+Ý                   U.S. Government Users Restricted Rights - use,    Ý
+Ý                   duplication or disclosure restricted by GSA       Ý
+Ý                   ADP Schedule Contract with IBM Corp.              Ý
+Ý                                                                     Ý
+Ý  Status:          Version 1 Release 0                               Ý
+Ý  Last Modified:   8 January 1997                                    Ý
+Ý                                                                     Ý
+Ý  Author:          Richard Chamberlain                               Ý
+Ý                                                                     Ý
+Ý   NOTES :-                                                          Ý
+Ý     DEPENDENCIES = CICS Client V2.0 or later for Windows NT         Ý
+Ý                    or Windows 95                                    Ý
+Ý                    Microsoft Visual C++ V4.0 or later               Ý
+Ý                    Microsoft Visual Basic V4.0 or later             Ý
+Ý     RESTRICTIONS = None                                             Ý
+Ý     MODULE TYPE  = InfoZip                                          Ý
+Ý     PROCESSOR    = x86                                              Ý
+Ý                                                                     Ý
+ ---------------------------------------------------------------------
+                                                                       
+                                                                       
+INTRODUCTION
+------------
+
+This SupportPac provides a sample ECI OLE Automation Server showing how
+an OLE 'business object' can be built using the CICS Client C++ Class
+Libraries.  Such an OLE object can provide a very convenient way for a
+Visual Basic or LotusScript user to access business data from CICS.
+
+IBM CICS Client V2.0 already provides a general purpose OLE Automation
+Server for the ECI (CCLOECI.EXE).  This SupportPac shows how to
+construct an application-specific version of CCLOECI.  This sample
+shows how to hide the CICS interface logic from the end users, and how
+to process the CICS commarea to provide convenient Visual Basic
+datatypes.
+
+Note:  
+
+  SupportPac CA57 illustrates an alternative strategy, which is to
+  provide an OLE object specifically to handle the commarea data.  This
+  would be used together with (rather than instead of) CCLOECI.
+
+
+INSTALLATION
+------------
+
+To install the SupportPac, copy the file CA58.ZIP to a temporary
+directory and uncompress using InfoZip's Unzip.  Use the default
+options to ensure the subdirectories stored in the ZIP file are
+re-created.
+
+The following subdirectories will be created:
+
+  cclosamp - Sample ECI OLE Automation Server 'CCLOSAMP' 
+
+  server   - Sample CICS 'back-end' C program 'ECISAMP' 
+
+  vb       - Sample Visual Basic testcase 'SAMPLE'  
+
+
+USAGE
+-----
+
+1. Sample ECI OLE Automation Server (CCLOSAMP)
+
+This is a C++ GUI dialog application generated using the Microsoft
+VisualC++ V4.2 Wizard, with OLE Automation enabled.  An OLE interface
+"Ccl.Sample" has been added with several methods to support the sample
+'business object' functions.  Calls to the CICS Client Class Library
+(CCLCPW32.LIB) have been added to provide the connection to the CICS
+server.
+
+Note: 
+
+  The OLE object must be registered before the Visual Basic testcase
+  can be run. To register the object run CCLOSAMP.EXE. The executable 
+  is provided in the /Release subdirectory. It uses the Microsoft
+  Visual C++ V4.2 MFC DLLs, so if you are using a level other V4.2 you
+  will need to rebuild CCLOSAMP.EXE before running it.
+
+The sample comprises the following files:
+ 
+CcloSamp.h
+
+  This is the main header file for the OLE application.  It includes
+  other project specific headers (including Resource.h) and declares
+  the CcloSampApp application class and the CcloSamp OLE class
+  (CCmdTarget subclass).
+
+CcloSamp.cpp
+
+  This is the main application source file that contains the
+  application class CcloSampApp and the OLE class CcloSamp.  The
+  CcloSamp class supports the Ccl.Sample object used from Visual Basic,
+  and its GetInfo, GetDate, GetServerName, GetServerDesc and
+  SetServerName methods.
+
+cclosamp.odl
+
+  This file contains the Object Description Language source code for
+  the type library of your application.  From the .odl file the .tlb
+  file is built.  This provides the user help available in the Visual
+  Basic Object Browser.
+
+cclosamp.clw
+
+  This file contains information used by ClassWizard to edit existing
+  classes or add new classes.  ClassWizard also uses this file to store
+  information needed to create and edit message maps and dialog data
+  maps and to create prototype member functions.
+
+CcloDlg.h, CcloDlg.cpp 
+
+  These files contain the CCLSAMP dialog classes.  These classes define
+  the behavior of the CCLOSAMP application's main and 'about' dialogs.
+  The dialog templates are in cclosamp.rc.
+
+StdAfx.h, StdAfx.cpp
+
+  These files are used to build a precompiled header (PCH) file named
+  cclosamp.pch and a precompiled types file named StdAfx.obj.
+
+Resource.h
+
+  This is the standard header file, which defines new resource IDs.  MS
+  Developer Studio reads and updates this file.
+
+cclosamp.rc res\cclosamp.rc2
+
+  These are the resources that the sample program uses.
+
+res\cclosamp.ico
+
+  This is an icon file, which is used as the application's icon.  This
+  icon is included by the main resource file cclosamp.rc.
+
+
+2. Sample back-end CICS server program (ECISAMP)
+
+A back-end CICS C program is provided in subdirectory /server.  This
+program has been designed to run under Transaction Server for OS/2, and
+can be built and installed using the utility CICSCTCL.CMD.
+
+ecisamp.ccs
+
+  CICS C program to query the CICS server details and date/time,
+  returning this information in the commarea.
+
+3. Sample Visual Basic testcase (SAMPLE)
+
+A Visual Basic V4.0 test application is provided in subdirectory /vb.
+This shows how an end-user Visual Basic or Lotuscript program would
+create and use the methods on the OLE 'business object'.
+
+Note: 
+
+  The OLE Automation Server 'CCLOSAMP' must be registered, and the
+  back-end CICS server program installed (see above), before this
+  testcase can be run.
+
+Note: 
+
+  To use the VB Object Browser to view the CCLOSAMP interface you will
+  need to add a reference to CCLOSAMP.TLB in the /cclosamp/Release
+  subdirectory.
+
+Sample.vbp
+
+  Visual Basic project file.
+
+Form.frm
+
+  Visual Basic form definition and program logic.

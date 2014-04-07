@@ -1,0 +1,310 @@
+Compiled from file_browser.java
+public class file_browser extends java.awt.Frame {
+    java.io.File file_info;
+    java.io.FileInputStream input_file;
+    java.awt.TextArea txt;
+    java.awt.Panel buttons;
+    java.awt.Button open;
+    java.awt.Button done;
+    public void displayFile(java.lang.String);
+    public java.lang.String selectNewFile();
+    public boolean action(java.awt.Event,java.lang.Object);
+    public boolean handleEvent(java.awt.Event);
+    public static void main(java.lang.String []);
+    public file_browser();
+    public file_browser(java.lang.String);
+
+Method void createWindows()
+   0 aload_0
+   1 new #21 <Class java.awt.BorderLayout>
+   4 dup
+   5 invokenonvirtual #24 <Method java.awt.BorderLayout.<init>()V>
+   8 invokevirtual #30 <Method java.awt.Container.setLayout(Ljava/awt/LayoutManager;)V>
+  11 aload_0
+  12 new #32 <Class java.awt.TextArea>
+  15 dup
+  16 invokenonvirtual #34 <Method java.awt.TextArea.<init>()V>
+  19 putfield #36 <Field file_browser.txt Ljava/awt/TextArea;>
+  22 aload_0
+  23 getfield #36 <Field file_browser.txt Ljava/awt/TextArea;>
+  26 iconst_0
+  27 invokevirtual #42 <Method java.awt.TextComponent.setEditable(Z)V>
+  30 aload_0
+  31 new #44 <Class java.awt.Panel>
+  34 dup
+  35 invokenonvirtual #46 <Method java.awt.Panel.<init>()V>
+  38 putfield #48 <Field file_browser.buttons Ljava/awt/Panel;>
+  41 aload_0
+  42 new #50 <Class java.awt.Button>
+  45 dup
+  46 ldc #52 <String "Open...">
+  48 invokenonvirtual #55 <Method java.awt.Button.<init>(Ljava/lang/String;)V>
+  51 putfield #57 <Field file_browser.open Ljava/awt/Button;>
+  54 aload_0
+  55 new #50 <Class java.awt.Button>
+  58 dup
+  59 ldc #59 <String "Done">
+  61 invokenonvirtual #55 <Method java.awt.Button.<init>(Ljava/lang/String;)V>
+  64 putfield #61 <Field file_browser.done Ljava/awt/Button;>
+  67 aload_0
+  68 getfield #48 <Field file_browser.buttons Ljava/awt/Panel;>
+  71 aload_0
+  72 getfield #57 <Field file_browser.open Ljava/awt/Button;>
+  75 invokevirtual #65 <Method java.awt.Container.add(Ljava/awt/Component;)Ljava/awt/Component;>
+  78 pop
+  79 aload_0
+  80 getfield #48 <Field file_browser.buttons Ljava/awt/Panel;>
+  83 aload_0
+  84 getfield #61 <Field file_browser.done Ljava/awt/Button;>
+  87 invokevirtual #65 <Method java.awt.Container.add(Ljava/awt/Component;)Ljava/awt/Component;>
+  90 pop
+  91 aload_0
+  92 ldc #67 <String "South">
+  94 aload_0
+  95 getfield #48 <Field file_browser.buttons Ljava/awt/Panel;>
+  98 invokevirtual #70 <Method java.awt.Container.add(Ljava/lang/String;Ljava/awt/Component;)Ljava/awt/Component;>
+ 101 pop
+ 102 aload_0
+ 103 ldc #72 <String "Center">
+ 105 aload_0
+ 106 getfield #36 <Field file_browser.txt Ljava/awt/TextArea;>
+ 109 invokevirtual #70 <Method java.awt.Container.add(Ljava/lang/String;Ljava/awt/Component;)Ljava/awt/Component;>
+ 112 pop
+ 113 aload_0
+ 114 invokevirtual #77 <Method java.awt.Window.pack()V>
+ 117 aload_0
+ 118 invokevirtual #80 <Method java.awt.Window.show()V>
+ 121 return
+
+Method void displayFile(java.lang.String)
+   0 iconst_0
+   1 istore_3
+   2 aload_0
+   3 new #83 <Class java.io.File>
+   6 dup
+   7 aload_1
+   8 invokenonvirtual #85 <Method java.io.File.<init>(Ljava/lang/String;)V>
+  11 putfield #87 <Field file_browser.file_info Ljava/io/File;>
+  14 getstatic #93 <Field java.lang.System.out Ljava/io/PrintStream;>
+  17 new #95 <Class java.lang.StringBuffer>
+  20 dup
+  21 invokenonvirtual #97 <Method java.lang.StringBuffer.<init>()V>
+  24 ldc #99 <String "Processing, getPath() -> ">
+  26 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+  29 aload_0
+  30 getfield #87 <Field file_browser.file_info Ljava/io/File;>
+  33 invokevirtual #107 <Method java.io.File.getPath()Ljava/lang/String;>
+  36 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+  39 invokevirtual #110 <Method java.lang.StringBuffer.toString()Ljava/lang/String;>
+  42 invokevirtual #115 <Method java.io.PrintStream.println(Ljava/lang/String;)V>
+  45 aload_0
+  46 new #117 <Class java.io.FileInputStream>
+  49 dup
+  50 aload_0
+  51 getfield #87 <Field file_browser.file_info Ljava/io/File;>
+  54 invokenonvirtual #120 <Method java.io.FileInputStream.<init>(Ljava/io/File;)V>
+  57 putfield #122 <Field file_browser.input_file Ljava/io/FileInputStream;>
+  60 goto 77
+  63 astore 5
+  65 getstatic #93 <Field java.lang.System.out Ljava/io/PrintStream;>
+  68 ldc #124 <String "Input file could not be found">
+  70 invokevirtual #115 <Method java.io.PrintStream.println(Ljava/lang/String;)V>
+  73 return
+  74 goto 77
+  77 nop
+  78 aload_0
+  79 getfield #87 <Field file_browser.file_info Ljava/io/File;>
+  82 invokevirtual #130 <Method java.io.File.length()J>
+  85 l2i
+  86 istore_2
+  87 getstatic #93 <Field java.lang.System.out Ljava/io/PrintStream;>
+  90 new #95 <Class java.lang.StringBuffer>
+  93 dup
+  94 invokenonvirtual #97 <Method java.lang.StringBuffer.<init>()V>
+  97 ldc #132 <String "File length reported as ">
+  99 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+ 102 iload_2
+ 103 invokevirtual #135 <Method java.lang.StringBuffer.append(I)Ljava/lang/StringBuffer;>
+ 106 ldc #137 <String " byte(s).">
+ 108 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+ 111 invokevirtual #110 <Method java.lang.StringBuffer.toString()Ljava/lang/String;>
+ 114 invokevirtual #115 <Method java.io.PrintStream.println(Ljava/lang/String;)V>
+ 117 iload_2
+ 118 newarray byte
+ 120 astore 4
+ 122 goto 158
+ 125 iload_3
+ 126 aload_0
+ 127 getfield #122 <Field file_browser.input_file Ljava/io/FileInputStream;>
+ 130 aload 4
+ 132 iload_3
+ 133 iload_2
+ 134 iload_3
+ 135 isub
+ 136 invokevirtual #141 <Method java.io.FileInputStream.read([BII)I>
+ 139 iadd
+ 140 istore_3
+ 141 goto 157
+ 144 astore 5
+ 146 getstatic #93 <Field java.lang.System.out Ljava/io/PrintStream;>
+ 149 ldc #143 <String "An IOException was thrown while reading the file">
+ 151 invokevirtual #115 <Method java.io.PrintStream.println(Ljava/lang/String;)V>
+ 154 goto 157
+ 157 nop
+ 158 iload_3
+ 159 iload_2
+ 160 if_icmplt 125
+ 163 aload_0
+ 164 getfield #36 <Field file_browser.txt Ljava/awt/TextArea;>
+ 167 new #147 <Class java.lang.String>
+ 170 dup
+ 171 aload 4
+ 173 iconst_0
+ 174 invokenonvirtual #150 <Method java.lang.String.<init>([BI)V>
+ 177 invokevirtual #153 <Method java.awt.TextComponent.setText(Ljava/lang/String;)V>
+ 180 return
+Exception table:
+   from   to  target type
+    45    60    63   <Class java.io.FileNotFoundException>
+   125   141   144   <Class java.io.IOException>
+
+Method java.lang.String selectNewFile()
+   0 new #156 <Class java.awt.FileDialog>
+   3 dup
+   4 aload_0
+   5 ldc #158 <String "Select a file">
+   7 invokenonvirtual #161 <Method java.awt.FileDialog.<init>(Ljava/awt/Frame;Ljava/lang/String;)V>
+  10 astore_3
+  11 aload_3
+  12 invokevirtual #80 <Method java.awt.Window.show()V>
+  15 aload_3
+  16 invokevirtual #164 <Method java.awt.FileDialog.getFile()Ljava/lang/String;>
+  19 astore_1
+  20 aload_3
+  21 invokevirtual #167 <Method java.awt.FileDialog.getDirectory()Ljava/lang/String;>
+  24 astore_2
+  25 new #95 <Class java.lang.StringBuffer>
+  28 dup
+  29 invokenonvirtual #97 <Method java.lang.StringBuffer.<init>()V>
+  32 aload_2
+  33 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+  36 aload_1
+  37 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+  40 invokevirtual #110 <Method java.lang.StringBuffer.toString()Ljava/lang/String;>
+  43 areturn
+
+Method boolean action(java.awt.Event,java.lang.Object)
+   0 aconst_null
+   1 astore_3
+   2 getstatic #93 <Field java.lang.System.out Ljava/io/PrintStream;>
+   5 ldc #171 <String "Start of action() method">
+   7 invokevirtual #115 <Method java.io.PrintStream.println(Ljava/lang/String;)V>
+  10 getstatic #93 <Field java.lang.System.out Ljava/io/PrintStream;>
+  13 new #95 <Class java.lang.StringBuffer>
+  16 dup
+  17 invokenonvirtual #97 <Method java.lang.StringBuffer.<init>()V>
+  20 ldc #173 <String "Button pressed was : ">
+  22 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+  25 aload_2
+  26 invokevirtual #176 <Method java.lang.StringBuffer.append(Ljava/lang/Object;)Ljava/lang/StringBuffer;>
+  29 invokevirtual #110 <Method java.lang.StringBuffer.toString()Ljava/lang/String;>
+  32 invokevirtual #115 <Method java.io.PrintStream.println(Ljava/lang/String;)V>
+  35 aload_1
+  36 getfield #182 <Field java.awt.Event.id I>
+  39 sipush 1001
+  42 if_icmpne 112
+  45 aload_1
+  46 getfield #186 <Field java.awt.Event.target Ljava/lang/Object;>
+  49 aload_0
+  50 getfield #57 <Field file_browser.open Ljava/awt/Button;>
+  53 if_acmpne 71
+  56 aload_0
+  57 invokevirtual #188 <Method file_browser.selectNewFile()Ljava/lang/String;>
+  60 astore 4
+  62 aload_0
+  63 aload 4
+  65 invokevirtual #190 <Method file_browser.displayFile(Ljava/lang/String;)V>
+  68 goto 111
+  71 aload_1
+  72 getfield #186 <Field java.awt.Event.target Ljava/lang/Object;>
+  75 aload_0
+  76 getfield #61 <Field file_browser.done Ljava/awt/Button;>
+  79 if_acmpne 109
+  82 aload_0
+  83 invokevirtual #195 <Method java.awt.Component.hide()V>
+  86 aload_0
+  87 invokevirtual #198 <Method java.awt.Frame.dispose()V>
+  90 aload_0
+  91 new #181 <Class java.awt.Event>
+  94 dup
+  95 aload_0
+  96 sipush 201
+  99 aconst_null
+ 100 invokenonvirtual #201 <Method java.awt.Event.<init>(Ljava/lang/Object;ILjava/lang/Object;)V>
+ 103 invokevirtual #205 <Method java.awt.Container.deliverEvent(Ljava/awt/Event;)V>
+ 106 goto 111
+ 109 iconst_0
+ 110 ireturn
+ 111 nop
+ 112 iconst_1
+ 113 ireturn
+
+Method boolean handleEvent(java.awt.Event)
+   0 aload_1
+   1 getfield #182 <Field java.awt.Event.id I>
+   4 sipush 201
+   7 if_icmpne 19
+  10 iconst_0
+  11 invokestatic #211 <Method java.lang.System.exit(I)V>
+  14 iconst_1
+  15 ireturn
+  16 goto 25
+  19 aload_0
+  20 aload_1
+  21 invokenonvirtual #213 <Method java.awt.Component.handleEvent(Ljava/awt/Event;)Z>
+  24 ireturn
+  25 nop
+
+Method void main(java.lang.String [])
+   0 ldc #217 <String "testfile.dat">
+   2 astore_3
+   3 new #2 <Class file_browser>
+   6 dup
+   7 aload_3
+   8 invokenonvirtual #219 <Method file_browser.<init>(Ljava/lang/String;)V>
+  11 astore_1
+  12 return
+
+Method file_browser()
+   0 aload_0
+   1 ldc #221 <String "File Browser">
+   3 invokenonvirtual #223 <Method java.awt.Frame.<init>(Ljava/lang/String;)V>
+   6 aload_0
+   7 invokevirtual #225 <Method file_browser.createWindows()V>
+  10 return
+
+Method file_browser(java.lang.String)
+   0 aload_0
+   1 new #95 <Class java.lang.StringBuffer>
+   4 dup
+   5 invokenonvirtual #97 <Method java.lang.StringBuffer.<init>()V>
+   8 ldc #227 <String "Currently viewing: ">
+  10 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+  13 aload_1
+  14 invokevirtual #103 <Method java.lang.StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;>
+  17 invokevirtual #110 <Method java.lang.StringBuffer.toString()Ljava/lang/String;>
+  20 invokenonvirtual #223 <Method java.awt.Frame.<init>(Ljava/lang/String;)V>
+  23 aload_0
+  24 invokevirtual #225 <Method file_browser.createWindows()V>
+  27 aload_0
+  28 bipush 100
+  30 bipush 100
+  32 sipush 400
+  35 sipush 500
+  38 invokevirtual #231 <Method java.awt.Component.reshape(IIII)V>
+  41 aload_0
+  42 aload_1
+  43 invokevirtual #190 <Method file_browser.displayFile(Ljava/lang/String;)V>
+  46 return
+
+}

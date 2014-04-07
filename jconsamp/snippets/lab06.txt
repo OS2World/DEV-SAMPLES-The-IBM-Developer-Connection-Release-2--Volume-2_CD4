@@ -1,0 +1,51 @@
+/*****************************************
+
+//: TeamXXServlet.java
+import java.io.* ;
+import javax.servlet.* ;
+import javax.servlet.http.* ; 
+
+public class TeamXXServlet extends javax.servlet.http.HttpServlet
+{
+	protected void doGet(HttpServletRequest request,
+                     HttpServletResponse response) throws ServletException, IOException 
+	{
+		response.setContentType( "text/html" ) ;
+		PrintWriter print = response.getWriter( ) ;
+		print.println( "<HTML>" ) ;
+		print.println( "<P>Your message goes here." ) ;
+		print.println( "</HTML>" ) ;
+		print.flush( ) ;
+		print.close( ) ;
+	}
+}
+
+
+/**************************************************/
+
+//: TestApplet.java
+
+import java.applet.* ;
+import java.net.* ;
+
+public class TestApplet extends java.applet.Applet
+{
+	public void init()
+	{
+		                
+		try {
+			// URL url = new URL(getCodeBase(), "/servlet/AppsGuid") ;
+			URL url = new URL("http://ntsrv/servlet/ServletTemplate") ;
+			System.out.println(url.toString()) ;
+			getAppletContext().showDocument(url) ;
+		    }
+		catch(Exception exception)
+		{
+			exception.printStackTrace() ;
+		}
+		
+	}
+}
+
+
+/**************************************************/

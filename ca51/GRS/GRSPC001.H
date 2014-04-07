@@ -1,0 +1,36 @@
+/***********************************************************************/
+/*                                                                     */
+/* MODULE NAME        GRSPC001.H                                       */
+/*                                                                     */
+/* DESCRIPTIVE NAME   Sample ECI program                               */
+/*                                                                     */
+/* Statement:         Licensed Materials - Property of IBM             */
+/*                                                                     */
+/*                    53G3861,53G3862                                  */
+/*                    (c) Copyright IBM Corp. 1988, 1993.              */
+/*                                                                     */
+/*                    See Copyright Instructions.                      */
+/*                                                                     */
+/*                    All rights reserved.                             */
+/*                                                                     */
+/*                    U.S. Government Users Restricted Rights - use,   */
+/*                    duplication or disclosure restricted by GSA      */
+/*                    ADP Schedule Contract with IBM Corp.             */
+/*                                                                     */
+/* Status:            Version 2 Release 0                              */
+/*                                                                     */
+/*  NOTES :-                                                           */
+/*    DEPENDENCIES = None                                              */
+/*                   None                                              */
+/*    RESTRICTIONS = none                                              */
+/*    MODULE TYPE  = Module definition file                            */
+/*    PROCESSOR    = PS/2 and PC                                       */
+/*                                                                     */
+/***********************************************************************/
+/*                                                                     */
+#define ID_MAINWND      256
+#define ID_UNATTENDED   200
+#define ID_CALL_ECI     265
+#define ID_EXITPROGRAM  270
+#define ID_NULL         -1
+

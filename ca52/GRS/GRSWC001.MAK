@@ -1,0 +1,10 @@
+GRSWC001.exe: GRSWC001.obj GRSWC001.res GRSWC001.def
+   link /nod GRSWC001,GRSWC001,GRSWC001,slibcew libw cclwin,GRSWC001.def
+   rcw GRSWC001.res
+
+GRSWC001.res: GRSWC001.rc GRSWC001.h
+   rcw -r GRSWC001.rc
+
+GRSWC001.obj: GRSWC001.c GRSWC001.h
+   cl /c GRSWC001.c
+

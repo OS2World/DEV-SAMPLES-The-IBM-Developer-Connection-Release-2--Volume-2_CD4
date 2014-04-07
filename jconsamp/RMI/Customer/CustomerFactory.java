@@ -1,0 +1,77 @@
+/*
+(c) Copyright IBM Corp. 1997  All rights reserved.
+
+These sample programs are owned by International Business Machines
+Corporation or one of its subsidiaries ("IBM") and are copyrighted and
+licensed, not sold.
+
+You may copy, modify, and distribute these sample programs in any
+form without payment to IBM,  for any purpose including developing,
+using, marketing or distributing programs that include or are
+derivative works of the sample programs.
+
+The sample programs are provided to you on an "AS IS" basis, without
+warranty of any kind.  IBM HEREBY EXPRESSLY DISCLAIMS ALL WARRANTIES,
+EITHER EXPRESS OR IMPLIED, INCLUDING , BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+Some jurisdictions do not allow for the exclusion or limitation of
+implied warranties, so the above limitations or exclusions may not
+apply to you.  IBM shall not be liable for any damages you suffer
+as a result of using, modifying or distributing the sample programs
+or their derivatives.
+
+Each copy of any portion of this/these sample program(s) or any
+derivative work, must include a the above copyright notice and warranty.
+*/
+
+
+
+package com.ibm.sdm.hotel ;
+
+public abstract class CustomerFactory
+{
+	public static final Customer createCustomer(	short anAccessMode,
+									String aLocationHandle,
+									long aHandle,
+									long anId, 
+									String aFirstName,
+									char aMiddleInitial,
+									String aLastName,
+									String anAddress1,
+									String anAddress2,
+									String aCity,
+									String aState,
+									String aZip,
+									String aPhone)
+	{
+		Customer customer = null ;
+
+		customer = (Customer)Global.getFactory().createPersistentEntity( 	"com.ibm.sdm.hotel.Customer",
+													anAccessMode,
+													aLocationHandle,
+													aHandle) ;
+
+
+
+		try
+		{
+			customer.initialize(anId, aFirstName, aMiddleInitial, aLastName, anAddress1,
+							anAddress2, aCity, aState, aZip, aPhone) ;
+			
+										
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.toString() ) ;
+			customer.uninitialize() ;
+			Global.getFactory().deletePersistentEntity(customer) ;
+		}
+		finally
+		{
+			return customer ;
+		}
+		
+	}
+
+
+}

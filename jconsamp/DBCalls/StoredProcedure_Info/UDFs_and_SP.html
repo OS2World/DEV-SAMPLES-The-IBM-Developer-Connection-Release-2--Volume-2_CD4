@@ -1,0 +1,717 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>Embedded SQL Programming Guide</TITLE>
+<!-- Begin Header Records  ========================================== -->
+<!-- F:\IDWB\TEMP\idwt1021\DB2A0.SCR converted by idb2h R3.1a (309)   -->
+<!-- ID Workbench Version (OS2) on 27 Jun 1997 at 11:52:03            -->
+<META HTTP-EQUIV="updated"  CONTENT="Fri, 27 Jun 1997 11:51:58">
+<META HTTP-EQUIV="review"  CONTENT="Sat, 27 Jun 1998 11:51:58">
+<META HTTP-EQUIV="expires"  CONTENT="Sun, 27 Jun 1999 11:51:58">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+<img src="bannerx.gif" border=0 height=92 width=490 alt="IBM Books">
+<br>
+<!-- End Header Records  ============================================ -->
+<A NAME=Top_Of_Page></A>
+<H2><A NAME="HDRUDFSTP" HREF="#HDRUDFSTP">Creating Java UDFs and Stored Procedures</A></H2>
+<A NAME=IDX7304></A>
+<A NAME=IDX7305></A>
+<A NAME=IDX7306></A>
+<A NAME=IDX7307></A>
+<P>Along with supporting client-side Java code, DB2 also supports creating
+user-defined functions (UDF) and stored procedures in Java that reside on the
+server&#46; This Java support does not alter the support for UDFs and
+stored procedures in other programming languages&#46; 
+<P>UDFs and stored procedures written in Java provide the same capability as
+existing UDFs and stored procedures; they are simply methods in Java
+classes&#46; Once you create and register these UDFs and stored procedures,
+and place the Java classes in the correct file location, described in <A HREF="#HDRFILELOC">"Where to Put Java Classes"</A>&#46; You can then call them from a program in any language&#46; DB2
+calls the Java interpreter to run them; they run as if part of a Java
+application, and therefore are not subject to applet security
+restrictions&#46;
+<P>DB2 handles type conversion (see <A HREF="#HDRWQ5064">"Mapping Between SQL Types and Java Objects"</A>) between SQL types and Java objects for you, as it does for other
+programming languages&#46; Because SQL string and LOB types are declared in
+SQL with a maximum length, ensure that your Java methods do not return arrays
+or strings that are longer than the declared limit&#46; DB2 detects many possible errors in data conversion and signals them
+by throwing an exception&#46;
+<A NAME=IDX7308></A>
+<A NAME=IDX7309></A>
+<P>Because you can overload Java methods, two methods with the same name but
+different argument lists can coexist in the same Java class&#46; Make sure
+that your Java methods that implement UDFs and stored procedures have the
+exact <I>signature</I> expected, that is, the list of formal arguments and
+the method name&#46;
+<P>
+<H3><A NAME="HDRWQ5064" HREF="#HDRWQ5064">Mapping Between SQL Types and Java Objects</A></H3>
+<A NAME=IDX7310></A>
+<A NAME=IDX7311></A>
+<A NAME=IDX7312></A>
+<A NAME=IDX7313></A>
+<A NAME=IDX7314></A>
+<A NAME=IDX7315></A>
+<A NAME=IDX7316></A>
+<A NAME=IDX7317></A>
+<A NAME=IDX7318></A>
+<A NAME=IDX7319></A>
+<A NAME=IDX7320></A>
+<A NAME=IDX7321></A>
+<A NAME=IDX7322></A>
+<A NAME=IDX7323></A>
+<A NAME=IDX7324></A>
+<A NAME=IDX7325></A>
+<A NAME=IDX7326></A>
+<A NAME=IDX7327></A>
+<A NAME=IDX7328></A>
+<A NAME=IDX7329></A>
+<A NAME=IDX7330></A>
+<A NAME=IDX7331></A>
+<A NAME=IDX7332></A>
+<A NAME=IDX7333></A>
+<A NAME=IDX7334></A>
+<A NAME=IDX7335></A>
+<A NAME=IDX7336></A>
+<A NAME=IDX7337></A>
+<A NAME=IDX7338></A>
+<A NAME=IDX7339></A>
+<A NAME=IDX7340></A>
+<A NAME=IDX7341></A>
+<A NAME=IDX7342></A>
+<A NAME=IDX7343></A>
+<A NAME=IDX7344></A>
+<A NAME=IDX7345></A>
+<A NAME=IDX7346></A>
+<A NAME=IDX7347></A>
+<A NAME=IDX7348></A>
+<A NAME=IDX7349></A>
+<A NAME=IDX7350></A>
+<A NAME=IDX7351></A>
+<A NAME=IDX7352></A>
+<A NAME=IDX7353></A>
+<A NAME=IDX7354></A>
+<A NAME=IDX7355></A>
+<A NAME=IDX7356></A>
+<A NAME=IDX7357></A>
+<A NAME=IDX7358></A>
+<A NAME=IDX7359></A>
+<A NAME=IDX7360></A>
+<A NAME=IDX7361></A>
+<A NAME=IDX7362></A>
+<A NAME=IDX7363></A>
+<A NAME=IDX7364></A>
+<A NAME=IDX7365></A>
+<A NAME=IDX7366></A>
+<P>When you call UDFs and stored procedures that are implemented as Java
+methods, DB2 converts SQL types to and from Java types for you as described in
+<A HREF="#TBLWQ5065">Table 1</A>&#46; Several of these classes are provided in  the Java package
+<TT>COM&#46;ibm&#46;db2&#46;app</TT>&#46;
+<P><P>
+<BR>
+<P><B><A NAME="TBLWQ5065">Table 1. DB2 SQL Types and Java Objects</A></B><BR>
+<TABLE Border>
+<TR>
+<TH ALIGN=LEFT VALIGN=BOTTOM>SQL Type
+</TH><TH ALIGN=LEFT VALIGN=BOTTOM>Java Type (UDF)
+</TH><TH ALIGN=LEFT VALIGN=BOTTOM>Java Type (Stored Procedure)
+</TH></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>SMALLINT (500/501)<SUP></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>short
+</TD><TD ALIGN=LEFT VALIGN=TOP>short
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>INTEGER (496/497)
+</TD><TD ALIGN=LEFT VALIGN=TOP>int
+</TD><TD ALIGN=LEFT VALIGN=TOP>int
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>FLOAT (480/481)
+</TD><TD ALIGN=LEFT VALIGN=TOP>double
+</TD><TD ALIGN=LEFT VALIGN=TOP>double
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>REAL (480/481)<SUP><A HREF="#LITBLST1">1</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>float
+</TD><TD ALIGN=LEFT VALIGN=TOP>float
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>DECIMAL(p,s) (484/485)
+</TD><TD ALIGN=LEFT VALIGN=TOP>BigDecimal
+</TD><TD ALIGN=LEFT VALIGN=TOP>BigDecimal
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>NUMERIC(p,s)<SUP> (504/505)</SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>BigDecimal
+</TD><TD ALIGN=LEFT VALIGN=TOP>BigDecimal
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>CHAR(<I>n</I>) (452/453)
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>CHAR(<I>n</I>) FOR BIT DATA (452/453)
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>C null-terminated string (400/401)<SUP><A HREF="#LITBLST2">2</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>n/a
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>VARCHAR(<I>n</I>)(448/449)
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>VARCHAR(<I>n</I>) FOR BIT DATA (448/449)
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>LONG VARCHAR (456/457)
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>LONG VARCHAR FOR BIT DATA (456/457)
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>GRAPHIC(<I>n</I>) (468/469)
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>C null-terminated graphic string (460/461)<SUP><A HREF="#LITBLST2">2</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>n/a
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>VARGRAPHIC(<I>n</I>) (464/465)
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>LONG VARGRAPHIC (472/473)<SUP><A HREF="#LITBLST3">3</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>BLOB(<I>n</I>)(404/405)<SUP><A HREF="#LITBLST3">3</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD><TD ALIGN=LEFT VALIGN=TOP>Blob
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>CLOB(<I>n</I>) (408/409)<SUP><A HREF="#LITBLST3">3</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>Clob
+</TD><TD ALIGN=LEFT VALIGN=TOP>Clob
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>DBCLOB(<I>n</I>) (412/413)<SUP><A HREF="#LITBLST3">3</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>Clob
+</TD><TD ALIGN=LEFT VALIGN=TOP>Clob
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>DATE (384/385)<SUP><A HREF="#LITBLST4">4</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>TIME (388/389)<SUP><A HREF="#LITBLST4">4</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP>TIMESTAMP (392/393)<SUP><A HREF="#LITBLST4">4</A></SUP>
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD><TD ALIGN=LEFT VALIGN=TOP>String
+</TD></TR><TR>
+<TD ALIGN=LEFT VALIGN=TOP COLSPAN=3>
+<TABLE><TR><TD ALIGN=LEFT VALIGN=TOP><B>Notes:</B></TD><TD ALIGN=LEFT VALIGN=TOP>
+<OL COMPACT>
+<LI><A NAME="LITBLST1"></A>The difference between REAL and DOUBLE in the SQLDA is the
+length value (4 or 8)&#46;
+<LI><A NAME="LITBLST2"></A>Parenthesized types, such as the C null-terminated graphic
+string, occur in stored procedures when the calling application uses embedded
+SQL with some host variable types&#46;
+<LI><A NAME="LITBLST3"></A>The Blob and Clob classes are provided in the
+<TT>COM&#46;ibm&#46;db2&#46;app</TT> package&#46; Their
+interfaces include routines to generate an InputStream and OutputStream for
+reading from and writing to a Blob, and a Reader and Writer for a Clob&#46;
+Refer to <A HREF="#HDRJAVACLS">"Classes for Java Stored Procedures and UDFs"</A> for descriptions of the classes&#46;
+<LI><A NAME="LITBLST4"></A>SQL DATE, TIME, and TIMESTAMP values use the ISO string
+encoding in Java, as they do for UDFs coded in C&#46; 
+</OL>
+</td></tr></table>
+</TD></TR></TABLE>
+<P>Instances of classes
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;Blob</TT> and
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;Clob</TT> represent the LOB
+data types (BLOB, CLOB, and DBCLOB)&#46; These classes provide a limited
+interface to read LOBs passed as inputs, and write LOBs returned as
+outputs&#46; Reading and writing of LOBs occur through standard Java I/O
+stream objects&#46; For the Blob class, the routines
+<TT>getInputStream()</TT> and <TT>getOutputStream()</TT> return an
+InputStream or OutputStream object through which the BLOB content may be
+processed bytes-at-a-time&#46; For a Clob, the routines
+<TT>getReader()</TT> and getWriter() will return a Reader or Writer object
+through which the CLOB or DBCLOB content may be processed
+characters-at-a-time&#46;
+<P>If such an object is returned as an output using the <TT>set()</TT>
+method, code page conversions may be applied in order to represent the Java
+Unicode characters in the database code page&#46;
+<P>
+<H3><A NAME="HDRFILELOC" HREF="#HDRFILELOC">Where to Put Java Classes</A></H3>
+<A NAME=IDX7367></A>
+<A NAME=IDX7368></A>
+<A NAME=IDX7369></A>
+<A NAME=IDX7370></A>
+<A NAME=IDX7371></A>
+<A NAME=IDX7372></A>
+<A NAME=IDX7373></A>
+<P>Store all Java class files that implement UDFs or stored procedures into
+the <TT>sqllib/function</TT> directory&#46; If you declare a class to be
+part of a Java package, create the corresponding subdirectories under
+<TT>sqllib/function</TT> and place the files in the correct
+subdirectory&#46; For example, if you create a class
+<TT>ibm&#46;tests&#46;test1</TT>, store the corresponding Java
+byte-code file (named <TT>test1&#46;class</TT>) in
+<TT>sqllib/function/ibm/tests</TT>&#46;
+<P>The Java interpreter that DB2 invokes uses the CLASSPATH environment
+variable to locate Java files&#46; DB2 adds the entries
+<TT>sqllib/function</TT> and <TT>sqllib/java/db2java&#46;zip</TT> to
+the front of your CLASSPATH setting&#46;
+<P>To set your environment so that the Java interpreter can find where you
+have stored the Java class files may need to set the <TT>jdk11_path</TT>
+configuration parameter, or else use the default value&#46; Also, you may
+need to set the <TT>java_heap_sz</TT> configuration parameter to increase
+the heap size for your application&#46; 
+<P>
+<H3><A NAME="HDRUDFS" HREF="#HDRUDFS">Creating and Using Java User-Defined Functions</A></H3>
+<A NAME=IDX7374></A>
+<A NAME=IDX7375></A>
+<A NAME=IDX7376></A>
+<A NAME=IDX7377></A>
+<A NAME=IDX7378></A>
+<P>You can create and use UDFs in Java just as you would in other languages,
+with only a few minor differences&#46; After you code the UDF, you register
+it with the database using the CREATE FUNCTION statement&#46; See the <CITE>SQL Reference</CITE> for information on registering a Java UDF using this
+statement&#46; You can then call it from any DB2 application in any language,
+including Java&#46; The UDF can be fenced or unfenced, and you can also use
+options to modify how the UDF is run&#46; See <A HREF="#HDRMODEXEC">"Changing How a Java UDF Runs"</A>&#46;
+<P>Some sample Java UDFs are provided in <TT>DB2Udf&#46;java</TT> in the
+<TT>sqllib/samples/java</TT> directory&#46; To register and invoke the
+sample UDFs, follow the instructions in the <TT>DB2Udf&#46;java</TT>
+file&#46; 
+<P>
+<H4><A NAME="HDRCODEUDF" HREF="#HDRCODEUDF">Coding a Java UDF</A></H4>
+<A NAME=IDX7379></A>
+<A NAME=IDX7380></A>
+<A NAME=IDX7381></A>
+<A NAME=IDX7382></A>
+<A NAME=IDX7383></A>
+<A NAME=IDX7384></A>
+<A NAME=IDX7385></A>
+<A NAME=IDX7386></A>
+<A NAME=IDX7387></A>
+<A NAME=IDX7388></A>
+<A NAME=IDX7389></A>
+<P>In general, if you declare a UDF taking arguments of SQL types
+<I>t1</I>, <I>t2</I>, and <I>t3</I>, returning type <I>t4</I>,
+it will be called as a Java method with the expected Java signature&#58; 
+<PRE>   public void <VAR>name</VAR> (<VAR>T1 a</VAR>, <VAR>T2 b</VAR>, <VAR>T3 c</VAR>, <VAR>T4 d</VAR>)  { &#46;&#46;&#46;&#46;&#46;}
+</PRE>
+<P>Where&#58; 
+<UL COMPACT>
+<LI><I>name</I> is the method name
+<LI><I>T1</I> through <I>T4</I> are the Java types that correspond to
+SQL types <I>t1</I> through <I>t4</I>&#46;
+<LI><I>a</I>, <I>b</I>, and <I>c</I> are arbitrary variable names
+for the input arguments&#46;
+<LI><I>d</I> is an arbitrary variable name that represents the UDF result
+being computed&#46;
+</UL>
+<P>For example, given a UDF called <TT>sample!test3</TT> that returns
+INTEGER and takes arguments of type CHAR(5), BLOB(10K), and DATE, DB2 expects
+the Java implementation of the UDF to have the following signature&#58; 
+<PRE>     import COM&#46;ibm&#46;db2&#46;app&#46;*;
+     public class sample extends UDF {
+        public void test3(String <VAR>arg1</VAR>, Blob <VAR>arg2</VAR>, String <VAR>arg3</VAR>,
+                          int <VAR>result</VAR>) { &#46;&#46;&#46; }
+     }
+</PRE>
+<P>Java UDFs that implement table functions have more arguments&#46; Beside
+the variables representing the input, an additional variable appears for each
+column in the resulting row&#46; For example, a table function may be
+declared as&#58; 
+<PRE>     public void test4(String <VAR>arg1</VAR>,
+                  int <VAR>result1</VAR>, Blob <VAR>result2</VAR>, String <VAR>result3</VAR>);
+</PRE>
+<P>SQL NULL values are represented by Java variables that are not
+initialized&#46; These variables have a value of zero if they are primitive
+types, and Java null if they are object types, in accordance with Java
+rules&#46; To tell an SQL NULL apart from an ordinary zero, you can call
+the function <TT>isNull</TT> for any input argument&#58; 
+<PRE>      { &#46;&#46;&#46;&#46;                                               
+        if (isNull(1)) { /* argument #1 was a SQL NULL */ }
+        else           { /* not NULL */ }
+      }
+</PRE>
+<P>In the above example, the argument numbers start at one&#46; The
+<TT>isNull()</TT> function, like the other functions that follow, are
+inherited from the <TT>COM&#46;ibm&#46;db2&#46;app&#46;UDF</TT>
+interface&#46; This must be a parent class of Java classes containing
+UDFs&#46;
+<P>To return a result from a scalar or table UDF, use the <TT>set()</TT>
+method in the UDF, as follows&#58; 
+<PRE>       { &#46;&#46;&#46;&#46;                                                       
+         set(2, value);                                             
+       }                                                            
+</PRE>
+<P>Where &#39;<TT>2</TT>&#39; is the index of an output argument, and
+value is a literal or variable of a compatible type&#46; The argument
+number is the index in the argument list of the selected output&#46; In the
+first example in this section, the <TT>int result</TT> variable has an index
+of 4; in the second, <TT>result1</TT> through <TT>result3</TT> have
+indices of 2 through 4&#46; An output argument that is not set before the
+UDF returns will have a NULL value&#46;
+<P>Like C modules used in UDFs and stored procedures, you cannot use the Java
+standard I/O streams (<TT>System&#46;in, System&#46;out,</TT> and
+<TT>System&#46;err</TT>) in Java UDFs&#46; For an example of a Java
+UDF, see the file <TT>DB2Udf&#46;java</TT> in the
+<TT>sqllib/samples/java</TT> directory&#46;
+<P>Remember that all Java class files that you use to implement a UDF must
+reside in the <TT>sqllib/function directory</TT> or an appropriate
+subdirectory&#46; See <A HREF="#HDRFILELOC">"Where to Put Java Classes"</A>&#46;
+<P>
+<H4><A NAME="HDRMODEXEC" HREF="#HDRMODEXEC">Changing How a Java UDF Runs</A></H4>
+<A NAME=IDX7390></A>
+<A NAME=IDX7391></A>
+<A NAME=IDX7392></A>
+<A NAME=IDX7393></A>
+<A NAME=IDX7394></A>
+<A NAME=IDX7395></A>
+<P>Typically, DB2 calls a UDF many times, once for each row of a result set in
+a query&#46; The implementing Java class is instantiated once per row, and
+the selected method of each new instance is called once&#46;
+<P>You can change this model by declaring the UDF with the SCRATCHPAD
+option&#46; When you use this option, the Java class is instantiated only
+once, and the same instance is reused for the entire query&#46; While
+C-language UDFs can maintain state between calls in a scratchpad area provided
+by the database engine, Java UDFs can simply use instance variables&#46;
+Note that there is still a separate Java UDF instance per  query
+reference to that UDF, just as there is for C UDFs&#46; If a UDF is called
+in several places in a query, each call will have its own Java
+object&#46;
+<P>At the end of a query, if you specify the FINAL CALL option on the CREATE
+FUNCTION statement, the object&#39;s <TT>public void close()</TT> method is
+called&#46; If you do not define this method, a stub function takes over
+and the event is ignored&#46;
+<P>If you specify the ALLOW PARALLEL clause for a Java UDF in the CREATE
+FUNCTION statement, DB2 may elect to evaluate the UDF in parallel&#46; If
+this occurs, several distinct Java objects may be created on different partitions&#46; Each object receives a subset of the rows&#46; Note that are no
+such object instances are created for C or C&#43;&#43; UDFs&#46;
+<P>As with other UDFs, Java UDFs can be fenced or unfenced&#46; Unfenced
+UDFs are run inside the address space of the database engine; fenced UDFs are
+run in a separate process&#46; Although Java UDFs cannot inadvertently
+corrupt the address space of their embedding process, they can terminate or
+slow down the process&#46; Therefore, when you are debugging UDFs written in Java, you should
+run them as fenced UDFs&#46;
+<P>Refer to <A HREF="#HDRCLSTWO">"COM&#46;ibm&#46;db2&#46;app&#46;UDF"</A> for a description of the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;UDF</TT> interface&#46;
+This interface describes other useful calls that you can make within a UDF,
+such as <TT>setSQLstate</TT> and <TT>getDBinfo</TT>&#46;
+<P>
+<H3><A NAME="HDRSTPS" HREF="#HDRSTPS">Creating and Using Java Stored Procedures</A></H3>
+<A NAME=IDX7396></A>
+<A NAME=IDX7397></A>
+<A NAME=IDX7398></A>
+<A NAME=IDX7399></A>
+<A NAME=IDX7400></A>
+<A NAME=IDX7401></A>
+<A NAME=IDX7402></A>
+<A NAME=IDX7403></A>
+<P>As with UDFs, you can create and use stored procedures in Java just like
+you can for other programming languages&#46; There are some programming
+considerations (as discussed in <A HREF="#HDRCODESTP">"Coding Java Stored Procedures"</A>) that you need to know when you write your Java code&#46; You also need
+to <A HREF="sqls0619.htm">register</A> your Java stored procedure&#46; Refer to the
+<A HREF="sqls0619.htm"> CREATE PROCEDURE </A>statement in the  <CITE>SQL Reference</CITE> for information on how to register your stored
+procedure&#46; To invoke a Java stored procedure, refer to the  
+<A HREF="sqls0607.htm#HDRCALLST">CALL </A> statement in the <CITE>SQL Reference</CITE>.  
+<P>
+<TABLE><TR><TD ALIGN=LEFT VALIGN=TOP><B>Note:</B></TD><TD ALIGN=LEFT VALIGN=TOP>If you are running a <I>database server with local clients</I> node type,
+you must set the <TT>maxdari</TT> database manager configuration parameter
+to a non-zero value before you invoke a Java stored procedure&#46;
+</td></tr></table>
+<P>A sample Java stored procedure, DB2Stp&#46;java, is provided in
+<TT>sqllib/samples/java</TT>&#46; 
+<P>Remember that all Java class files that you use to implement a stored
+procedure must reside in the <TT>sqllib/function</TT> directory or
+appropriate subdirectory (as discussed in <A HREF="#HDRFILELOC">"Where to Put Java Classes"</A>)&#46;
+<P>
+<H4><A NAME="HDRCODESTP" HREF="#HDRCODESTP">Coding Java Stored Procedures</A></H4>
+<A NAME=IDX7404></A>
+<A NAME=IDX7405></A>
+<A NAME=IDX7406></A>
+<A NAME=IDX7407></A>
+<A NAME=IDX7408></A>
+<A NAME=IDX7409></A>
+<P>Java stored procedures are public instance methods&#46; Within
+the classes, the stored procedures are identified by their method name and
+signature&#46; When you call a stored procedure, its signature is generated
+dynamically based on the variable types that you pass to it&#46;
+<P>Java stored procedures are very similar to the Java UDFs described in <A HREF="#HDRUDFS">"Creating and Using Java User-Defined Functions"</A>&#46; Like table functions, they can have multiple outputs&#46; They
+also use the same conventions for NULL values, and the same <TT>set</TT>
+routine for output&#46; The main difference is that a Java class that
+contains stored procedures must implement the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;StoredProc</TT> interface
+instead of the <TT>COM&#46;ibm&#46;db2&#46;app&#46;UDF</TT>
+interface&#46; Refer to <A HREF="#HDRCLSONE">"COM&#46;ibm&#46;db2&#46;app&#46;StoredProc"</A> for a description of the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;StoredProc</TT>
+interface&#46;
+<P>This interface provides the following routine to fetch a JDBC connection to
+the embedding application context&#58; 
+<PRE>     public java&#46;sql&#46;Connection getConnection()
+</PRE>
+<P>You can use this handle to run SQL statements&#46; Other methods of the
+<TT>StoredProc</TT> interface are listed in the file
+<TT>sqllib/samples/java/StoredProc&#46;java</TT>&#46;
+<P>The following is a small stored procedure with one input and two
+outputs&#46; It executes the given SQL query, and returns the number of
+rows in the result, and the SQLSTATE&#58; 
+<PRE>     import COM&#46;ibm&#46;db2&#46;app&#46;*;
+     import java&#46;sql&#46;*;
+     public class sample2 extends StoredProc {
+        public void donut(String query, int rowCount,
+                          String sqlstate) throws Exception {
+           try {
+              Statement s = getConnection()&#46;createStatement();
+              ResultSet r = s&#46;executeQuery(query);
+              int counter = 0;
+              while(r&#46;next()) {
+                  counter ++;
+              }
+              r&#46;close();  s&#46;close();
+              set(2, counter);
+           } catch(SQLException x) {
+              set(3, x&#46;getSQLState());
+           }
+        }
+     }
+</PRE>
+<P>
+<H3><A NAME="HDRJAVACLS" HREF="#HDRJAVACLS">Classes for Java Stored Procedures and UDFs</A></H3>
+<A NAME=IDX7410></A>
+<P>There are five classes/interfaces that you can use with Java Stored
+Procedures or UDFs&#58; 
+<UL>
+<P><LI>COM&#46;ibm&#46;db2&#46;app&#46;StoredProc
+<P><LI>COM&#46;ibm&#46;db2&#46;app&#46;UDF
+<P><LI>COM&#46;ibm&#46;db2&#46;app&#46;Lob
+<P><LI>COM&#46;ibm&#46;db2&#46;app&#46;Blob
+<P><LI>COM&#46;ibm&#46;db2&#46;app&#46;Clob
+</UL>
+<P>The following sections describe the public aspects of these classes&#39;
+behavior&#58;
+<P>
+<H4><A NAME="HDRCLSONE" HREF="#HDRCODESTP">COM&#46;ibm&#46;db2&#46;app&#46;StoredProc</A></H4>
+<A NAME=IDX7411></A>
+<P>A Java class that contains methods intended to be called as stored
+procedures must be public and must implement this Java interface&#46; You
+must declare such a class as follows&#58; 
+<PRE>public class &lt;user-STP-class&gt; extends COM&#46;ibm&#46;db2&#46;app&#46;StoredProc{ &#46;&#46;&#46; }
+</PRE>
+<P>You can only call inherited methods of the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;StoredProc</TT> interface in
+the context of the currently executing stored procedure&#46; For example,
+you cannot use operations on LOB arguments, result- or status-setting calls,
+etc&#46;, after a stored procedure returns&#46; A Java exception will be
+thrown if you violate this rule&#46;
+<P>Argument-related calls use a column index to identify the column being
+referenced&#46; These start at 1 for the first argument&#46; At this
+time, all arguments of a stored procedure are considered INOUT and thus are
+both inputs and outputs&#46;
+<P>Any exception returned from the stored procedure is caught by the database
+and returned to the caller with SQLCODE -4302, SQLSTATE 38501&#46; A JDBC
+SQLException or SQLWarning is handled specially and passes its own SQLCODE,
+SQLSTATE etc&#46; to the calling application verbatim&#46;
+<P>The following methods are associated with the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;StoredProc</TT> class&#58;
+<PRE>public StoredProc() &#91;default constructor&#93;
+</PRE>
+<P>This constructor is called by the database before the stored procedure
+call&#46;
+<PRE>public boolean isNull(int) throws Exception
+</PRE>
+<P>This function tests whether an input argument with the given index is an
+SQL NULL&#46;
+<PRE>public void set(int, short) throws Exception
+public void set(int, int) throws Exception
+public void set(int, double) throws Exception
+public void set(int, float) throws Exception
+public void set(int, java&#46;math&#46;BigDecimal) throws Exception
+public void set(int, String) throws Exception
+public void set(int, COM&#46;ibm&#46;db2&#46;app&#46;Blob) throws Exception
+public void set(int, COM&#46;ibm&#46;db2&#46;app&#46;Clob) throws Exception
+</PRE>
+<P>This function sets the output argument with the given index to the given
+value&#46; The index has to refer to a valid output argument, the data type
+must match, and the value must have an acceptable length and contents&#46;
+Strings with Unicode characters must be representable in the database code
+page&#46; Errors result in an exception being thrown&#46;
+<PRE>public java&#46;sql&#46;Connection getConnection() throws Exception
+</PRE>
+<P>This function returns a JDBC object that represents the calling
+application&#39;s connection to the database&#46; It is analogous to the
+result of a null <TT>SQLConnect()</TT> call in a C stored procedure&#46;
+<P>
+<H4><A NAME="HDRCLSTWO" HREF="#HDRCLSTWO">COM&#46;ibm&#46;db2&#46;app&#46;UDF</A></H4>
+<A NAME=IDX7412></A>
+<P>A Java class that contains methods intended to be called as UDFs must be
+public and must implement this Java interface&#46; You must declare such a
+class as follows&#58; 
+<PRE>public class &lt;user-UDF-class&gt; extends COM&#46;ibm&#46;db2&#46;app&#46;UDF{ &#46;&#46;&#46; }
+</PRE>
+<P>You can only call methods of the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;UDF</TT> interface in the
+context of the currently executing UDF&#46; For example, you cannot use
+operations on LOB arguments, result- or status-setting calls, etc&#46;,
+after a UDF returns&#46; A Java exception will be thrown if this rule is
+violated&#46;
+<P>Argument-related calls use a column index to identify the column being
+set&#46; These start at 1 for the first argument&#46; Output arguments
+are numbered higher than the input arguments&#46; For example, a scalar UDF
+with three inputs uses index 4 for the output&#46;
+<P>Any exception returned from the UDF is caught by the database and returned
+to the caller with SQLCODE -4302, SQLSTATE 38501&#46;
+<P>The following methods are associated with the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;UDF</TT> class&#58; 
+<PRE>public UDF() &#91;default constructor&#93;
+</PRE>
+<P>This constructor is called by the database at the beginning of a series of
+UDF calls&#46; It precedes the first call to the UDF&#46;
+<PRE>public void close()
+</PRE>
+<P>This function is called by the database at the end of a UDF evaluation, if
+the UDF was created with the FINAL CALL option&#46; It is analogous to the
+final call for a C UDF&#46; If a Java UDF class does not implement this
+function, a no-op stub will handle and ignore this event&#46;
+<PRE>public boolean isNull(int) throws Exception
+</PRE>
+<P>This function tests whether an input argument with the given index is an
+SQL NULL&#46;
+<PRE>public boolean needToSet(int) throws Exception
+</PRE>
+<P>This function tests whether an output argument with the given index needs
+to be set&#46; This may be false for a table UDF declared with DBINFO, if
+that column is not used by the UDF caller&#46;
+<PRE>public void set(int, short) throws Exception
+public void set(int, int) throws Exception
+public void set(int, double) throws Exception
+public void set(int, float) throws Exception
+public void set(int, java&#46;math&#46;BigDecimal) throws Exception
+public void set(int, String) throws Exception
+public void set(int, COM&#46;ibm&#46;db2&#46;app&#46;Blob) throws Exception
+public void set(int, COM&#46;ibm&#46;db2&#46;app&#46;Clob) throws Exception
+</PRE>
+<P>This function sets the output argument with the given index to the given
+value&#46; The index has to refer to a valid output argument, the data type
+must match, and the value must have an acceptable length and contents&#46;
+Strings with Unicode characters must be representable in the database code
+page&#46; Errors result in an exception being thrown&#46;
+<PRE>public void setSQLstate(String) throws Exception
+</PRE>
+<P>This function may be called from a UDF to set the SQLSTATE to be returned
+from this call&#46; A table UDF should call this function with "02000" to
+signal the end-of-table condition&#46; If the string is not acceptable as
+an SQLSTATE, an exception will be thrown&#46;
+<PRE>public void setSQLmessage(String) throws Exception
+</PRE>
+<P>This function is similar to the <TT>setSQLstate</TT> function&#46; It
+sets the SQL message result&#46; If the string is not acceptable (for
+example, longer than 70 characters), an exception will be thrown&#46;
+<PRE>public String getFunctionName() throws Exception
+</PRE>
+<P>This function returns the name of the executing UDF&#46;
+<PRE>public String getSpecificName() throws Exception
+</PRE>
+<P>This function returns the specific name of the executing UDF&#46;
+<PRE>public byte&#91;&#93; getDBinfo() throws Exception
+</PRE>
+<P>This function returns a raw, unprocessed DBINFO structure for the executing
+UDF, as a byte array&#46; You must first declare it with the DBINFO
+option&#46;
+<PRE>public String getDBname() throws Exception
+public String getDBauthid() throws Exception
+public String getDBtbschema() throws Exception
+public String getDBtbname() throws Exception
+public String getDBcolname() throws Exception
+public String getDBver_rel() throws Exception
+public String getDBplatform() throws Exception
+</PRE>
+<P>These functions return the value of the appropriate field from the DBINFO
+structure of the executing UDF&#46;
+<PRE>public int&#91;&#93; getDBcodepg() throws Exception
+</PRE>
+<P>This function returns the SBCS, DBCS, and composite code page numbers for
+the database, from the DBINFO structure&#46; The returned integer array has
+the respective numbers as its first three elements&#46;
+<PRE>public byte&#91;&#93; getScratchpad() throws Exception
+</PRE>
+<P>This function returns a copy of the scratchpad of the currently executing
+UDF&#46; You must first declare the UDF with the SCRATCHPAD option&#46;
+<PRE>public void setScratchpad(byte&#91;&#93;) throws Exception
+</PRE>
+<P>This function overwrites the scratchpad of the currently executing UDF with
+the contents of the given byte array&#46; You must first declare the UDF
+with the SCRATCHPAD option&#46; The byte array must have the same size as
+<TT>getScratchpad()</TT> returns&#46;
+<P>
+<H4><A NAME="HDRCLSTHR" HREF="#HDRCLSTHR">COM&#46;ibm&#46;db2&#46;app&#46;Lob</A></H4>
+<A NAME=IDX7413></A>
+<P>This class provides utility routines that create temporary Blob or Clob
+objects for computation inside user-defined functions or stored procedures.
+<P>The following methods are associated with the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;Lob</TT> class&#58; 
+<PRE>public static COM&#46;ibm&#46;db2&#46;app&#46;Blob newBlob() throws Exception
+</PRE>
+<P>This function creates a temporary Blob&#46; It will be implemented using
+a LOCATOR if possible&#46;
+<PRE>public static COM&#46;ibm&#46;db2&#46;app&#46;Clob newClob() throws Exception
+</PRE>
+<P>This function creates a temporary Clob&#46; It will be implemented using
+a LOCATOR if possible&#46;
+<H4><A NAME="HDRCLSTHR" HREF="#HDRCLSTHR">COM&#46;ibm&#46;db2&#46;app&#46;Blob</A></H4>
+<A NAME=IDX7413></A>
+<P>An instance of this class is passed by the database to represent a BLOB as
+UDF or stored procedure input, and may be passed back as output&#46; The
+application may create instances, but only in the context of an executing UDF
+or stored procedure&#46; Uses of these objects outside such a context will
+throw an exception&#46;
+<P>The following methods are associated with the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;Blob</TT> class&#58; 
+<PRE>public long size() throws Exception
+</PRE>
+<P>This function returns the length (in bytes) of the BLOB&#46;
+<PRE>public java&#46;io&#46;InputStream getInputStream() throws Exception
+</PRE>
+<P>This function returns a new InputStream to read the contents of the
+BLOB&#46; Efficient seek/mark operations are available on that
+object&#46;
+<PRE>public java&#46;io&#46;OutputStream getOutputStream() throws Exception
+</PRE>
+<P>This function returns a new OutputStream to append bytes to the
+BLOB&#46; Appended bytes become immediately visible on all existing
+InputStream instances produced by this object&#39;s
+<TT>getInputStream()</TT> call&#46;
+<P>
+<H4><A NAME="HDRCLSFOUR" HREF="#HDRCLSFOUR">COM&#46;ibm&#46;db2&#46;app&#46;Clob</A></H4>
+<A NAME=IDX7414></A>
+<P>An instance of this class is passed by the database to represent a CLOB or
+DBCLOB as UDF or stored procedure input, and may be passed back as
+output&#46; The application may create instances, but only in the context
+of an executing UDF or stored procedure&#46; Uses of these objects outside
+such a context will throw an exception&#46;
+<P>Clob instances store characters in the database code page&#46; Some
+Unicode characters may not be representable in this code page, and may cause
+an exception to be thrown during conversion&#46; This may happen during an
+append operation, or during a UDF or StoredProc <TT>set()</TT> call&#46;
+This is necessary to hide the distinction between a CLOB and a DBCLOB from the
+Java programmer&#46;
+<P>The following methods are associated with the
+<TT>COM&#46;ibm&#46;db2&#46;app&#46;Clob</TT> class&#58; 
+<PRE>public long size() throws Exception
+</PRE>
+<P>This function returns the length (in characters) of the CLOB&#46;
+<PRE>public java&#46;io&#46;Reader getReader() throws Exception
+</PRE>
+<P>This function returns a new Reader to read the contents of the CLOB or
+DBCLOB&#46; Efficient seek/mark operations are available on that
+object&#46;
+<PRE>public java&#46;io&#46;Writer getWriter() throws Exception
+</PRE>
+<P>This function returns a new Writer to append characters to this CLOB or
+DBCLOB&#46; Appended characters become immediately visible on all existing
+Reader instances produced by this object&#39;s <TT>GetReader()</TT>
+call&#46;
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A HREF="db2a0106.htm">Previous Page</A> &#124; <A HREF="sqls0619.htm">NextPage</A> &#93;</B> 
+<A NAME=Bot_Of_Page></A>
+</BODY></HTML>

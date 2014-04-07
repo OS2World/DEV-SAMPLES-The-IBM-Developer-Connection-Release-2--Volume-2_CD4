@@ -1,0 +1,119 @@
+/*
+<br>
+<head>
+<title>Program that is a replacement for  sys_nerr[]</title>
+</head>
+
+
+<h1>Program that is a replacement for  sys_nerr[]</h1>
+
+<p>The variable sys_nerr[] is an array that exists on other systems that allows direct access to the strings that represent failure messages associated with errno values.  The array is indexed on the errno value.  On OS/400, errno message strings are translated along with most other readable text into many different languages. Because of this, the strings exist in a message file whose message ID's are indexed by the errno values.  This program allows you to retrieve the message text for an errno on OS/400 in any language (in the language the job is running).
+
+<p>
+NOTE: If you want the message text corresponding to the value of errno in english, you can use strerror() function.
+
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+ */
+#include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <qmhrtvm.h>   /* OS/400 retrieve message SPI and types */
+#include <qusec.h>     /* OS/400 SPI Error Code Parameter types */
+
+char *sys_errlist(int errnovalue);
+
+
+/**************************************************************************/
+/*  main()                                                                */
+/*   example of getting in an error scenario where sys_nerr is going to   */
+/*  be used. We'll take the first parameter passed as an errno value and  */
+/*  use sys_nerr on it.                                                   */
+/**************************************************************************/
+int main(int argc, char *argv[])
+{
+   char                *p = NULL;
+
+   if (argc != 2) {
+     printf("Usage: CALL syserr '<errnovalue>'\n");
+     exit(1);
+   }
+
+   errno = atoi(argv[1]);
+   p = sys_errlist(errno);
+   if (p != NULL) {
+      printf("Error text <%s>\n", p);
+      free(p);
+      p = NULL;
+   }
+   
+   return;
+}
+
+
+/**************************************************************************/
+/*  char *sys_errlist(int errnovalue)                                     */
+/*                                                                        */
+/*  Return a pointer to a character string representing the error         */
+/*  that caused the particular errno value                                */
+/*  It would be easy to use static storage to cache the errno values if   */
+/*  desired. Be aware that in a threaded environment, static storage      */
+/*  needs to be protected and serialized with a mutex.                    */
+/*   NOTE: The string returned should be free'd by the caller             */
+/*         If the errno is invalid a string stating this is returned      */
+/**************************************************************************/
+char *sys_errlist(int errnovalue)
+{
+  
+  typedef _Packed struct {
+     Qmh_Rtvm_RTVM0100_t mdata;        /* Basic Message Data                  */
+     char                mtext[1024];  /* Kind of arbitrary, enough?      */
+  } MyMessage_t;
+
+  /* Information about the message that we're going to retrieve               */
+  char         msgformat[9]  = "RTVM0100";
+  char         msgid[8]      = "CPExxxx";
+  char         msgfile[21]   = "QCPFMSG   *LIBL     ";
+  char        *msgsubstdta   = NULL;    /* we won't be substituting here      */
+  int          msgsubstlen   = 0;
+  char         msgsubst[11]  = "*NO       ";
+  char         msgfmtctl[11] = "*NO       ";
+  Qus_EC_t     errorcode;
+  char        *p             = NULL;    /* string to return              */
+  MyMessage_t  message;                 /* message we'll retrieve        */
+  char        invalstring[] = "Invalid ERRNO value";
+  
+  /* ERRNO messages are in the range of CPE0000 to CPE9999               */
+  if (errnovalue < 0 || errnovalue > 9999) {
+    return NULL;
+  }
+  sprintf(msgid+3, "%0.4d", errnovalue);
+  printf("Getting MSGID=<%s>\n", msgid);
+
+  memset(&errorcode, 0, sizeof(errorcode));    /* Clear the error area   */
+  errorcode.Bytes_Provided = sizeof(errorcode);/* Init the error code    */
+
+  memset(&message, 0, sizeof(message.mdata));  /* Clear the message area */
+  message.mtext[0]='\0';                       /* Null Text String       */
+
+  QMHRTVM( &message, sizeof(message), msgformat, msgid,
+           msgfile, msgsubstdta, msgsubstlen, msgsubst, msgfmtctl, &errorcode);
+  if (errorcode.Bytes_Available) {
+    printf("Error on retrieve message: <%.7s>\n", errorcode.Exception_Id);
+    p = (char *)malloc(sizeof(invalstring));
+    memcpy(p, invalstring, sizeof(invalstring));
+  }
+  else {
+    p = (char *)malloc(message.mdata.Length_Message_Returned + 1);
+    memcpy(p, message.mtext, message.mdata.Length_Message_Returned);
+    p[message.mdata.Length_Message_Returned] = '\0';
+  }
+  
+  return p;
+}

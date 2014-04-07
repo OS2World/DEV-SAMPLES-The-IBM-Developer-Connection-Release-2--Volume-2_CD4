@@ -1,0 +1,53 @@
+/* Decompiled by Mocha from notepad.class */
+/* Originally compiled from notepad.java */
+
+import java.awt.*;
+import java.applet.Applet;
+import java.io.PrintStream;
+
+public class notepad extends Applet
+{
+    Button process_button;
+    Button open_button;
+    TextArea mle;
+    String txt;
+
+    public void init()
+    {
+        System.out.println("init() method called");
+        process_button = new Button("Process");
+        open_button = new Button("Open...");
+        setLayout(new BorderLayout());
+        add("South", process_button);
+        add("North", open_button);
+        mle = new TextArea(txt);
+        add("Center", mle);
+    }
+
+    public boolean action(Event event, Object object)
+    {
+        Button button = null;
+        System.out.println("Start of action() method");
+        System.out.println("Button pressed was : " + object);
+        if (event.id != 1001)
+            return false;
+        button = (Button)event.target;
+        if (button == process_button)
+        {
+            int i = mle.getRows();
+            int j = mle.getColumns();
+            String string = mle.getText();
+            System.out.println("-*-*-*-*-*-*-*");
+            System.out.println("Calling getRows() returned " + i + " rows.");
+            System.out.println("Calling getColumns() returned " + j + " columns.");
+            System.out.println("The current text in the text area is : ");
+            System.out.println(string);
+        }
+        return true;
+    }
+
+    public notepad()
+    {
+        txt = "Try typing in here, click Process when done.";
+    }
+}

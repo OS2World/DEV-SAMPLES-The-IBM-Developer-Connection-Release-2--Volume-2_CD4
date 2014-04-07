@@ -1,0 +1,16 @@
+//VBBeginPartInfo: VBTimer,"A part that signals an event at regular intervals"
+//VBParent: IStandardNotifier
+//VBIncludes: "VBTimer.hpp" _VBTIMER_
+//VBPartDataFile: VBTimer.vbb
+//VBConstructor: VBTimer()
+//VBComposerInfo: nonvisual,628,vbtimer
+//VBEvent: ready,"ready", readyId
+//VBEvent: timerEvent,"Signalled whenever the timer expires", timerEventId
+//VBAction: stop,"Stopped the timer from signalling",VBTimer&,virtual VBTimer& stop()
+//VBAction: start,,VBTimer&,virtual VBTimer& start()
+//VBAttribute: interval,"The interval between timerEvents",unsigned long,virtual unsigned long interval() const,virtual VBTimer& setInterval(unsigned long aInterval),intervalId
+//VBAttribute: isStarted,"Returns true if the timer is started.  Signals whenever the timer is started.",Boolean,virtual Boolean isStarted() const,,startedEvent
+//VBAttribute: isStopped,"Returns true if the timer is stopped.  Signals whenever the timer is stopped.",Boolean,virtual Boolean isStopped() const,,stoppedEvent
+//VBPreferredFeatures: enabledForNotification, interval, isStarted, isStopped, start, stop, this, timerEvent
+//VBLibFile: vbtimer.lib
+//VBEndPartInfo: VBTimer

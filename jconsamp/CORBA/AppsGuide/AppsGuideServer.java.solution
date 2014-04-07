@@ -1,0 +1,163 @@
+/*
+(c) Copyright IBM Corp. 1997  All rights reserved.
+
+These sample programs are owned by International Business Machines
+Corporation or one of its subsidiaries ("IBM") and are copyrighted and
+licensed, not sold.
+
+You may copy, modify, and distribute these sample programs in any
+form without payment to IBM,  for any purpose including developing,
+using, marketing or distributing programs that include or are
+derivative works of the sample programs.
+
+The sample programs are provided to you on an "AS IS" basis, without
+warranty of any kind.  IBM HEREBY EXPRESSLY DISCLAIMS ALL WARRANTIES,
+EITHER EXPRESS OR IMPLIED, INCLUDING , BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+Some jurisdictions do not allow for the exclusion or limitation of
+implied warranties, so the above limitations or exclusions may not
+apply to you.  IBM shall not be liable for any damages you suffer
+as a result of using, modifying or distributing the sample programs
+or their derivatives.
+
+Each copy of any portion of this/these sample program(s) or any
+derivative work, must include a the above copyright notice and warranty.
+*/
+
+
+
+import IsvappsCORBA.* ;
+import org.omg.CosNaming.* ;
+import org.omg.CosNaming.NamingContextPackage.* ;
+import org.omg.CORBA.* ;
+import java.sql.* ;
+
+
+class IsvappsManagerServant extends _IsvappsManagerImplBase
+{ 
+	public IsvappsManagerServant()
+	{
+		System.out.println("In IsvappsManagerServant constructor") ;
+		try {
+			Class.forName("COM.ibm.db2.jdbc.app.DB2Driver") ; 
+		}
+		catch(Exception exception) {
+			exception.printStackTrace() ;
+		}
+	}
+
+	public String getProducts()
+	{
+		int counter = 0 ;
+		String temp = new String() ;
+		String container = "Will it work?" ;
+		String url = "jdbc:db2:AppsGuid" ; 
+		
+		try {
+			Connection connection = DriverManager.getConnection(url, "mnix", "password") ;
+			Statement statement = connection.createStatement() ;
+			ResultSet results = statement.executeQuery("SELECT PRODUCT_ID, PRODUCT_NAME FROM isvapps") ;
+			while(results.next())
+			{
+				String product_id = results.getString("PRODUCT_ID") ;
+				String product_name = results.getString("PRODUCT_NAME") ;
+				temp += product_id ;
+				temp += ":" ;
+				temp += product_name ;
+				temp += ";" ;
+				counter++ ;	
+			}
+			results.close() ;
+			Integer wrapper = new Integer(counter) ;
+			container = wrapper.toString()  ;
+			container += ":" ;
+			container += temp ;
+		     } catch(Exception exception) {
+		     	container = "0:" ;
+		     	exception.printStackTrace() ;
+		     }
+		
+		return(container) ;
+	}
+
+
+
+	public String getProduct(String product_id)
+	{
+		String info ;
+		String product_name = null, description = null, supplier_id = null, url = null ;
+		String db_url = "jdbc:db2:AppsGuid" ; 
+		try
+		  {
+			Connection connection = DriverManager.getConnection(db_url, "mnix", "password") ;
+			Statement statement = connection.createStatement() ;
+			ResultSet resultSet = statement.executeQuery("Select PRODUCT_NAME, DESCRIPTION, SUPPLIER_ID, URL from isvapps WHERE PRODUCT_ID = '" + product_id + "'" ) ;
+			//: Only 1 row returned
+			while(resultSet.next())
+			{
+				product_name = resultSet.getString("PRODUCT_NAME") ;
+				description = resultSet.getString("DESCRIPTION") ;
+				supplier_id = resultSet.getString("SUPPLIER_ID") ;
+				url = resultSet.getString("URL") ;
+     		  	}
+			resultSet.close() ;
+			statement.close() ;
+
+			info = new String(product_id) ;
+			info += "\t" ;
+			info += product_name ;
+			info += "\t" ;
+			info += description ;
+			info += "\t" ;
+			info += supplier_id ;
+			info += "\t" ;
+			info += url ;
+			
+			connection.close() ;
+		
+		  } catch(Exception exception) {
+		  	info = "\t\t\t\t" ;
+		  	exception.printStackTrace() ; 
+		  }
+	
+		return (info) ;
+	}
+}
+
+
+public class AppsGuideServer
+{
+	public static void main(String args[])
+	{
+		try
+		{
+			System.out.println("//: Create an initialize the ORB") ;
+			ORB orb = ORB.init(args, null) ;
+			
+			System.out.println("//: Create servant and register it with the ORB") ;
+			IsvappsManagerServant isvappsManager = new IsvappsManagerServant() ;
+			orb.connect(isvappsManager) ;
+			
+			System.out.println("//: Get the root naming context") ;
+			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService") ;
+			NamingContext ncRef = NamingContextHelper.narrow(objRef) ;
+			
+			System.out.println("//: Bind the Object Reference in Naming") ;
+			NameComponent nc = new NameComponent("IsvappsManager", "") ;
+			NameComponent path[] = {nc} ;
+			ncRef.rebind(path, isvappsManager) ;
+			
+			System.out.println("//: Wait for invocations from clients") ;
+			java.lang.Object sync = new java.lang.Object() ;
+			synchronized (sync)
+			{
+				sync.wait() ;
+			}
+			System.out.println("//: Finished") ;
+		} catch (Exception exception)
+		  {
+			System.out.println(exception.toString()) ;
+		  	exception.printStackTrace() ;
+		  } //: end catch
+	} //: end main
+} //: end class

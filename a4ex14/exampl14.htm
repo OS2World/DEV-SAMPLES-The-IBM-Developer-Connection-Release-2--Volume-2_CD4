@@ -1,0 +1,252 @@
+/*
+<br>
+<head>
+<title>Program that uses Dynamic Screen Manager (DSM) APIs to create user interface</title>
+</head>
+
+
+<h1>Program that uses Dynamic Screen Manager (DSM) APIs to create user interface</h1>
+
+<h2>Description</h2>
+<p>This program creates a window and accepts user input. This example program is provided to demonstrate how DSM APIs can be used to create user interface.
+
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed V3R6 system and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+ */
+/************************************************************************/
+/*                                                                      */
+/* test case:    dsm_win.c                                              */
+/*                                                                      */
+/* objective:    Demonstrate use of DSM APIs to create User Interface   */
+/*                                                                      */
+/*                                                                      */
+/* description:  The program shows a simple example of defining,        */
+/*               creating and managing screens or window using DSM APIs */
+/*               that allow user interaction. It also shows how to      */
+/*               accept user input to invoke appropriate processing.    */
+/*                                                                      */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTBNDC.                    */
+/*                                                                      */
+/************************************************************************/
+
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+
+/*  Header file for DSM APIs                                            */
+#include <QSNAPI.H>
+
+/*  Global Declarations                                                 */
+
+#define MAXSCRSIZE  4
+
+char aid ;
+char *msg[]        = { "MAIN MENU",
+                       "F3: Exit       F4: Move      F5: Resize  F12: Cancel",
+                       "F6: Next Item  F7: Prv Item  F8: Select",
+                       "This option is for demo only",
+                       "This is an invalid option",
+                       "SPACE COMMUNICATIONS PVT. LTD.",
+                       "You pressed a wrong key" };
+
+char *itemname[]   = { "1. Delete file",
+                       "2. View file",
+                       "3. Cancel spool file",
+                       "4. Exit" };
+char *s            = "\0";
+int  rs            = 0,
+     sel           = 0,
+     scrsize       = 0,
+     done          = 0,
+     selected_item = 0;
+
+/*  Window handles                                                      */
+Qsn_Win_T       win1,  
+                win2,
+                cur;
+
+/*  Window description for storing window informations                  */
+Qsn_Win_Desc_T  win_desc; 
+
+Q_Bin4          win_desc_length = sizeof(win_desc);
+
+/*  Initializing the function names that get associated with various    */
+/*  window operations                                                   */
+Qsn_Win_Ext_Inf_T ext = { NULL, NULL, NULL, NULL, NULL, NULL };
+
+void Draw2( const Qsn_Win_T *, const Qsn_Cmd_Buf_T * );
+void display_menu( int, int, int, int );
+int get_input( void );
+int any_function( char * );
+
+void main( void ) {
+
+    int i=0;
+    QsnInzWinD(&win_desc, win_desc_length, NULL);
+
+/*  Define, start base window and display menu                          */
+
+    win_desc.fullscreen= '1';
+
+    win1 = QsnCrtWin( &win_desc, win_desc_length, NULL, 0, '1', 
+                      NULL, 0, NULL, NULL );
+    display_menu(1, 5, 22, 68);
+
+    while( !done ) {  
+        sel = get_input();
+
+/*  Here is the processing based on the input option selected. For this */
+/*  example we are calling any_function for options 1, 2, and 3. Based  */
+/*  on the requirement any processing can be done for these options.    */
+        switch( sel ) {
+            case 0 : 
+                     done = 1;
+                     break;
+            case 1 :
+                     any_function( msg[3] );
+                     break;
+            case 2 :
+                     any_function( msg[3] );
+                     break;
+            case 3 :
+                     any_function( msg[3] );
+                     break;
+            case 4 :            
+                     done=1;
+                     break;
+            default:
+                     QsnPutWinMsg( win2, msg›4®, strlen(msg›4®),
+                                   '0', NULL, NULL, 1, 1, QSN_SA_WHT,
+                                    QSN_SA_WHT, QSN_SA_NORM,QSN_SA_NORM, NULL );
+                     break;
+        }
+    }
+}
+
+/************************************************************************/
+/*  This function is a general purpose function which is called for     */
+/*  1, 2, and 3. This function just display a message in this example.  */
+/************************************************************************/
+
+int any_function( char *m ) {
+
+    QsnPutWinMsg(win2, m, strlen(m), '1', NULL, NULL, 1, 1,
+                 QSN_SA_WHT, QSN_SA_WHT, QSN_SA_NORM, QSN_SA_NORM, NULL);
+    QsnBeep(0, 0, NULL);
+}
+
+/************************************************************************/
+/*  This generic draw function will display generic function keys in the*/
+/*  called window. It is called by other draw routines.                 */
+/************************************************************************/
+
+void GenericDraw( const Qsn_Cmd_Buf_T *cbuf, const Qsn_Win_T *win ) {
+
+    QsnWrtDta(msg›1®, strlen(msg›1®), 0, -1, 1, QSN_SA_HI, QSN_SA_NORM,
+			  QSN_SA_BLU, QSN_SA_NORM, *cbuf, *win, NULL);
+}
+
+/************************************************************************/
+/*  This draw function is used to display the menu items in the window  */
+/*  while calling function QsnCrtWin() in function display_menu().      */
+/************************************************************************/
+
+void Draw2( const Qsn_Win_T *win, const Qsn_Cmd_Buf_T *cbuf ) {
+
+    int cur_item=0;
+
+    GenericDraw(cbuf, win);
+
+    while ((itemname› cur_item ® != NULL) && (cur_item <= MAXSCRSIZE )) {
+        strcpy(s, itemname› cur_item ®);
+        QsnWrtDta(s, strlen(s), 0, 6+ cur_item, 20, QSN_SA_NORM, QSN_SA_NORM,
+                  QSN_SA_WHT, QSN_SA_NORM, *cbuf, *win, NULL);
+        cur_item++;
+    }
+    strcpy(s, itemname› selected_item ®);
+    QsnWrtDta(s, strlen(s), 0, 6+ selected_item, 20, QSN_SA_UL, QSN_SA_NORM,
+              QSN_SA_GRN_RI, QSN_SA_NORM, *cbuf, *win, NULL);
+    scrsize = cur_item;
+    QsnWrtDta(msg›5®, strlen(msg›5®), 0, 1, 19, QSN_SA_UL, QSN_SA_NORM,
+              QSN_SA_NORM, QSN_SA_NORM, *cbuf, *win, NULL);
+    QsnWrtDta(msg›0®, strlen(msg›0®), 0, 3, 30, QSN_SA_UL, QSN_SA_NORM,
+              QSN_SA_NORM, QSN_SA_NORM, *cbuf, *win, NULL);
+    QsnWrtDta(msg›2®, strlen(msg›2®), 0, -2, 1, QSN_SA_HI, QSN_SA_NORM ,
+              QSN_SA_BLU, QSN_SA_NORM, *cbuf, *win, NULL);
+}
+
+/************************************************************************/
+/*  This function creates window for the menu.                          */
+/************************************************************************/
+
+void display_menu( int r, int c, int nr, int nc ) {
+
+    win_desc.top_row     = r;
+    win_desc.left_col    = c;
+    win_desc.num_rows    = nr;
+    win_desc.num_cols    = nc;
+    win_desc.show_border = '1';
+    win_desc.fullscreen  = '0';
+
+/*  The Function Draw2 is being associated with the draw routine of     */
+/*  win2. struct ext is passed to QsnCrtWin().                          */
+    ext.draw_fp          = Draw2 ;
+
+    win2 = QsnCrtWin(&win_desc, win_desc_length, &ext, sizeof(ext),
+                     '1', NULL, 0, NULL, NULL);
+    cur = win2;
+}
+
+/************************************************************************/
+/*  This function gets the input from the screen and does processing    */
+/*  based on the key pressed. Any selected option is returned to the    */
+/*  calling function.                                                   */
+/************************************************************************/
+
+int get_input( void ) {
+
+    for ( ;; ) {
+        aid = QsnGetAID(NULL, 0, NULL);
+
+        switch (aid) {
+            case QSN_F3    :
+            case QSN_F12   : 
+                             return(0);
+            case QSN_F4    :
+                             QsnMovWinUsr(cur, NULL);
+                             break;
+            case QSN_F5    :
+                             QsnRszWinUsr(cur, NULL);
+                             break;
+            case QSN_F6    :
+                             selected_item++;
+                             if ( selected_item == scrsize ) {
+                                 selected_item = 0;
+                             }
+
+                             QsnDspWin( win2,NULL);
+                             break;
+            case QSN_F7    :
+                             selected_item--;
+                             if ( selected_item < 0 ) {
+                                 selected_item = scrsize -1;
+                             }
+              
+                             QsnDspWin( win2,NULL);
+                             break;
+            case QSN_F8    :
+            case QSN_ENTER :
+                             return( selected_item + 1);
+            default        : 
+                             any_function(msg[6]);
+        }
+    }
+}

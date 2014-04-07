@@ -1,0 +1,131 @@
+<!--
+LICENSE AND DISCLAIMER
+----------------------
+This material contains IBM copyrighted sample programming source code.
+IBM grants you a nonexclusive license to use, execute, display,
+reproduce, distribute and prepare derivative works of this sample code.
+The sample code has not been thoroughly tested under all conditions.
+IBM, therefore, does not warrant or guarantee its reliability,
+serviceablity, or function. All sample code contained herein is provided
+to you "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE
+IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR
+PURPOSE, ARE EXPRESSLY DISCLAIMED.
+
+COPYRIGHT
+---------
+(C) Copyright IBM CORP. 1996, 1997
+All rights reserved.
+US Government Users Restricted Rights -
+Use, duplication or disclosure restricted
+by GSA ADP Schedule Contract with IBM Corp.
+Licensed Material - Property of IBM
+
+COMMENTS/QUESTIONS
+------------------
+Please send comments or questions via e-mail to Mel Rothman
+at mrothman@vnet.ibm.com
+
+THIS FILE AVAILABLE FROM:
+------------------------
+AS/400 Web Builder's Workshop's Snippets Page
+http://205.217.130.15/workshop/snippets/snippets.htm
+It is included in SAVF CGIDEVD (identified as
+SAVEFILE OF CGIDEV LIBRARY)
+-->
+<!--
+This source is provided as part of an example of CGI programming
+on the AS/400.  IBM grants you a nonexclusive license to use this
+as an example.  The sample is provided in the form of source
+material which you may change and use.  It is recommended that
+you copy the source to a user library, not an IBM product
+library.                                     .
+
+                   DISCLAIMER
+                   ----------
+This material contains programming source code for your
+consideration. These examples have not been thoroughly tested
+under all conditions. IBM therefore, cannot guarantee or imply
+reliability, serviceability, or function of these programs.
+All programs contained herein are provided to you "AS IS".
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+                   COPYRIGHT
+                   ---------
+
+     (C) Copyright IBM CORP. 1996, 1997
+     All rights reserved.
+     US Government Users Restricted Rights -
+     Use, duplication or disclosure restricted
+     by GSA ADP Schedule Contract with IBM Corp.
+     Licensed Material - Property of IBM
+
+
+                   COMMENTS/QUESTIONS
+                   ------------------
+Please send comments or questions via e-mail to Mel Rothman
+at mrothman@vnet.ibm.com
+-->
+<HTML>
+<HEAD>
+<TITLE>Sample CGI Using REXX</TITLE>
+</HEAD>
+<BODY>
+<BR>
+<HR WIDTH=100% SIZE=3 ALIGN=CENTER>
+<H1>Sample CGI Using AS/400 REXX<BR></H1>
+<FORM METHOD="POST" ACTION="/CGIDEVPGM/REXXDRIVER.PGM?DEMO"><P>
+This is an example of AS/400 REXX programming language CGI-BIN processing.<P>
+What is your name? <INPUT NAME="custname" SIZE="50"
+MAXLENGTH="50"><P>
+What is your E-mail address? <INPUT NAME="emailadd" SIZE="50" MAXLENGTH="50">
+<P>
+What operating systems do you use?<BR>
+<SELECT name=OS multiple size="9">
+<OPTION value="MSDOS" disabled> Microsoft MS DOS</OPTION><BR>
+<OPTION value="PCDOS"> IBM PC DOS</OPTION><BR>
+<OPTION value="WIN31"> Microsoft Windows 3.1</OPTION><BR>
+<OPTION value="WIN95"> Microsoft Windows/95</OPTION><BR>
+<OPTION value="WINNT"> Microsoft Windows/NT</OPTION><BR>
+<OPTION value="OS/2"> IBM Warp or OS/2</OPTION><BR>
+<OPTION value="AIX"> IBM AIX</OPTION><BR>
+<OPTION value="UNIX"> Other UNIX</OPTION><BR>
+<OPTION value="other"> Other<BR>
+</SELECT>
+<P>
+Enter some text here<BR>
+<TEXTAREA NAME="thetext" COLS="70" ROWS="5"></TEXTAREA>
+<HR>
+<H3>What is your favorite kind of music?</H3>
+<TABLE Width=80% align="center">
+<TR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="none" CHECKED>None<BR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="hardrock">Hard Rock 'n Roll<BR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="rock">Rock 'n Roll<BR>
+</TR>
+<TR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="easy">Easy Listening<BR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="country">Country<BR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="classical">Classical<BR>
+</TR>
+<TR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="elevator">Elevator<BR>
+<TD>
+<INPUT TYPE="RADIO" NAME="music" VALUE="opera">Opera<BR>
+</TR>
+</TABLE>
+<BR>
+<HR>
+<INPUT TYPE="SUBMIT" VALUE="Press Here to Send">
+<INPUT TYPE="RESET" VALUE="Press Here to Clear">
+</FORM>
+</P>
+</BODY>
+</HTML>

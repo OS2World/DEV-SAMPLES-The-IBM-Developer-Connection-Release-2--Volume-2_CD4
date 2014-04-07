@@ -1,0 +1,151 @@
+ /********************************************************************/
+ /*                                                                  */
+ /* Program name: DEMO1.CCS                                          */
+ /*                                                                  */
+ /* Description: This is a basic OS/2 program that will demonstrat   */
+ /*              the CICS link extra process and functionality.      */
+ /*              This program will run on a machine with CICS and    */
+ /*              Notes installed and read a data file and process    */
+ /*              the data into Lotus Notes databases. The Demo data  */
+ /*              file and Notes databases are provided.              */ 
+ /*                                                                  */
+ /* Statement:     Licensed Materials - Property of ISSC             */
+ /*                                                                  */
+ /*                U.S. Government Users Restricted Rights - use,    */
+ /*                duplication or disclosure restricted by GSA ADP   */
+ /*                Schedule Contract with IBM Corp.                  */
+ /*                                                                  */
+ /********************************************************************/
+ /*                                                                  */
+ /* Function:Call CICS link South Church Function                    */
+ /*                                                                  */
+ /********************************************************************/
+ /*                                                                  */
+ /*  Setup Requirements: OS/2                                        */ 
+ /*                    o DEMO1.DLL must be in the ?:\CICS200\BIN     */
+ /*                      directory.                                  */
+ /*                    o file DEMO1.DAT must be in the               */
+ /*                      ?:\CICS200\BIN directory.                   */
+ /*                                                                  */
+ /*                      CICS OS/2                                   */
+ /*                    o PCT entry - Transaction - DEMO              */
+ /*                                  Group       - CCLINKX           */
+ /*                                  Program     - DEMO1             */
+ /*                    o PCT entry - Transaction - CLNK              */
+ /*                                  Group       - CCLINKX           */
+ /*                                  Program     - CCLINKX           */
+ /********************************************************************/
+ /*                                                                  */
+ /*   System Dependencies -                                          */
+ /*                - this program runs as a CICS Tranaction.         */
+ /*                  It requires CICS V2.01 or higher along with     */
+ /*                  and the Lotus Notes API (V3).                   */
+ /*                                                                  */
+ /********************************************************************/
+ /*                                                                  */
+ /*   DEMO1.DAT Structure : This section describes the layout        */
+ /*                of the DEMO1.DAT file that is used as input       */
+ /*                to the DEMO1 program.                             */   
+ /*                Line 1: Name of Link Database entry(s) to match.  */
+ /*                Line 2->: The remaining lines are to be laid out  */
+ /*                          in the form of the Notes DB to be       */
+ /*                          updated.                                */
+ /* Example of DEMO1.DAT for the CLTEST1.DB                          */
+ /*         0        90        90                                    */
+ /* Line 1: SC01                                                     */
+ /* Line 2: lname     position  address                              */
+ /*                                                                  */
+ /********************************************************************/
+ /*                                                                  */
+ /* The DEMO1 program will issue messages to the CICS message        */
+ /* window at selected times. These can be added to debug problems   */
+ /* as well. The WRITEOP function is linked in to allow for easy     */
+ /* calls tro this function.                                         */
+ /*                                                                  */
+ /********************************************************************/
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <global.h>
+#include <nsfdb.h>
+#include <nsfnote.h>
+#include <nsfsearc.h>
+#include <osmem.h>
+#include <nsferr.h>
+#include <idtable.h>                 /* IDCreateTable */
+
+/* define amount of space to allocate */
+#define  ISSC1 "CICS link -- South Church Data Load -- v0.1\nCopyright(c) 1996 ISSC and IBM, All Rights reserved."
+
+/*********************************************************************/
+/* Maximum size we allow of the data passed to CICS link             */
+/*********************************************************************/
+#define SCCL_MAX_DATA_SIZE  32000
+
+int main() 
+{
+  FILE *fp;
+  const char dfile[] = "D:\\CICS200\\BIN\\DEMO1.DAT";
+  char qname[9];
+  char *data=NULL;
+  int  flag;
+  int  rc1, rc2;
+  int x; 
+  writeop(ISSC1);                    /* Write identifying message to console */
+
+  memset(qname,'\0',9);
+  fp = fopen(dfile,"r");
+  if (fgets(qname,sizeof(qname) - 1,fp) == NULL) 
+   {
+    writeop("Error getting first record from file");
+    flag = 1;
+   }
+  else
+   flag = 0;
+
+  qname[strlen(qname)-1] = '\0'; 
+  writeop(qname);
+
+  data = (char *)malloc(SCCL_MAX_DATA_SIZE);
+  while (flag == 0)
+   {
+    if (fgets(data,SCCL_MAX_DATA_SIZE - 1,fp) == NULL)
+     {
+      flag = 1;
+     }
+    else
+     {
+      x = strlen(data);
+      data[strlen(data)] = '\0'; 
+      EXEC CICS START TRANSID("CLNK")
+                      FROM(data)
+                      LENGTH(strlen(data))
+                      TERMID("V123")
+                      QUEUE(qname)
+                      RESP(rc1)
+                      RESP2(rc2);
+      memset(data,'\0',SCCL_MAX_DATA_SIZE);
+      flag = 0;
+     }
+   }
+  free(data); 
+  fclose(fp);  
+
+  writeop("Data Load program complete");
+
+  EXEC CICS RETURN;
+
+return(0);
+}
+
+/************************************************************/
+/*** Function used to display messages to CICS OS/2       ***/
+/*** screen. Used in debugging and process testing.       ***/
+/************************************************************/
+void writeop(char *msg) 
+{
+  EXEC CICS WRITE OPERATOR TEXT(msg) TEXTLENGTH(strlen(msg));
+}
+

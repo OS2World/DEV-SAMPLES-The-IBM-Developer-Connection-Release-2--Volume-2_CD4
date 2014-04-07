@@ -1,0 +1,51 @@
+<HTML><HEAD><TITLE>
+Solution Developers Marketing Application Guide
+</TITLE></HEAD>
+
+<BODY>
+<H3>Select an Application below:</H3>
+
+<ul>
+<FORM METHOD="GET" ACTION="http://dbserver/cgi-bin/SampleCGI.exe">
+<TABLE COLS=2 FRAME=ALL>
+
+<TBODY>
+<TR>Select a customer:
+<TD NOWRAP>
+<!- replace with SSI ->
+<SELECT NAME="names" SIZE="8" MAXLENGTH="40">
+<OPTION>Mickey Nix
+<OPTION>Fred Gutierez
+<OPTION>Yogesh Shah
+<OPTION>Irene Roberts
+</SELECT>
+
+<TD>
+<TABLE COLS=2 FRAME=ALL WIDTH=100%>
+	<TR>
+	<TD>Product Name:
+	<TD>samplename
+
+	<TR>
+	<TD>Product ID:
+	<TD>productid
+
+	<TR>
+	<TD>Product Description:
+	<TD>description
+
+	<TR>
+	<TD>Supplier ID:
+	<TD>supplierid
+</TABLE>
+
+</TBODY>
+</TABLE>
+
+<INPUT TYPE="SUBMIT" VALUE="Display Product Info">
+<INPUT TYPE="SUBMIT" VALUE="Learn More About Product">
+</FORM>
+</ul>
+
+
+</BODY></HTML>

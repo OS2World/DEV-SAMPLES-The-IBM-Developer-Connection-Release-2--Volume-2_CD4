@@ -1,0 +1,8 @@
+module IsvappsCORBA
+{
+	interface IsvappsManager
+	{
+		string getProducts() ;
+		string getProduct(in string product_id) ;
+	} ;
+} ;

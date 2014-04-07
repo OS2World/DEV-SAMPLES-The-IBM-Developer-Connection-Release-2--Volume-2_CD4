@@ -1,0 +1,192 @@
+/* Sample using stored procedures */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sqlenv.h>
+#include <sql.h>
+#include <sqlda.h>
+#include <sqlca.h>
+#include "util.h"
+#include "appsguid.h"
+
+
+EXEC SQL INCLUDE SQLCA;
+EXEC SQL BEGIN DECLARE SECTION; 
+      	char product_id[11] ;
+      	char product_name[41] ;
+      	char short_name[11] ;
+		char description[80] ;
+		char supplier_id[11] ;
+		char url[80] ;
+		long int count ;
+		char spQueryProductIDsAndNames[50] ;
+EXEC SQL END DECLARE SECTION;
+
+  
+#define  CHECKERR( CE_STR )   if ( check_error ( CE_STR, &sqlca ) != 0 ) return 1;
+
+
+BOOL connect( char * pDatabase, char * pUserID, char * pPassword )
+{
+	EXEC SQL BEGIN DECLARE SECTION; 
+      	char database[13];
+      	char userid[9];
+      	char password[19];
+   	EXEC SQL END DECLARE SECTION;
+	struct sqle_start_options startOptions ;
+
+
+	//: Start Database Manager
+	printf( "About to start Database Manager...\n" ) ;
+	/*
+		char                   sqloptid[8]; // Structure Eye Catcher          
+        	unsigned long          isprofile; // Profile specified?               
+        	char                   profile[SQL_PROFILE_SZ+1]; // Profile          
+        	unsigned long          isnodenum; // Node number specified?           
+        	SQL_PDB_NODE_TYPE      nodenum; // Node number                        
+        	unsigned long          option; // Start option                        
+        	unsigned long          ishostname; // Hostname specified?             
+        	char                   hostname[SQL_HOSTNAME_SZ+1]; // Hostname       
+        	unsigned long          isport; // Port specified?                     
+        	SQL_PDB_PORT_TYPE      port;   // Port                                
+        	unsigned long          isnetname; // Netname specified?               
+        	char                   netname[SQL_HOSTNAME_SZ+1]; // Netname         
+        	unsigned long          tblspace_type; // Addnode tablespace type      
+        	SQL_PDB_NODE_TYPE      tblspace_node; // Addnode tablespace node      
+        	unsigned long          iscomputer; // Computername specified?         
+        	char                   computer[SQL_COMPUTERNAME_SZ+1]; 
+        	char                   *pUserName; // Logon Account user name         
+        	char                   *pPassword; // Logon Account password           
+	*/
+	/*********** DON'T NEED DURING DEVELOPEMENT--start dbm from command line...
+
+	memset( &startOptions, 0, sizeof(struct sqle_start_options ) ) ;
+	sqlepstart( &startOptions, &sqlca ) ;		//: No affect on client or if DBM already started
+	printf( "Database Manager is started...\n" ) ;
+
+	***************************/
+	
+
+	printf( "About to connect to %s...\n", pDatabase ) ;
+
+	strcpy ( userid, pUserID );
+      strcpy ( password, pPassword );
+	strcpy ( database, pDatabase ) ;
+      EXEC SQL CONNECT TO :database USER :userid USING :password ; 
+	  CHECKERR ( "CONNECT TO DATABASE" );
+
+	return 0 ;		
+}
+
+
+
+BOOL insertProduct( char * pProduct_ID, char * pProduct_Name, 
+				 char * pShort_Name, char * pDescription,
+				 char * pSupplier_ID, char * pUrl )
+{
+	printf( "About to add %s to ISVAPPS database...\n", pProduct_Name ) ;
+
+	strcpy ( product_id, pProduct_ID ) ;
+	strcpy ( product_name, pProduct_Name ) ;
+	strcpy ( short_name, pShort_Name ) ;
+	strcpy ( description, pDescription ) ;
+	strcpy ( supplier_id, pSupplier_ID ) ;
+	strcpy ( url, pUrl ) ;
+
+      EXEC SQL INSERT INTO ISVAPPS 
+			VALUES ( :product_id, :product_name, :short_name, 
+				   :description, null, null, null, null, null, null,
+				   :supplier_id, null, :url, null ) ; 
+	  CHECKERR ( "INSERT INTO TABLE" );
+
+	
+	return 0 ;
+}	
+
+BOOL getProduct( PProduct pProduct )
+{
+	
+	strcpy( product_id, pProduct->product_id ) ;
+	printf( "About to select a product with id of %s\n", pProduct->product_id ) ;
+
+	EXEC SQL SELECT  PRODUCT_NAME, SHORT_NAME, DESCRIPTION, SUPPLIER_ID, URL
+			INTO :product_name, :short_name, :description, :supplier_id, :url
+			FROM ISVAPPS WHERE PRODUCT_ID = :product_id ;
+	  CHECKERR ( "SELECT FROM TABLE BY ID" );
+
+	strcpy( pProduct->product_name, product_name ) ;
+	strcpy( pProduct->short_name, short_name ) ;
+	strcpy( pProduct->description, description ) ;
+	strcpy( pProduct->supplier_id, supplier_id ) ;
+	strcpy( pProduct->url, url );
+	return 0 ;
+
+}
+
+long int queryCount( )
+{
+	EXEC SQL SELECT COUNT(*) 
+		INTO :count
+		FROM isvapps ;
+	   CHECKERR( "COUNT" ) ;
+
+	return count ;	
+}
+
+
+/* Good candidate for a remote procedure. */
+BOOL queryProductIDsAndNames( long int *p_lBufferSize, char * p_Buffer )
+{
+	EXEC SQL INCLUDE SQLCA;
+	short int bufferind = 0 ;
+	short int sizeind = 0 ;
+	struct sqlda *inout_sqlda = NULL ;
+	
+	strcpy( spQueryProductIDsAndNames, "AMFuncs.dll!spQueryProductIDsAndNames" ) ;
+
+	inout_sqlda = ( struct sqlda * )malloc( SQLDASIZE( 1 ) );
+	memset( inout_sqlda, 0, sizeof( SQLDASIZE( 1 ) ) ) ;
+	//: sqlda header info
+	
+   	inout_sqlda->sqln = 1 ; 		//: number of SQLVARs--unchanged by DBM
+   	inout_sqlda->sqld = 1 ;			//: number of columns in result table--set by DBM
+
+ 	//:  sqlda->sqlvar base info
+   	inout_sqlda->sqlvar[0].sqltype = SQL_TYP_CLOB ;  //: Up to 2GBs of storage
+   	inout_sqlda->sqlvar[0].sqldata = p_Buffer ;
+   	inout_sqlda->sqlvar[0].sqllen  = 0 ;
+   	inout_sqlda->sqlvar[0].sqlind  = &bufferind ;
+
+	//: sqlda->sqlvar secondary info--required for CLOB
+	SETSQLDOUBLED( inout_sqlda, SQLDOUBLED ) ;  //: For CLOB
+	SETSQLDALONGLEN( inout_sqlda, 0 , *p_lBufferSize ) ;  
+	SETSQLDALENPTR( inout_sqlda, 0, p_lBufferSize ) ;
+
+		
+	printf( "About to call storedprocedure...\n" ) ;
+
+	EXEC SQL CALL :spQueryProductIDsAndNames USING DESCRIPTOR :*inout_sqlda; 
+   		CHECKERR ("SP CALL WITH SQLDA");
+
+	printf( "Stored procedure has returned...\n" ) ;
+	*p_lBufferSize = *(inout_sqlda->sqlvar[0].sqlind) ;
+	free( inout_sqlda ) ;
+ 	return 0 ;
+		
+}
+
+
+BOOL commit( BOOL bool )
+{
+	if( bool )
+	{
+		EXEC SQL COMMIT ;
+			CHECKERR( "COMMIT" ) ;
+	}
+	else
+	{
+		EXEC SQL ROLLBACK ;
+			CHECKERR( "ROLLBACK" ) ;
+	}
+}

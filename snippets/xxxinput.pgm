@@ -1,0 +1,125 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+     Hnomain
+      /copy cgidev/qrpglesrc,prototypes
+      /copy qsysinc/qrpglesrc,qusec
+      ******************************************************************
+      * getinput subprocedure
+      ******************************************************************
+      * Determines request_method
+      *   If POST, gets data from standard input
+      *   If GET, gets data from query_string
+      * Handles escape sequences using cgiparse subprocedure
+      * Puts data and length into Indata and InDataLn, respectively
+      * Puts request_method into InDataType
+      ******************************************************************
+      *
+     Pgetinput         b                   export
+     Dgetinput         pi
+     DInData                      32767    options(*varsize)                    Input data
+     DInDataln                       10i 0                                      Size of input buffer
+     DInActLn                        10I 0                                      Actual length Rcvd
+     DInDataType                      5                                         Returns GET or POST
+
+      * Work variables
+     DDummy            s                   like(InActLn)                        Actual length Rcvd
+
+      * Variables for getenvp subprocedure
+     Denvrcvr          s          32767                                         output: envvar conte
+     Denvrcvrln        s             10i 0 inz(%size(envrcvr))                  input: rcvr length
+     Denvrspln         s             10i 0                                      output: resp length
+     Denvrqsnm         s             30                                         input: envvar name
+     Denvrqsln         s             10i 0                                      input: ln envvar nam
+      * Varialbes for wrtdebug subprocedure
+     Ddbglen           s              5S 0
+     Ddbgdata          s            500
+
+
+     C                   eval      qusbprv = 16                                 qusec length
+      * Get request_method and put into indatatype
+     C                   eval      envrqsnm='REQUEST_METHOD'
+     C     ' '           checkr    envrqsnm      envrqsln
+     C                   clear                   envrcvr
+     C                   callp     getenvp(envrcvr:envrcvrln:envrspln:
+     C                                     envrqsnm:envrqsln:qusec)
+     C                   eval      indatatype = %subst(envrcvr:1:envrspln)
+
+      * If requst method is post, Get content_length into inactln
+     C                   if        indatatype='POST'
+     C                   eval      inactln = contlen
+     C                   endif
+      *
+      * If CONTENT_LENGTH is 0 and method = POST, set indata to blanks and return
+     C                   if               indatatype='POST' and inactln = 0
+     C                   eval      indata = *blanks
+     C                   return
+     C                   endif
+
+      * Handle GET
+     C                   select
+     C                   when      indatatype='GET'
+     C                   eval      envrqsnm='QUERY_STRING'
+     C     ' '           checkr    envrqsnm      envrqsln
+     C                   clear                   envrcvr
+     C                   callp     getenvp(envrcvr:envrcvrln:envrspln:
+     C                                     envrqsnm:envrqsln:qusec)
+     C                   eval      indata = %subst(envrcvr:1:indataln)
+     C                   eval      inactln = envrspln
+      *
+      * Handle POST
+     C                   when      indatatype='POST'
+     C                   CALLB     'QtmhRdStin'
+     C                   parm                    INData                         Input buffer
+     C                   parm                    InActLn                        Input length to get
+     C                   parm                    dummy                          Use inactln from
+     C                   parm                    QUSEC                              content_length
+     C                   endsl
+      *
+      * Debug output
+     C                   eval      dbgdata='ASCII input:  ' + InData
+     C                   eval      dbglen=INActLn
+     C                   callp     wrtdebug(dbglen:dbgdata)
+
+      * Handle escape sequences, + signs, etc.
+     C                   callp     cgiparse(indata:inactln)
+      * Debug output
+     C                   eval      dbgdata='EBCDIC input: ' + InData
+     C                   eval      dbglen=INActLn
+     C                   callp     wrtdebug(dbglen:dbgdata)
+
+     C                   return
+     Pgetinput         e
+

@@ -1,0 +1,81 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+debugFhtmldebug o    e             disk    USROPN
+      /copy qsysinc/qrpglesrc,qusec
+      * Variables for QtmhWrStout
+     DOutBuffLn        S             10i 0                                      Binary buffer length
+      * Variables for entry parameter list.  Note: 9999 is maximum size of CL *CHAR variable
+     DOutbuff          S           9999                                         Output buffer
+     DOutBuffPk        S             15P 5                                      Packed buffer length
+     Dnewline          C                   x'15'
+     Di                S              5i 0
+     Dj                S              5i 0
+      * Mainline calculations
+     C     *entry        plist
+     C                   parm                    outbuff
+     C     OutBuffln     parm                    outbuffPk
+      *
+     C                   eval      qusbprv = 16                                 qusec length
+      * Setup for debug by defining and reading dataara cgidebug.  '1'=debug on '2' debug off
+debugC     *DTAARA       define                  cgidebug          1
+debugC                   in        cgidebug                             50
+debugC                   if        *in50
+debugC                   eval      cgidebug='0'
+debugC                   end
+debugC                   if        cgidebug='1'
+debugC                   OPEN      HTMLDEBUG
+debugC                   endif
+      * Standard output subroutine
+     C                   callb     'QtmhWrStout'
+     C                   parm                    OUTBuff                         Output buffer
+     C                   parm                    OUTBuffLn                       Outpt buffer length
+     C                   parm                    QUSEC                           Error structure
+debugC                   if        cgidebug='1'
+     C                   eval      i = 1
+     C                   eval      j = 0
+     C                   dou       i = 0
+     C     newline       scan      OUTBuff:i     i
+     C                   if        i>0
+debugC                   eval      dbglen = i - j
+debugC                   eval      dbgdata = %subst(outbuff:j+1:i-j)
+debugC                   write     dbgrcd
+     C                   eval      j=i
+     C                   eval      i = i + 1
+     C                   endif
+     C                   enddo
+debugC                   CLOSE     HTMLDEBUG
+debugC                   endif
+     C                   return

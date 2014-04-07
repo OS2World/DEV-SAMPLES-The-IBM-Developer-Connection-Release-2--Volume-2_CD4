@@ -1,0 +1,27 @@
+// This is a fixup patch file. This is an optional file in order to patch
+// your read only files in memory. This can be used for R/O databases that
+// have live object pointers in them: The syntax is as follows:
+// (Add Comments here only)
+//
+// Column 1 - 32 Bit Offset into R/O data that will have a fixup(relocation)
+//            applied
+//
+// Column 2 - 1. Nothing specified
+//                 This causes the tool to generate a seg relative fixup
+//                 The loader will extract the information in the field
+//                 pointed to by the fixup record and apply a delta address
+//                 to it, then reinsert it back into the original offset.
+//
+//            2. 32 Bit Cont
+//                 This is a patch value that will be placed directly into
+//                 R/O Data. No relocation will be generated for this field.
+//
+//            3. Symbol Name
+//                 This will generate and undefined external symbol
+//                 definition that the linker will try to resolv via an obj
+//                 or libarary.
+//
+0x0000000  0x00000000
+0x0000000  DosStartSession
+0x0000008
+

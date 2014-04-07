@@ -1,0 +1,469 @@
+//-----------------------------------------------------------------------------
+// WorlsClocks.java
+//
+// A simple travel clock/world clock.
+//
+// This simple Java test application demonstrates how to query the current time
+// relative to Greenwich Mean Time (GMT) and display the time in a few cities
+// around the World.
+//
+// Also, this program can be run either as an applet or as a standalone 
+// Java application.
+// 
+//
+// Author : Kelvin R Lawrence.     28th-January-1997
+//
+// History:
+//
+//-----------------------------------------------------------------------------
+
+import java.awt.* ;
+import java.applet.* ;
+import java.util.*;
+
+//---------------------------------------------------------------
+// Class: Timer
+//
+// Simple timer class that will setup a timer using a secondary
+// thread and notify the caller each time the timer "ticks".
+//---------------------------------------------------------------
+class Timer extends Thread 
+{
+  WorldClocks clks ;
+
+  //--------------------------------------------------------------------
+  //
+  // Constructor: Timer( WorldClocks c )
+  //
+  // Caller passes us a WorldClocks object that we will call back to when the
+  // timer goes off by calling the timerNotify() method of the WorldClocks
+  // object.
+  //--------------------------------------------------------------------
+  Timer( WorldClocks c )
+  {
+    clks = c ;
+  }
+
+  //--------------------------------------------------------------------
+  // run()
+  //
+  // This method is automatically called when a new Timer object is 
+  // created as the Timer class extends Thread. In this example we
+  // set ourselves up to generate timer "ticks" at one second intervals.
+  //--------------------------------------------------------------------
+  public void run()
+  {
+    try
+    {
+      System.out.println( "Timer: Timer thread is running" ) ;  
+
+      while( 1 == 1)
+      {
+        sleep( 1000 ) ;
+        //System.out.println( "Timer: Tick-Tock" ) ;  
+        clks.timerNotify() ;
+      }
+    }
+    catch( InterruptedException e )
+    {
+      return ;
+    }
+  }
+}
+
+//---------------------------------------------------------------
+// Class: WorldClocks
+//
+// Simple class that shows the time in a few places around the
+// World. This class uses the Timer class to generate one second
+// timer notifications.
+//
+//---------------------------------------------------------------
+
+public class WorldClocks extends Applet
+{
+
+  //-----------------------------------------------------------------------
+  // Define some constants that we can use to refer to certain geographic
+  // locations. The names of these constants are based on the international
+  // system of naming conventions used to refer to international airports.
+  //-----------------------------------------------------------------------
+  static final int JFK = 0 ;  // New York City JFK
+  static final int DFW = 1 ;  // Dallas Fort Worth
+  static final int DEN = 2 ;  // Denver
+  static final int LAX = 3 ;  // Los Angeles
+  static final int HNL = 4 ;  // Honolulu
+  static final int LHR = 5 ;  // London Heathrow
+  static final int ORY = 6 ;  // Paris (Orly)
+  static final int NRT = 7 ;  // Tokyo (Norita)
+  static final int SYD = 8 ;  // Sydney
+
+  static final String[] places = { "New York"
+                                 , "Dallas" 
+                                 , "Denver"
+                                 , "Los Angeles"
+                                 , "Honolulu"
+                                 , "London"
+                                 , "Paris" 
+                                 , "Tokyo"
+                                 , "Sydney"
+                                 } ;
+
+
+  //--------------------------------------------------------
+  // Setup timezones, relative to Greenwich Mean Time (GMT).
+  //--------------------------------------------------------
+
+  static final int[] timezones = { -5   // New York        
+                                 , -6   // Dallas          
+                                 , -7   // Denver          
+                                 , -8   // LA              
+                                 , -10  // Honolulu        
+                                 , +0   // London          
+                                 , +1   // Paris           
+                                 , +9   // Tokyo           
+                                 , +11  // Sydney          
+                                 };
+
+  Button place1  ;   Button clock1 ;
+  Button place2  ;   Button clock2 ; 
+  Button place3  ;   Button clock3 ; 
+  Button place4  ;   Button clock4 ; 
+  Button place5  ;   Button clock5 ; 
+  Button place6  ;   Button clock6 ; 
+  Button place7  ;   Button clock7 ; 
+  Button place8  ;   Button clock8 ; 
+  Button place9  ;   Button clock9 ; 
+
+  Timer timer_thread ;
+  int[] hours ;
+
+  Button[] locations ;
+  Button[] clocks ;
+
+  //--------------------------------------------------------------
+  // appletMode will be set to true if we are running as an applet. 
+  // If we are running as an application, appletMode will be set 
+  // to false by the main() method.
+  //--------------------------------------------------------------
+
+  boolean appletMode = true ;
+
+  //----------------------------------------------------------------
+  // init()
+  //
+  // Init routine. Called whenever the applet is first loaded or by
+  // the main() method if we are started as an application.
+  //
+  //----------------------------------------------------------------
+  public void init()
+  {
+    System.out.println( "init() method called" ) ;
+
+    setLayout( new GridLayout(3,3) ) ;
+
+    //----------------------------------------------------------------------
+    // If we are running as an applet, query information from the HTML file.
+    //----------------------------------------------------------------------
+    if ( appletMode )
+    {
+      System.out.println( "Running in applet mode" ) ;
+      System.out.println( "Parameter Title = " + getParameter("Title") ) ;
+    }
+
+    hours     = new int[9] ;
+    locations = new Button[9] ;
+
+    Panel p1 = new Panel() ;
+    Panel p2 = new Panel() ;
+    Panel p3 = new Panel() ;
+    Panel p4 = new Panel() ;
+    Panel p5 = new Panel() ;
+    Panel p6 = new Panel() ;
+    Panel p7 = new Panel() ;
+    Panel p8 = new Panel() ;
+    Panel p9 = new Panel() ;
+
+    for ( int i = 0; i<9; i++ )
+    {
+      locations[i] = new Button( places[i] ) ;
+    }
+
+    place1 = new Button( places[JFK] ) ;
+    place2 = new Button( places[DFW] ) ;
+    place3 = new Button( places[DEN] ) ;
+    place4 = new Button( places[LAX] ) ;
+    place5 = new Button( places[HNL] ) ;
+    place6 = new Button( places[LHR] ) ;
+    place7 = new Button( places[ORY] ) ;
+    place8 = new Button( places[NRT] ) ;
+    place9 = new Button( places[SYD] ) ;
+
+    clock1 = new Button( "00:00:00" ) ;
+    clock2 = new Button( "00:00:00" ) ;
+    clock3 = new Button( "00:00:00" ) ;
+    clock4 = new Button( "00:00:00" ) ;
+    clock5 = new Button( "00:00:00" ) ;
+    clock6 = new Button( "00:00:00" ) ;
+    clock7 = new Button( "00:00:00" ) ;
+    clock8 = new Button( "00:00:00" ) ;
+    clock9 = new Button( "00:00:00" ) ;
+
+    place1.setBackground( Color.yellow ) ;
+    place2.setBackground( Color.yellow ) ;
+    place3.setBackground( Color.yellow ) ;
+    place4.setBackground( Color.yellow ) ;
+    place5.setBackground( Color.yellow ) ;
+    place6.setBackground( Color.yellow ) ;
+    place7.setBackground( Color.yellow ) ;
+    place8.setBackground( Color.yellow ) ;
+    place9.setBackground( Color.yellow ) ;
+
+    Font fnt = new Font( "TimesRoman", Font.BOLD, 24 ) ;
+
+    place1.setFont( fnt ) ;
+    clock1.setFont( fnt ) ;
+
+    p1.setLayout( new GridLayout( 2,1 )) ;
+    p1.add( place1 ) ;
+    p1.add( clock1 ) ;
+
+    p2.setLayout( new GridLayout( 2,1 )) ;
+    p2.add( place2 ) ;
+    p2.add( clock2 ) ;
+
+    p3.setLayout( new GridLayout( 2,1 )) ;
+    p3.add( place3 ) ;
+    p3.add( clock3 ) ;
+
+    p4.setLayout( new GridLayout( 2,1 )) ;
+    p4.add( place4 ) ;
+    p4.add( clock4 ) ;
+
+    p5.setLayout( new GridLayout( 2,1 )) ;
+    p5.add( place5 ) ;
+    p5.add( clock5 ) ;
+
+    p6.setLayout( new GridLayout( 2,1 )) ;
+    p6.add( place6 ) ;
+    p6.add( clock6 ) ;
+
+    p7.setLayout( new GridLayout( 2,1 )) ;
+    p7.add( place7 ) ;
+    p7.add( clock7 ) ;
+
+    p8.setLayout( new GridLayout( 2,1 )) ;
+    p8.add( place8 ) ;
+    p8.add( clock8 ) ;
+
+    p9.setLayout( new GridLayout( 2,1 )) ;
+    p9.add( place9 ) ;
+    p9.add( clock9 ) ;
+
+    //-------------------------------------
+    // Now add each panel to the main grid.
+    //-------------------------------------
+    add(p1) ;
+    add(p2) ;
+    add(p3) ;
+    add(p4) ;
+    add(p5) ;
+    add(p6) ;
+    add(p7) ;
+    add(p8) ;
+    add(p9) ;
+
+    //---------------------------------------------------------------------
+    // Kick off the timer thread which will notify us, at one second
+    // intervals to update the clocks, by calling back to our timerNotify()
+    // method.
+    //---------------------------------------------------------------------
+    timer_thread = new Timer( this ) ;
+    timer_thread.start() ;
+  }
+
+  //--------------------------------------------------------------------
+  // timerNotify()
+  //
+  // This method is invoked by the Timer object each time the timer
+  // goes off.
+  //--------------------------------------------------------------------
+  public void timerNotify()
+  {
+    updateClocks() ;
+  }
+
+  //--------------------------------------------------------------------
+  // updateClocks()
+  //
+  // Called whenever the clocks need updating. Typically this will be
+  // when they are first created and each time they need updating (i.e.
+  // at one second intervals ).
+  //
+  // NOTE: At present, this function assumes that the local machine
+  //       is using Central Standard Time.
+  //--------------------------------------------------------------------
+  public void updateClocks()
+  {
+     //----------------------------------------------------
+     // Firstly, get the current time on the local machine.
+     //----------------------------------------------------
+
+     Date date = new Date() ;
+
+     int h ; // current hours
+     int m ; // current minutes
+     int s ; // current seconds 
+     int tmp ;
+
+     h  = date.getHours()   ;
+     m  = date.getMinutes() ;
+     s  = date.getSeconds() ;
+
+     //--------------------------------------------------------------------------
+     // Query the locale information on the local machine to get the offset
+     // from GMT and calculate the current hour for the GMT timezone by applying
+     // that offset. We can then do all of our subsequent calculations relative
+     // to GMT.
+     //--------------------------------------------------------------------------
+     int gmtOffset = date.getTimezoneOffset() ;
+     int gmtHour   = ( h + gmtOffset/60 ) % 24 ;
+
+     //System.out.println( "gmtOffset=" + gmtOffset ) ;
+     //System.out.println( "gmtHour=" + gmtHour ) ;
+
+     //----------------------------------------------------------------
+     // Calculate the time in the other timezones we are interested in.
+     //----------------------------------------------------------------
+     for ( int i = 0; i < 9; i++ )
+     {
+        tmp = ( gmtHour + timezones[i] ) % 24 ;
+
+        if ( tmp < 0 )
+        {
+          tmp = tmp + 24 ;   
+        }
+
+        hours[i] = tmp ;
+     }
+
+     //----------------------------------------
+     // Update the time display for each clock.
+     //----------------------------------------
+     clock1.setLabel( getTimeString( hours[0],m,s ) );
+     clock2.setLabel( getTimeString( hours[1],m,s ) );
+     clock3.setLabel( getTimeString( hours[2],m,s ) );
+     clock4.setLabel( getTimeString( hours[3],m,s ) );
+     clock5.setLabel( getTimeString( hours[4],m,s ) );
+     clock6.setLabel( getTimeString( hours[5],m,s ) );
+     clock7.setLabel( getTimeString( hours[6],m,s ) );
+     clock8.setLabel( getTimeString( hours[7],m,s ) );
+     clock9.setLabel( getTimeString( hours[8],m,s ) );
+
+  }
+
+
+  //----------------------------------------------------------
+  // action()
+  //
+  // Handle user actions.
+  //
+  // If a push button was pressed change the color of the 
+  // button. Also display the number of the button pressed on
+  // the console window.
+  //----------------------------------------------------------
+  public boolean action( Event evt, Object what )
+  {
+    Button temp = null ;
+
+    System.out.println("Start of action() method");
+    System.out.println( "Button pressed was : " + what ) ;
+
+    if ( evt.id == Event.ACTION_EVENT )
+    {
+      temp = ((Button)evt.target )  ;
+
+    }
+    else
+    {
+      return false ;
+    }
+
+    return true ;
+  }
+
+
+  //-----------------------------------------------------------------------
+  // getTimeString()
+  //
+  // Takes three integers representing the curent time in hours, minutes
+  // and seconds and returns a string (zero padded as necessary) that
+  // represents that time (in standard 24 hour clock notation).
+  //
+  //-----------------------------------------------------------------------
+  public String getTimeString( int h, int m, int s )
+  {
+    String hs,ms,ss ;
+
+    if ( h < 10 )
+    {
+      hs = "0" + Integer.toString( h ) ;
+    }
+    else
+    {
+      hs = Integer.toString( h ) ;
+    }
+
+    if ( m < 10 )
+    {
+      ms = "0" + Integer.toString( m ) ;
+    }
+    else
+    {
+      ms = Integer.toString( m ) ;
+    }
+
+    if ( s < 10 )
+    {
+      ss = "0" + Integer.toString( s ) ;
+    }
+    else
+    {
+      ss = Integer.toString( s ) ; 
+    }
+
+    return( hs + ":" + ms + ":" + ss ) ;
+  }
+
+  //-----------------------------------------------------------------------
+  // main()
+  //
+  // Program entry point when we are being run as a stand alone application.
+  //
+  //-----------------------------------------------------------------------
+  static public void main( String[] args )
+  {
+    System.out.println( "Running in application mode" ) ;
+
+    Frame f = new Frame( "Java World Clocks" ) ;
+
+    WorldClocks clks = new WorldClocks() ;
+
+    //---------------------------------------------------------------
+    // Tell this instance of the WorldClocks object that we are running  
+    // as a standalone application and invoke the init routine that
+    // would be called if we were running as an applet.
+    //---------------------------------------------------------------
+
+    clks.appletMode = false ;
+
+    clks.init() ;
+
+    //clks.start() ;
+
+    f.add( "Center", clks );
+    f.resize( 300, 300 );
+    f.show();
+  }
+}
+

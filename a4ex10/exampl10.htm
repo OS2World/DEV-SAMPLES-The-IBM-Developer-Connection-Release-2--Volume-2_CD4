@@ -1,0 +1,106 @@
+/*
+<br>
+<head>
+<title>Program that uses iconv() to convert characters from one CCSID to another CCSID</title>
+</head>
+
+<h1>Program that uses iconv() to convert characters from one CCSID to another CCSID</h1>
+
+<p>
+This program gives an example how to convert a buffer of characters from one coded character set identifier (CCSID) to another CCSID.
+
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+*/
+/************************************************************************/
+/*                                                                      */
+/* test case:    convert.c                                              */
+/*                                                                      */
+/* objective:    iconv_open(), iconv() and iconv_close() example        */
+/*                                                                      */
+/* description:  The from code and to code are set to convert from      */
+/*               CCSID 00037 to 00850. Note the reserved positions of   */
+/*               the from code and to code parameters. After conversion */
+/*               the contents of output buffers are printed in Hex to   */
+/*               compare them with the corresponding Hex values for the */
+/*               code page 00850 (which can be found in International   */
+/*               Application Development manual).                       */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTBNDC. Call it with no    */
+/*               parameters.                                            */
+/*                                                                      */  
+/************************************************************************/
+
+#include <iconv.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+    char f_code[33];              /* From CCSID                           */
+    char t_code[33];              /* To CCSID                             */
+    iconv_t iconv_handle;         /* Conversion Descriptor returned       */
+                                  /* from iconv_open() function           */
+    char *ibuf = "ABCxyz012#&";   /* Buffer of characters to be converted */
+    char *obuf;                   /* Buffer for converted characters      */
+    size_t ibuflen;               /* Length of input buffer               */
+    size_t obuflen;               /* Length of output buffer              */
+    char *isav;                   /* Saved pointer to input buffer        */
+    char *osav;                   /* Saved pointer to output buffer       */
+
+/* All reserved positions of from code (last 12 characters) and to code   */
+/* (last 19 characters) must be set to hexadecimal zeros.                 */
+
+    memset(f_code,'\0',33);
+    memset(t_code,'\0',33);
+
+    strcpy(f_code,"IBMCCSID000370000000");
+    strcpy(t_code,"IBMCCSID00850");
+
+    iconv_handle = iconv_open(t_code,f_code);
+    if (iconv_handle.return_value < 0)
+    {
+        perror("ERROR");
+        printf("iconv_open fail: %d\n",errno);
+        exit(-1);
+    }
+    else
+    {
+        ibuflen = sizeof(ibuf);
+        obuflen = ibuflen;
+        obuf    = (char *) malloc(obuflen);
+/* Save pointers to input and output buffers as these are modified by iconv()*/
+/* function                                                                  */
+        isav    = ibuf;
+        osav    = obuf;
+        printf("inbuf = %s\n",ibuf);
+        iconv(iconv_handle, &ibuf, &ibuflen, &obuf, &obuflen);
+        perror("ERROR");
+        printf("outbuf = %s\n",osav);
+
+/* Also print each character in hexadecimal to check the conversion          */
+/* The hex values can be compared with the values for code page 00850.       */
+
+        printf("outbuf  0 = %x\n",osav[0]);
+        printf("outbuf  1 = %x\n",osav[1]);
+        printf("outbuf  2 = %x\n",osav[2]);
+        printf("outbuf  3 = %x\n",osav[3]);
+        printf("outbuf  4 = %x\n",osav[4]);
+        printf("outbuf  5 = %x\n",osav[5]);
+        printf("outbuf  6 = %x\n",osav[6]);
+        printf("outbuf  7 = %x\n",osav[7]);
+        printf("outbuf  8 = %x\n",osav[8]);
+        printf("outbuf  9 = %x\n",osav[9]);
+        printf("outbuf 10 = %x\n",osav[10]);
+
+        iconv_close(iconv_handle);
+    }
+    return(0);
+}

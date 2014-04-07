@@ -1,0 +1,231 @@
+/*
+<br>
+<head>
+<title>Program that gets hidden input from terminal</title>
+</head>
+
+<h1>Program that gets hidden input from terminal</h1>
+
+<p>The gets_hidden() function in this program changes the input line on the terminal used by the ILE C /400 runtime to a hidden field.  This allows a program to read a string that is not displayed on the terminal.  For example, a program could use this function to get a password from the user.
+
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+*/
+/************************************************************************/
+/*                                                                      */
+/* test case:    gethdnip.c                                             */
+/*                                                                      */
+/* objective:    getting hidden input from the terminal                 */
+/*                                                                      */
+/* description:  This sample program can be used whenever a hidden      */
+/*               input is requred from the terminal, in cases when      */
+/*               user enters password.                                  */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTBNDC. Call it with no    */
+/*               parameters.                                            */
+/*                                                                      */  
+/************************************************************************/
+/*
+
+/* Includes */
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>           
+#include <qsnapi.h>          /* DSM APIs and structures */
+
+/* Constants */
+#define FIELD_LEN 80
+#define FIELD_ID 42
+
+/* Function prototypes */
+char *gets_hidden(char *);
+
+/**********************************************************************/
+/*                                                                    */
+/* Function:    main()                                                */
+/*                                                                    */
+/* Description: Test the gets_hidden() function.                      */
+/*                                                                    */
+/**********************************************************************/
+
+int main (int argc, char *argv[])
+{
+  char username[11];
+  char password[11];
+  char description[50];
+
+  /* Get the username from the user. */
+  memset(username, '\0', sizeof(username));
+  printf("Username?\n");
+  gets(username);
+
+  /* Get the password from the user. */
+  memset(password, '\0', sizeof(password));
+  printf("Password?\n");
+  gets_hidden(password);
+
+  /* Get the description from the user. */
+  memset(description, '\0', sizeof(description));
+  printf("Description?\n");
+  gets(description);
+  
+  printf("username=%s, password=%s, description=%s\n",
+         username, password, description);
+  
+  return 0;
+}
+
+/**********************************************************************/
+/*                                                                    */
+/* Function:    gets_hidden()                                         */
+/*                                                                    */
+/* Description: Get a hidden string from the terminal.  You can use   */
+/*              this function instead of gets() when you need to      */
+/*              prompt for a string that you don't want displayed on  */
+/*              the terminal (for example, a password).               */
+/*                                                                    */
+/* Notes:       The maximum length of the string you can read from    */
+/*              the terminal is 73 bytes.                             */
+/*                                                                    */
+/**********************************************************************/
+
+char *gets_hidden(char *buffer)
+{
+  Qsn_Ssn_T session;         /* Session handle */
+  Q_Bin4 rc;                 /* Return code from DSM APIs */
+  Q_Fdbk_T error = { sizeof(Q_Fdbk_T), 0 }; /* Error code for DSM APIs */
+  Qsn_Fld_Inf_T fieldInfo;   /* Structure to receive results from input
+                                field */
+  Qsn_Inp_Buf_T iBuf;        /* Input buffer */
+  Q_Bin4 numFieldsRead;      /* Number of fields read */
+
+  /* Get the handle for the session used by the C runtime. */
+  session = _C_Get_Ssn_Handle();
+
+  /* Clear the field table so we can redefine the input field. */
+  rc = QsnClrFldTbl(
+                    0,                 /* Command buffer handle (not used) */
+                    session,           /* Low-level session handle */
+                    &error             /* Error code structure */
+                    );
+
+  if (rc != 0) {
+    errno = EIO;
+    return NULL;
+  }
+
+  /* Set a new input field with the non-display attribute. */
+  rc = QsnSetFld(
+                 FIELD_ID,             /* Field ID (internal reference) */
+                 FIELD_LEN,            /* Field length */
+                 20,                   /* Row */
+                 6,                    /* Column */
+                 QSN_FFW_ALPHA_SHIFT,  /* Field Format Word */
+                 NULL,                 /* Field Control Words */
+                 0,                    /* Number of Field Control Words */
+                 QSN_SA_ND,            /* Monochrome attribute = Non Display */
+                 QSN_SA_ND,            /* Color attribute = Non Display */
+                 0,                    /* Command buffer handle (not used) */
+                 session,              /* Low-level session handle */
+                 &error                /* Error code structure */
+                 );
+
+  if (rc != 0) {
+    errno = EIO;
+    return NULL;
+  }
+
+  /* Create the buffer for retrieving input from the session. */
+  rc = QsnCrtInpBuf(
+                    FIELD_LEN,         /* Buffer size */
+                    0,                 /* Increment amount */
+                    0,                 /* Maximum size */
+                    &iBuf,             /* Buffer handle */
+                    &error             /* Error code structure */
+                    );
+
+  if (rc < 0) {
+    errno = EIO;
+    return NULL;
+   }
+    
+
+  /* Initialize the field to nulls. */
+  rc = QsnWrtPad(
+                 0x00,                 /* Character  */
+                 FIELD_LEN,            /* Field length  */
+                 FIELD_ID,             /* Field ID (internal reference) */
+                 0,                    /* Row (not used) */
+                 0,                    /* Column (not used) */
+                 0,                    /* Command buffer handle (not used) */
+                 session,              /* Low-level session handle  */
+                 &error                /* Error code structure */
+                 );
+
+  if (rc != 0) {
+    errno = EIO;
+    return NULL;
+  }
+
+  /* Read the field from the session. */
+  rc = QsnReadMDT(
+                  QSN_CC1_NULL,        /* Control char byte 1 */
+                  QSN_CC2_NULL,        /* Control char byte 2 */
+                  &numFieldsRead,      /* Number of fields read */
+                  iBuf,                /* Input buffer handle */
+                  0,                   /* Command buffer handle (not used) */
+                  session,             /* Low-level session handle  */
+                  &error               /* Error code structure */
+                  );
+
+  if (rc < 0) {
+    errno = EIO;
+    return NULL;
+  }
+   
+  /* There was data in the field. */
+  if (numFieldsRead > 0) {
+    /* Get the size of and pointer to the field data. */
+    rc = QsnRtvFldInf(
+                      iBuf,              /* Input buffer handle */
+                      1,                 /* Field number to retrieve */
+                      &fieldInfo,        /* Receiver variable */
+                      sizeof(fieldInfo), /* Length of receiver variable */
+                      session,           /* Low-level session handle */
+                      &error             /* Error code structure */
+                      );
+
+    if (rc != 0) {
+      errno = EIO;
+      return NULL;
+    }
+
+    /* Copy the data to the caller's buffer. */
+    memcpy(buffer, fieldInfo.data, fieldInfo.len);
+    *(buffer+fieldInfo.len) = '\0';
+  }  /* End of there was data in the field */
+
+  /* There are no fields read when user just hits enter key and there
+     are no characters typed. */
+  else {
+    buffer = NULL;
+  }
+
+  /* Delete the input buffer. */
+  rc = QsnDltBuf(
+                 iBuf,                 /* Buffer handle */
+                 &error                /* Error code structure */
+                 );
+
+  if (rc != 0) {
+    errno = EIO;
+    return NULL;
+   }
+
+  return buffer;
+} /* End of gets_hidden() */

@@ -1,0 +1,234 @@
+                            [WWW.AS400.IBM.COM]
+
+                              [Code Snippets]
+
+Many AS/400 Business Partners provide Internet solutions. A list, sorted by
+industry, is available for you to browse.
+Business Partners can tell the world about their plans for network-enhanced
+AS/400 applications by completing this template.
+
+                                   [Image]
+                           LICENSE AND DISCLAIMER
+   This material contains IBM copyrighted sample programming source code.
+       IBM grants you a nonexclusive license to use, execute, display,
+   reproduce, distribute and prepare derivative works of this sample code.
+    The sample code has not been thoroughly tested under all conditions.
+       IBM, therefore, does not warrant or guarantee its reliability,
+  serviceablity, or function. All sample code contained herein is provided
+  to you "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE
+     IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR
+                     PURPOSE, ARE EXPRESSLY DISCLAIMED.
+
+                                   [Image]
+ All files will be downloaded with the filename 'sendfile.pgm'. Rename each
+                          file as you download it.
+ ** To transfer save files properly: save them to your disk and ftp them to
+                        your AS/400 in binary mode.
+  Title and
+   Link to      Type     Short Description         Long Description
+   Snippet
+
+ MENU         HTMLSRC   HTML DRIVER FOR    HTML DRIVER FOR RPG AND REXX
+                        RPG AND REXX DEMOS DEMOS
+
+ TALK1        HTMLSRC   RPG DEMO - HTML    RPG DEMO - HTML INPUT FORM
+                        INPUT FORM
+
+ ** SAVEFILE                               SAVEFILE OF CGIDEV LIBRARY.
+ OF CGIDEV    SAVF      SAVEFILE OF CGIDEV SAVED AS CGIDEVD/CGIDEVD.
+ LIBRARY                LIBRARY            INSTRUCTIONS FOR INSTALLING AND
+                                           USING ARE IN README.CGIDEVD
+
+ TALK2        HTMLSRC   RPG DEMO - HTML    RPG DEMO - HTML OUTPUT
+                        OUTPUT
+ REXX DEMO              REXX DEMO HTML
+ HTML FORM    HTMLSRC   FORM               REXX DEMO HTML FORM
+                        PAGE COUNTING
+ COUNT        QRPGLESRC PROGRAM FOR REXX   PAGE COUNTING PROGRAM FOR REXX
+                        CGIS               CGIS
+                        PROGRAM TO GET     PROGRAM TO GET CONTENTS OF AN
+ GETENV       QRPGLESRC CONTENTS OF AN     ENVIRONMENT VARIABLE. WRITTEN
+                        ENVIRONMENT        TO SUPPORT REXX CGIS. USES
+                        VARIABLE.          QTMHGETENV API.
+                        PROTOTYPES FOR
+ PROTOTYPES   QRPGLESRC CGIDEV LIBRARY'S   PROTOTYPES FOR CGIDEV LIBRARY'S
+                        ILE RPG            ILE RPG SUBPROCEDURES
+                        SUBPROCEDURES
+                        UTILITY TO REMOVE
+ RMVSRCRPG    QRPGLESRC SELECTED SOURCE    UTILITY TO REMOVE SELECTED
+                        RECORDS            SOURCE RECORDS
+                        COMMAND THAT       COMMAND THAT REMOVES SELECTED
+ RMVSRCRCDS   QCMDSRC   REMOVES SELECTED   SOURCE RECORDS FROM A SOURCE
+                        SOURCE RECORDS     PHYSICAL FILE.
+                        PROGRAM TO GET STD PROGRAM TO GET STANDARD INPUT.
+ STDIN        QRPGLESRC INPUT. WRITTEN TO  WRITTEN TO SUPPORT REXX CGIS.
+                        SUPPORT REXX CGIS  USES QTMHRDSTIN API.
+                        PROGRAM TO WRITE   PROGRAM TO WRITE STANDARD
+ STDOUT       QRPGLESRC STANDARD OUTPUT.   OUTPUT. SUPPORTS REXX CGIS.
+                        SUPPORTS REXX CGIS USES QTMHWRSTOUT API.
+                                           RPG CGI TEMPLATE PROGRAM. FULLY
+                                           FUNCTIONAL PROGRAM THAT SERVES
+ TEMPLATE     QRPGLESRC RPG CGI TEMPLATE   AS A MODEL FOR BUILDING NEW CGI
+                        PROGRAM.
+                                           PROGRAMS. SEE DETAILS IN README
+                                           FILE, MEMBER CGIDEVD.
+                                           PAGE COUNTER ILE RPG MODULE
+ XXXCOUNT     QRPGLESRC PAGE COUNTER ILE   SOURCE (COUNTP SUBPROCEDURE).
+                        RPG MODULE SOURCE  USED BY CGISRVPGM SVCPGM AND
+                                           COUNT RPG PROGRAM.
+                        CHARACTER TO       INCLUDES CHAR2HEX SUBPROCEDURE.
+ XXXC2H       QRPGLESRC HEXADECIMAL        USED BY CGISRVPGM SVCPGM.
+                        CONVERSION ILE RPG CONVERTS ONE CHARACTER TO TWO
+                        MODULE SOURCE      HEXADECIMAL CHARACTERS.
+                        CHARACTER TO       INCLUDES C2N SUBPROCEDURE. USED
+ XXXC2N       QRPGLESRC NUMERIC CONVERSION BY CGISRVPGM SVCPGM. CONVERTS
+                        ILE RPG MODULE     CHARACTER STRING TO 30.9 PACKED
+                        SOURCE             NUMBER.
+                                           INCLUDES WRTDEBUG AND ISDEBUG
+                        WRITES CGI         RPG SUBPROCEDURES. INCLUDED IN
+ XXXDEBUG     QRPGLESRC DEBUGGING          CGISRVPGM SVCPGM, AND USED BY
+                        INFORMATION.       ILE-RPG PROGRAMS CALLED BY REXX
+                                           CGIS.
+                                           INCLUDES CVTEDTCOD
+                        CONVERTS ILE RPG   SUBPROCEDURE. TAKES ILE RPG
+ XXXEDTCOD    QRPGLESRC NUMERIC FIELD TO   NUMERIC FIELD AND AN EDIT CODE.
+                        AN EDITED STRING   PRODUCES EDITED STRING SUITABLE
+                                           FOR BROWSER OUTPUT.
+                                           INCLUDES CVTEDTWRD
+                        CONVERTS ILE RPG   SUBPROCEDURE. TAKES ILE RPG
+ XXXEDTWRD    QRPGLESRC NUMERIC FIELD TO   NUMERIC FIELD AND AN EDIT WORD.
+                        AN EDITED STRING   PRODUCES EDITED STRING SUITABLE
+                                           FOR BROWSER OUTPUT.
+
+                        CONVERTS TWO HEX   CONVERTS TWO HEX CHARACTERS TO
+ XXXH2C       QRPGLESRC CHARACTERS TO ONE  ONE CHARACTER. INCLUDES
+                        CHARACTER.         HEX2CHAR SUBPROCEDURE. INCLUDED
+                                           IN CGISRVPGM SVCPGM.
+
+                        GETS BROWSER INPUT GETINPUT SUBPROCEDURE GETS
+                                           BROWSER INPUT FROM STANDARD
+ XXXINPUT     QRPGLESRC FROM STANDARD      INPUT OR QUERY_STRING (POST AND
+                        INPUT OR
+                        QUERY_STRING       GET METHODS, RESPECTIVELY).
+                                           INCLUDED IN CGISRVPGM SVCPGM.
+                        HANDLES + SIGNS    CGIPARSE SUBPROCEDURE HANDLES +
+ XXXPARSE     QRPGLESRC AND ESCAPE         SIGNS AND 3-CHARACTER ESCAPE
+                        SEQUENCES IN       SEQUENCES IN BROWSER INPUT.
+                        BROWSER INPUT      INCLUDED IN CGISRVPGM SVCPGM.
+                                           GETHTML AND WRTSECTION
+                        HANDLES OUTPUT     SUBPROCEDURES GET SKELETON HTML
+ XXXWRKHTML   QRPGLESRC HTML SECTIONS,     FROM DATABASE & WRITE IT IN
+                        VARIABLES, ETC.    SECTIONS, WITH VARIABLE
+                                           SUBSTITUTION.
+                                           WRTBUFFER SUBPROCEDURE WRITES
+                        WRITES BUFFERED    BUFFERED OUTPUT TO STANDARD
+ XXXWRTBUFF   QRPGLESRC OUTPUT TO STANDARD OUTPUT, ENFORCING THE NO MORE
+                        OUTPUT             THAN 254 CHARACTERS WITHOUT A
+                                           NEWLINE CHARACTER RULE.
+
+                        CPP FOR CGIDEBUG   CPP FOR CGIDEBUG COMMAND.
+                                           CONTROLS CGI DEBUGGING FACILITY
+ CGIDEBUG     QCLSRC    COMMAND. CONTROLS  (TURNS IT ON, OFF, DISPLAYS
+                        CGI DEBUUGING
+                        FACILITY.          DATA, CLEARS DATA, DISPLAYS
+                                           STATUS)
+                        COMMAND THAT       COMMAND THAT CONTROLS CGI
+ CGIDEBUG     QCMDSRC   CONTROLS CGI       DEBUGGING FACILITY (TURNS IT
+                        DEBUGGING          ON, OFF, DISPLAYS DATA, CLEARS
+                        FACILITY.          DATA, DISPLAYS STATUS).
+                                           SERVES AS CGI PROGRAM FOR REXX
+ REXXDRIVER   QCLSRC    DRIVER FOR REXX    CGIS. ACCEPTS REXX PROCEDURE
+                        CGI PROGRAMS       NAME FROM THE BROWSER AND
+                                           INVOKES THE REXX PROCEDURE.
+                        CPP FOR RMVSRCRCDS
+                                           CPP FOR RMVSRCRCDS COMMAND.
+ RMVSRCRCDS   QCLSRC    COMMAND. REMOVES   REMOVES SELECTED SOURCE RECORDS
+                        SELECTED SOURCE
+                        RECORDS            FROM A SOURCE PHYSICAL FILE.
+                        OVERRIDES HTMLSRC  OVERRIDES HTMLSRC FILE TO
+ XXXOVRHTML   QCLSRC    FILE TO CORRECT    CORRECT FILE AND MEMBER.
+                        FILE AND MEMBER    INCLUDED IN CGISRVPGM SVCPGM.
+                                           DDS FOR CGICOUNT PHYSICAL FILE.
+ CGICOUNT     QDDSSRC   DDS FOR CGICOUNT   CGICOUNT IS USED TO KEEP TRACK
+                        PHYSICAL FILE
+                                           OF PAGE HITS, ETC.
+
+                        DDS FOR DATASTRUCT DDS FOR DATASTRUCT EXTERNALLY
+                                           DESCRIBED DATA STRUCTURE.
+ DATASTRUCT   QDDSSRC   EXTERNALLY         DATASTRUCT IS USED IN THE
+                        DESCRIBED DATA
+                        STRUCTURE          SAMPLE ILE RPG CGI PROGRAM,
+                                           TEMPLATE.
+                                           DDS FOR HOURSOP PHYSICAL FILE
+ HOURSOP      QDDSSRC   DDS FOR HOURSOP    USED BY SAMPLE ILE RPG CGI
+                        PHYSICAL FILE
+                                           PROGRAM, TEMPLATE.
+                                           REXX PROCEDURE FOR INSTALLING
+                        REXX PROCEDURE FOR CGIDEV LIBRARY. CREATES OBJECTS
+ CRTOBJECTS   QREXSRC   INSTALLING CGIDEV  FROM SOURCE MEMBERS. SEE
+                        LIBRARY            INSTRUCTIONS IN README FILE,
+                                           CGIDEVD MEMBER.
+                        SAMPLE REXX CGI
+ DEMO         QREXSRC   BUILT FROM REXX    SAMPLE REXX CGI BUILT FROM REXX
+                        TEMPLATE           TEMPLATE
+                        TEMPLATE FOR
+ TEMPLATE     QREXSRC   BUILDING REXX CGI  TEMPLATE FOR BUILDING REXX CGI
+                        PROGRAMS           PROGRAMS.
+                        BINDING SOURCE FOR
+ CGISRVPGM    QSRVSRC   CREATING CGISRVPGM BINDING SOURCE FOR CREATING
+                        SERVICE PROGRAM    CGISRVPGM SERVICE PROGRAM
+
+ CGIDEVD      README    README FOR CGIDEV  README FOR CGIDEV (CGI
+                        LIBRARY            DEVELOPMENT TOOLS) LIBRARY.
+                                           A PARSER WRITTEN IN C THAT
+                                           CONVERTS +S TO SPACES, ASCII
+                                           ESCAPE SEQUENCES TO EBCDIC, AND
+                        PARSES QUERY       HANDLES MULTIPLE OCCURRENCES OF
+ C PARSER     QCSRC     STRING INFORMATION THE SAME VARIABLE. FOR EXAMPLE
+                        FOR CGI PROGRAMS   USAGE ALSO DOWNLOAD THE HTML
+                                           DDMPARSER, THE INCLUDE
+                                           DDMPARSINC, AND THE DRIVER
+                                           DDMPARSDRV.
+                                           A DEMONSTRATION OF THE USE OF
+                        SAMPLE CGI PROGRAM CGI AND PARSING. FOR EXAMPLE
+ C PARSER               TO PARSE QUERY     USAGE ALSO DOWNLOAD THE HTML
+ DRIVER       QCSRC     STRING             DDMPARSER, THE INCLUDE
+                        INFORMATIONS       DDMPARSINC, AND THE PARSER
+                                           DDMPARSER.
+                                           TEMPLATES AND SAMPLE CALLS TO C
+ C PARSER               PROVIDES TEMPLATES PARSER. FOR EXAMPLE USAGE ALSO
+ INCLUDE      QCSRC     AND SAMPLE CALLS   DOWNLOAD THE HTML DDMPARSER,
+ FILE                   TO C PARSER.       THE DRIVER DDMPARSDRV, AND THE
+                                           PARSER DDMPARSER.
+                                           HTML TO COLLECT DATA AND CALL C
+                                           PARSER DRIVER. FOR EXAMPLE
+ C PARSER               COLLECTS DATA AND  USAGE ALSO DOWNLOAD THE INCLUDE
+ TEST HTML    HTMLSRC   CALLS C PARSER     FILE DDMPARSINC, THE DRIVER
+                        DRIVER
+                                           DDMPARSDRV, AND THE PARSER
+                                           DDMPARSER.
+                        CONTLEN PROCEDURE  CONTAINS CONTLEN PROCEDURE
+ XXXCONTLEN   QRPGLESRC RETURNS            WHICH RETURNS THE
+                        CONTENT_LENGTH AS  CONTENT_LENGTH ENVIRONMENT
+                        4-BYTE INTEGER     VARIABLE AS A 4-BYTE INTEGER.
+ All files will be downloaded with the filename 'sendfile.pgm'. Rename each
+                          file as you download it.
+ ** To transfer save files properly: save them to your disk and ftp them to
+                         your AS/400 in binary mode.
+
+                                   [Image]
+
+This source is an example. It is recommended that you copy the source to a
+user library, not an IBM product library.
+
+----------------------------------------------------------------------------
+
+                                  [Image]
+
+                                  [Image]
+
+                                  [Image]
+
+                                  [Image]
+
+                              Text only links

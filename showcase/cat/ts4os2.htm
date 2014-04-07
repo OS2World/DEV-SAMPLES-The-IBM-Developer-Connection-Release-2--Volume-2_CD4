@@ -1,0 +1,136 @@
+<html>
+<head>
+<base target="_blank">
+<title>CICS Transaction Server for OS/2 Warp, V4.1 (P1)</title>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="../../template.css" TITLE="onlinebook">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="0000FF" alink="800080" vlink="800080">
+<h2>CICS Transaction Server for OS/2 Warp, V4.1 (P1)</h2>
+<p>This product is located on Premier Disc 1.<br>
+<br>
+<!-- <TITLE>IBM Transaction Server for OS/2 Warp 4.1</TITLE>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="template.css"
+TITLE="onlinebook">
+
+
+
+Updated:
+
+Platform: OS/2
+
+Version: 4.1
+
+-->
+
+<I>CICS&#174; Transaction Server</I> for OS/2 Warp confirms the thrust of a simple to install, use and operate philosophy that has been a hallmark of Version 4.0 of this Transaction Server. It provides a comprehensive CICS API but is very sparing in its use of resources, thus performing extremely well in relatively small server machines.
+<P>
+<I>CICS Transaction Server</I> for OS/2 Warp, Version 4.1 contains CICS for OS/2 Version 3.1 and CICS Clients Version 2.0.2, delivering a range of technical enhancements over previous levels.
+<P>
+A new and flexible pricing structure is introduced to CICS Transaction Processing on the OS/2 platform, based on servers and registered users (with no option of concurrent users) at a much reduced price per user.
+<P>
+<I>CICS Transaction Server</I> for OS/2 Warp, Version 4.1 also includes Lotus&#174; Domino&#153; Go Webserver, for creating and accessing Internet or Intranet-enabled applications on CICS for OS/2.
+<P>
+<H2>What's New</H2>
+<UL>
+<LI>CEDA dynamic resource installation
+<LI>Support for Multi-Region Operation (MRO)
+<LI>Telnet TN3270 support
+<LI>Front End Programming Interface (FEPI) LU0 support
+<LI>Enhanced Performance Analyzer function
+</UL>
+<P>
+<H2>Hardware and Software Requirements</H2>
+<UL>
+<LI>Any system running OS/2 Warp Version 3 or later, with memory requirement starting from 16 MB (according to use).
+</UL>
+<P>
+CICS for OS/2 Version 3.1 requires one of the following operating systems:
+<UL>
+<LI>OS/2 Warp Server Version 4
+<LI>OS/2 Warp Version 4
+<LI>OS/2 Warp Connect Version 3
+<LI>OS/2 Warp Version 3
+</UL>
+IBM OS/2 for Symmetrical Multiprocessing Version 2.11
+<P>The sample command files included in CICS for OS/2 Version 3.1 are written in REXX, therefore, if they are used as supplied, the classic REXX option of OS/2 should be installed.
+<P>When using NetBIOS communications in a LAN environment, CICS for OS/2 Version 3.1 requires the presence of an appropriate product that provides the API of NetBIOS 3.0 or later, such as:
+<UL>
+<LI>IBM OS/2 Warp Server Version 4, OS/2 Warp Version 4, or OS/2 Warp Connect Version 3
+<LI>IBM OS/2 LAN Server Version 4.0
+</UL>
+<P>NetBIOS communication is also supported over IPX/SPX using the NetBIOS emulator in the Novell NetWare requester.
+<P>For APPC (LU6.2) communications with the CICS Clients or with other CICS systems:
+<UL>
+<LI>IBM eNetwork Communications Server for OS/2 Warp, Version 5.0
+<LI>IBM Communications Server for OS/2 Warp, Version 4.0, or later
+</UL>
+<P>For TCP/IP communications with the CICS Clients or with other CICS systems, IBM TCP/IP for OS/2 Warp Version 2.0, or later:
+<UL>
+<LI>With OS/2 Warp Server Version 4, OS/2 Warp Version 4, and OS/2 Warp Connect Version 3, TCP/IP support is included within the operating system.
+</UL>
+<P>For PNA attachment of ASCII displays to CICS for OS/2 Version 3.1, PNA Version 1.2 is required.
+<P>For relational database functions:
+<UL>
+<LI>IBM DB2&#174; Universal Database, Version 5.0
+<LI>IBM Database Server for OS/2 Warp, Version 4
+</UL>
+For commercial messaging:
+<UL>
+<LI>IBM MQSeries&#153; for OS/2 Warp, Version 5.0
+</UL>
+
+
+<H2>Web Site</H2>
+<UL>
+<LI><a href="http://www.software.ibm.com/is/sw-servers/transaction/">www.software.ibm.com/is/sw-servers/transaction/</a>
+</UL>
+<P>
+<H2>Installation Instructions</H2>
+
+
+<!-- cd start -->
+
+<H3>To Install from the CD:</H3>
+
+<OL>
+<LI>Change to the \ts4os2\<I>country</I> directory on the CD, where <I>country</I> is a two-character
+representation of the country version you wish to install.</LI>
+
+<LI>Type <B>install</B> to start the installation.</LI>
+
+
+
+</OL>
+
+<!-- cd end -->
+
+
+
+
+<H3>Enrolling CICS for OS/2 Licenses and Users</H3>
+<OL>
+<LI>Select the License Use Runtime - Client folder from the CICS for OS/2 folder.
+<LI>Select the Nodelock Administration Tool.
+<LI>Select Products from the action bar, then New.  The New product panel is displayed.
+<LI>Select Import. The Import panel displayed.
+<LI>Point to the LICENSE.LIC file located in the \ts4os2 directory and select OK.
+<LI>Important: You must select the Concurrent checkbox.  When you have done this,
+enter the number of licenses in the Licenses scroll box, and select OK.
+</OL>
+You have now enrolled your CICS for OS/2 license.
+
+<P>For more information, see
+<CITE><A HREF="http://www.hursley.ibm.com/forums/CWUF/tips/tipsos2.html">Hints, Tips and Techniques for CICS for OS/2</A></CITE>.
+
+<p>
+<b>Related Information:</b>
+<ul>
+<li><a target="_self" href="ca02.htm">CICS Bitmap and Icon Files (M4)</a></li>
+<li><a target="_self" href="ca50.htm">CICS Client for OS/2 - Native OS/2 ECI Samples (M4)</a></li>
+<li><a target="_self" href="ca51.htm">CICS Client for OS/2 - OS/2 PM ECI Samples (M4)</a></li>
+<li><a target="_self" href="ca81.htm">CICS Client for OS/2 CGI Samples (M4)</a></li>
+<li><a target="_self" href="cicscos2.htm">CICS Client for OS/2 V2.0.4 (P1)</a></li>
+<li><a target="_self" href="ca31.htm">REXX to CICS Interface for OS/2 (M1)</a></li>
+</ul>
+</body>
+</html>

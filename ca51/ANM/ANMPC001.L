@@ -1,0 +1,6 @@
+ANMPC001.Obj
+ANMPC001.Exe
+ANMPC001.Map /NOD /CO
+os2 + llibce + CCLOS2
+ANMPC001.Def
+

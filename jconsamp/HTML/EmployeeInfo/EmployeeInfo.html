@@ -1,0 +1,49 @@
+<HTML><HEAD><TITLE>
+ABC Company Employee Information
+</TITLE></HEAD>
+
+<BODY>
+<H3>Employee Details</H3>
+
+<ul>
+<FORM METHOD="POST" ACTION="/cgi-bin/samplecgi.exe?action">
+<TABLE COLS=2 FRAME=ALL>
+
+<TBODY>
+<TR>Select a customer:
+<TD NOWRAP>
+<!- replace with SSI ->
+<SELECT NAME="names" SIZE="8" MAXLENGTH="40">
+<OPTION>Mickey Nix
+<OPTION>Fred Gutierez
+<OPTION>Yogesh Shah
+<OPTION>Irene Roberts
+</SELECT>
+
+<TD>
+<TABLE COLS=2 FRAME=ALL WIDTH=100%>
+	<TR>
+	<TD>Department:
+	<TD>Solution Developer Marketing
+
+	<TR>
+	<TD>Salary:
+	<TD>$70,000
+
+	<TR>
+	<TD>Bonus:
+	<TD>$2,000
+</TABLE>
+
+</TBODY>
+</TABLE>
+
+Blue<INPUT TYPE ="RADIO" NAME="color" VALUE="blue"><BR>
+Red<INPUT TYPE = "RADIO" NAME="color" VALUE="red"><BR>
+<INPUT NAME="QueryEmployee" TYPE="SUBMIT" VALUE="Query Employee">
+<INPUT NAME="ExtraButton" TYPE="SUBMIT" VALUE="Extra Button">
+</FORM>
+</ul>
+
+
+</BODY></HTML>

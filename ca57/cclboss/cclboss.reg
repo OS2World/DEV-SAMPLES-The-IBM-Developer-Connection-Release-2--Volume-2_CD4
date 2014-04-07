@@ -1,0 +1,13 @@
+REGEDIT
+; This .REG file may be used by your SETUP program.
+;   If a SETUP program is not available, the entries below will be
+;   registered in your InitInstance automatically with a call to
+;   CWinApp::RegisterShellFileTypes and COleObjectFactory::UpdateRegistryAll.
+
+
+HKEY_CLASSES_ROOT\AJEBOSS.Document = AJEBOS Document
+HKEY_CLASSES_ROOT\AJEBOSS.Document\CLSID = {26468E40-2693-11D0-BFF0-0004AC83E1CE}
+
+HKEY_CLASSES_ROOT\CLSID\{26468E40-2693-11D0-BFF0-0004AC83E1CE} = AJEBOS Document
+HKEY_CLASSES_ROOT\CLSID\{26468E40-2693-11D0-BFF0-0004AC83E1CE}\LocalServer32 = AJEBOSS.EXE
+HKEY_CLASSES_ROOT\CLSID\{26468E40-2693-11D0-BFF0-0004AC83E1CE}\ProgId = AJEBOSS.Document

@@ -1,0 +1,85 @@
+<!--
+LICENSE AND DISCLAIMER
+----------------------
+This material contains IBM copyrighted sample programming source code.
+IBM grants you a nonexclusive license to use, execute, display,
+reproduce, distribute and prepare derivative works of this sample code.
+The sample code has not been thoroughly tested under all conditions.
+IBM, therefore, does not warrant or guarantee its reliability,
+serviceablity, or function. All sample code contained herein is provided
+to you "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE
+IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR
+PURPOSE, ARE EXPRESSLY DISCLAIMED.
+
+COPYRIGHT
+---------
+(C) Copyright IBM CORP. 1996, 1997
+All rights reserved.
+US Government Users Restricted Rights -
+Use, duplication or disclosure restricted
+by GSA ADP Schedule Contract with IBM Corp.
+Licensed Material - Property of IBM
+
+COMMENTS/QUESTIONS
+------------------
+Please send comments or questions via e-mail to Mel Rothman
+at mrothman@vnet.ibm.com
+
+THIS FILE AVAILABLE FROM:
+------------------------
+AS/400 Web Builder's Workshop's Snippets Page
+http://205.217.130.15/workshop/snippets/snippets.htm
+It is included in SAVF CGIDEVD (identified as
+SAVEFILE OF CGIDEV LIBRARY)
+-->
+<HTML>
+<HEAD>
+<TITLE>Talk To Us</TITLE>
+</HEAD>
+<BODY>
+
+<H1>Computer Discount<BR>
+House</H1>
+<FORM METHOD="POST"
+ACTION="/CGIDEVPGM/TEMPLATE.PGM"> <P>
+Computer Discount House would be happy to send you further information on its products
+and services.  Please complete the following FORM or call 1-800-555-0000<BR>
+<HR>
+What is your E-mail address?............<INPUT NAME="emailadd" SIZE="40" MAXLENGTH="40">
+<BR>
+<BR>
+What is your name?..........................<INPUT NAME="custname" SIZE="40"
+MAXLENGTH="40">
+<BR>
+<BR>
+What state do you live in?.................<SELECT NAME="state">
+<OPTION>CA
+<OPTION>CT
+<OPTION>IA
+<OPTION>MN
+<OPTION>NC
+<OPTION>SD
+<OPTION>NJ
+<OPTION>NY
+<OPTION>WI
+</SELECT>
+<BR>
+How many years have you lived there? (e.g. 12.250)
+<INPUT NAME="years" SIZE="6" MAXLENGTH="6">
+<BR>
+<HR>
+<H3>Help Us Serve You Better</H3>
+Have you ordered from us before?<BR>
+<INPUT TYPE="RADIO" NAME="ordered" VALUE="1">YES
+<INPUT TYPE="RADIO" NAME="ordered" VALUE="2">NO
+<BR>
+Have you ever received a CATALOG from Computer Discount House?<BR>
+<INPUT TYPE="RADIO" NAME="catalog" VALUE="1">YES
+<INPUT TYPE="RADIO" NAME="catalog" VALUE="2">NO
+<HR>
+<INPUT TYPE="SUBMIT" VALUE="Press Here to Send">
+<INPUT TYPE="RESET" VALUE="Press Here to Clear">
+</FORM>
+</P>
+</BODY>
+</HTML>

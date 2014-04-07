@@ -1,0 +1,20 @@
+<HTML><HEAD><TITLE>"Solution Developer Marketing Application Guide"
+</TITLE></HEAD>
+<BODY>
+<H3>Product Information</H3>
+
+<APPLET CODE=sdm.util.TickerTape.class WIDTH=400 HEIGHT=30>
+</APPLET>
+
+<ul>
+<img src="http://dbserver/leftspikes.gif"><FONT COLOR="BLACK">Product ID:&#32;&#32;<FONT COLOR="TEAL"><!META VAR=$sessionstate.product_id>
+<BR><img src="http://dbserver/leftspikes.gif"><FONT COLOR="BLACK">Product Name:&#32;&#32;<FONT COLOR="TEAL"><!META VAR=$sessionstate.product_name>
+<BR><img src="http://dbserver/leftspikes.gif"><FONT COLOR="BLACK">Description:&#32;&#32;<FONT COLOR="TEAL"><!META VAR=$sessionstate.description>
+<BR><img src="http://dbserver/leftspikes.gif"><FONT COLOR="BLACK">Supplier ID:&#32;&#32;<FONT COLOR="TEAL"><!META VAR=$sessionstate.supplier_id>
+<BR><BR><BR>
+<a href="<!META VAR=$sessionstate.url>">Press here to goto product's home page.</a>
+</ul>
+
+<P>Copyright IBM, 1998
+</BODY>
+</HTML>

@@ -1,0 +1,88 @@
+/****************************************/
+
+private java.util.Hashtable getHashtable() {
+	// user code begin {1}
+	if(ivjHashtable == null)
+	{
+		ivjHashtable = new java.util.Hashtable(50) ;
+	}	
+	// user code end
+	return ivjHashtable;
+}
+
+/***************************************/
+
+//: From AppsGuide.java's init() method
+
+// user code begin {1}
+		
+		System.out.println("in user code of init") ;
+		String products[] = {new java.lang.String("unknown")} ;
+		products = getIsvappsManager().getProducts(products) ;
+	  
+	  
+	  //: Parse info
+
+		String temp = products[0] ;
+			
+		int index = temp.indexOf(':') ;
+		String numberString = temp.substring(0, index) ;
+		int numberOfItems = Integer.parseInt(numberString) ;
+		temp = temp.substring(index + 1) ;
+		for( int i=0; i < numberOfItems; i++)
+		{
+			index = temp.indexOf(':') ;
+			String product_id = temp.substring(0,index) ;	
+			temp = temp.substring(index + 1) ;
+			index = temp.indexOf(';') ;
+			String product_name = temp.substring(0, index) ;
+			ivjList.addItem(product_name) ;
+			getHashtable().put(product_name, product_id) ;
+			temp = temp.substring(index + 1) ;
+		}	
+
+	  
+		
+		// user code end
+
+/*****************************************************/
+
+public void updateCurrentProductInfo() {
+	String product_name = ivjList.getSelectedItem() ;
+	String product_id = (String)ivjHashtable.get(product_name) ;
+	if(product_id != null)
+	{
+		try {
+			String product[] = {new String("")} ;
+			product = getIsvappsManager().getProduct(product_id, product) ;
+			
+			
+			ivjProductID.setText(product_id) ;
+			
+			String info = product[0] ;			
+			int index = info.indexOf('\t') ;
+			info = info.substring(index + 1) ;
+			index = info.indexOf('\t') ;
+			ivjProductName.setText(info.substring(0, index)) ; 
+						
+											
+			info = info.substring(index + 1) ;
+			index = info.indexOf('\t') ;
+			ivjTickerTape.setTickerText(info.substring(0, index)) ;  //: description
+						
+			info = info.substring(index + 1) ;
+			index = info.indexOf('\t') ;
+			ivjSupplierID.setText(info.substring(0, index)) ;
+						
+			ivjTickerTape.setFlyOverText(info.substring(index + 1)) ;
+									
+		} catch(Exception exception) {
+			exception.printStackTrace() ;
+		}
+		
+	} //: end if
+	return;
+}
+
+
+/*****************************************************/

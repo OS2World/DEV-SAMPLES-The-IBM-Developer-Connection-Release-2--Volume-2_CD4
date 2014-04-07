@@ -1,0 +1,11 @@
+C:\nix\toolbox\advclass\HotelManagementServer>javac -d c:\advjava RoomManager.java
+C:\nix\toolbox\advclass\HotelManagementServer>javac -d c:\advjava RoomManagerImp
+l.java
+
+C:\nix\toolbox\advclass\HotelManagementServer>javac HotelManagementServer.java
+
+C:\nix\toolbox\advclass\HotelManagementServer>rmic -d c:\advjava com.ibm.sdm.adv
+java.RoomManagerImpl
+
+C:\nix\toolbox\advclass\HotelManagementServer>java HotelManagementServer
+in main

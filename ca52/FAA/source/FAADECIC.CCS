@@ -1,0 +1,86 @@
+
+ /*-------------------------------------------------------------------*/
+ /*                                                                   */
+ /*  Program Name  : FAADECIC.CCS                                     */
+ /*                                                                   */
+ /*  Purpose : General Backend Application to return Commarea         */
+ /*            to CICS Client ECI Test Applications.                  */
+ /*                                                                   */
+ /*  Associated Applications :                                        */
+ /*                                                                   */
+ /*  Date    : 16-01-94                                               */
+ /*                                                                   */
+ /*  Language : C                                                     */
+ /*                                                                   */
+ /*  Associated Programmers : A.P.Thomson                             */
+ /*                                                                   */
+ /*-------------------------------------------------------------------*/
+
+ /* Structure to build up the data and time to be output. Note that */
+ /* the front end ECI calling program expects to pass and receive a */
+ /* comm area of size 18 bytes.                                     */
+ typedef struct
+ {
+    char DateArea??(8??);
+    char Space;
+    char TimeArea??(8??);
+    char LowValue;
+ } CommAreaDetail;
+
+/* Transaction entry point, to be invoked by CICS. No parameters. */
+void main( void )
+{
+
+    /* Variable to recieve response codes from CICS. */
+    long RespCode;
+
+    /* Variable to hold the number of milliseconds returned by CICS. */
+    char AbsTime??(8??);
+
+    /* Declare pointer to the comm area. */
+    CommAreaDetail * pConsoleMessage;
+
+    /* Get addressability to the EIB to validate the expected comm  */
+    /* area length. If the comm area length was not of the expected */
+    /* length, write an error message to the console and exit,      */
+    /* otherwise get the date and time to pass back.                */
+    EXEC CICS ADDRESS EIB( dfheiptr );
+
+    /* Get addressability to the comm area. */
+    EXEC CICS ADDRESS
+        COMMAREA( pConsoleMessage );
+
+    /* Initialise the padding character and the terminating null in */
+    /* the ConsoleMessage structure.                                */
+    pConsoleMessage->Space = ' ';
+    pConsoleMessage->LowValue = '\0';
+
+    /* Get the number of milliseconds from CICS. */
+    EXEC CICS ASKTIME ABSTIME( AbsTime );
+
+    /* Use CICS to convert the elapsed milliseconds to a displayable */
+    /* date and time format.                                         */
+    EXEC CICS FORMATTIME
+        ABSTIME( AbsTime )
+        DDMMYY( pConsoleMessage->DateArea )
+        DATESEP( '/' )
+        TIME( pConsoleMessage->TimeArea )
+        TIMESEP( ':' );
+
+    /* Write the date and time to the CICS message log. Note that 1   */
+    /* is subtracted from the size as a terminating 0 is not required */
+    /* on the CICS call.                                              */
+         
+    /* Comment out if not CICS for OS/2 or CICS for NT                */
+
+    EXEC CICS WRITE OPERATOR
+        TEXT( pConsoleMessage )
+        TEXTLENGTH( sizeof(CommAreaDetail)-1 )
+        RESP( RespCode );
+             
+
+    /* Transaction completed, return control to CICS */
+    EXEC CICS RETURN;
+
+}
+

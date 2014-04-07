@@ -1,0 +1,514 @@
+//-----------------------------------------------------------------------------
+// LEDCell.java
+//
+// An implementation of an LED cell that can display any single integer value.
+// Combinations of these cells can be combined together using panels and/or 
+// other techniques to produce multi character displays such as those used by
+// counters and calculator programs.
+// 
+//
+// This version requires Java JDK level 1.1.1 or higher.
+//
+// Demonstrates use of these classes/interfaces:
+//
+//   Graphics
+//   Canvas
+//
+// Exports the methods:
+//   getValue()
+//   setValue()
+//   paint()
+//
+// Author : Kelvin R Lawrence.     11th-Oct-1997
+//
+// Version 0.2
+//
+// History:
+//
+//-----------------------------------------------------------------------------
+import java.awt.* ;
+import java.awt.event.* ;
+
+//-------------------------------------------------------------------------
+// Class: LEDCell
+//
+// Simple class that experiments with ...
+//
+//-------------------------------------------------------------------------
+public class LEDCell extends Canvas
+{
+  private static final int DEFAULT_WIDTH  = 10 ; 
+  private static final int DEFAULT_HEIGHT = 10 ; 
+  private static final int DEFAULT_VALUE  =  0 ;
+
+  private static final Color ACTIVE_COLOR   = Color.cyan ;
+  private static final Color INACTIVE_COLOR = new Color( 32,32,32 ) ;
+  //private static final Color INACTIVE_COLOR = Color.darkGray ;
+
+
+  //---------------------------------------------------------------
+  // Class variables. Note these variables are initialised by the 
+  // constructors and therefore do not need to be initialised here.
+  //---------------------------------------------------------------
+
+  int value ;            // Current value the cell will display.
+
+  boolean cellActive ;   // Cell on/off switch.
+
+  protected int width  ; // Current width of this cell.
+  protected int height ; // Current height of this cell.
+
+  //-----------------------------------------------------------------------
+  // Constructor #1
+  //
+  //
+  //-----------------------------------------------------------------------
+  public LEDCell( )
+  {
+    this( DEFAULT_WIDTH, DEFAULT_HEIGHT ) ;
+  }
+
+  //-----------------------------------------------------------------------
+  // Constructor #2
+  //
+  //
+  //-----------------------------------------------------------------------
+  public LEDCell( int value ) 
+  {
+    this( DEFAULT_WIDTH, DEFAULT_HEIGHT, value ) ;
+  }
+
+  //-----------------------------------------------------------------------
+  // Constructor #3
+  //
+  //
+  //-----------------------------------------------------------------------
+  public LEDCell( int x, int y )
+  {
+    this( x,y, DEFAULT_VALUE ) ;
+
+  }
+
+  //-----------------------------------------------------------------------
+  // Constructor #4
+  //
+  //
+  //-----------------------------------------------------------------------
+  public LEDCell( int x, int y, int value )
+  {
+    this( x, y, value, true ) ;
+  }
+
+
+  //-----------------------------------------------------------------------
+  // Constructor #5
+  //
+  //
+  // Note, by storing the current width and height of the cell as part of
+  // the class data we can avoid having to call getSize() every time we
+  // want to know how big the cell currently is.
+  //-----------------------------------------------------------------------
+  public LEDCell( int x, int y, int value, boolean state )
+  {
+    this.value = value ;
+    this.cellActive = state ;
+    this.width  = x ;
+    this.height = y ;
+
+    this.setSize( x, y ) ;
+  }
+
+  //-----------------------------------------------------------------------
+  // setValue()
+  //
+  //
+  //-----------------------------------------------------------------------
+  public void setValue( int value )
+  {
+    this.value = value ;
+    repaint() ;
+  }
+
+  //-----------------------------------------------------------------------
+  // getValue()
+  //
+  //
+  //-----------------------------------------------------------------------
+  public int getValue()
+  {
+    return this.value ;
+  }
+
+
+  //-----------------------------------------------------------------------
+  // paint()
+  //
+  // Repaint the cell whenever it needs repainting.
+  //-----------------------------------------------------------------------
+  public void paint( Graphics g )
+  {
+
+    Dimension d = this.getSize();
+
+    this.width  = d.width ;
+    this.height = d.height ;
+
+    System.out.println( "Paint() called." ) ;
+    System.out.println( "Width  ==> " + width  ) ;
+    System.out.println( "Height ==> " + height ) ;
+
+    g.setColor( Color.black ) ;
+
+    g.fillRect( 0,0,d.width,d.height ) ;
+
+    renderNumber( g ) ;
+  }
+
+  //-----------------------------------------------------------------------
+  // renderNumber()
+  //
+  // As with traditional LED cells, their are seven elements to the cell
+  // that can be individually turned off or on to diaply a particular
+  // number. Each cell is represented by a polygon.
+  //-----------------------------------------------------------------------
+  private void renderNumber( Graphics g )
+  {
+    
+    System.out.println( "renderNumber() called." ) ;
+
+    //-------------------------------------------------------------------
+    // Now draw each of the cell elements that need to be drawn for the
+    // current value that this cell is displaying. We calculate the
+    // coordinates of each element from scratch to allow for the cell
+    // to be resized at any time. If this is too slow, the polygon points
+    // could be cached and only recalculated if the cell is resized.
+    //
+    // To further enhance the LED effect, for any given number we will
+    // display the cell elements that make up that number in the active
+    // color and the other elements will be drawn in the inactive color.
+    // This gives a nicer effect than only displaying the active cells.
+    //-------------------------------------------------------------------
+
+    int polygonWidth ;
+
+    polygonWidth = Math.max( 1, width/30 + height/30 ) ;
+
+    int leftX  = 2 ;
+    int rightX = width - 2 ;
+
+    int topY   = 2 ;
+    int botY   = height - 2 ;
+
+    int midY   = height / 2 ;
+
+    int[] polyX = new int[6] ;
+    int[] polyY = new int[6] ;
+
+    System.out.println( "Polygon width ==> " + polygonWidth ) ;
+    //System.out.println( "Width = " + width + " Height = " + height ) ;
+
+    //---------------------------------------------------------------------
+    // Acceleration callculations: It is necessary to determine which of
+    // the 7 elements need to be drawn for the given number we are 
+    // representing We can speed up this process by setting up some boolean 
+    // flags to indicate if a given element of the LED is on or off for the
+    // current number. LATER: We could do this in setValue() to reduce
+    // the number of tmes we actually have to do this calculation.
+    //
+    // For an explanation of how the elements of the array "on" map to the
+    // elements of the LED cell, see the comment block above the code for
+    // the mapCharToLED() method.
+    //---------------------------------------------------------------------
+
+    boolean [] on = new boolean[7] ;
+    mapCharToLED( this.value, on ) ;
+
+    //--------------------------------
+    // Top element ( 2,3,5,6,7,8,9,0 )
+    //--------------------------------
+
+    polyX[0] = leftX  ;
+    polyY[0] = topY   ;
+    polyX[1] = rightX ;
+    polyY[1] = topY   ;
+    polyX[2] = polyX[1] - polygonWidth ; 
+    polyY[2] = polyY[1] + polygonWidth ;
+    polyX[3] = leftX    + polygonWidth ;
+    polyY[3] = polyY[2] ;
+    polyX[4] = polyX[0] ;
+    polyY[4] = polyY[0] ;
+
+    renderPolygon( g, polyX, polyY, 5, on[0] ) ;
+
+    //---------------------------------
+    // Top left element ( 4,5,6,8,9,0 )
+    //---------------------------------
+
+    polyX[0] = leftX ;
+    polyY[0] = topY + polygonWidth + 1  ;
+    polyX[1] = leftX ;
+    polyY[1] = topY + midY - 2 ;
+    polyX[2] = leftX    + polygonWidth ; 
+    polyY[2] = polyY[1] - polygonWidth ;
+    polyX[3] = leftX    + polygonWidth ;
+    polyY[3] = polyY[0] + polygonWidth ;
+    polyX[4] = polyX[0] ;
+    polyY[4] = polyY[0] ;
+
+
+    renderPolygon( g, polyX, polyY, 5, on[1] ) ;
+    
+    //------------------------------------
+    // Top right element ( 1,3,4,7,8,9,0 )
+    //------------------------------------
+
+    polyX[0] = rightX ;
+    polyY[0] = topY + polygonWidth + 1 ;
+    polyX[1] = rightX ;
+    polyY[1] = topY + midY  ;
+    polyX[2] = rightX   - polygonWidth ; 
+    polyY[2] = polyY[1] - polygonWidth ;
+    polyX[3] = rightX   - polygonWidth ;
+    polyY[3] = polyY[0] + polygonWidth ;
+    polyX[4] = polyX[0] ;
+    polyY[4] = polyY[0] ;
+
+    renderPolygon( g, polyX, polyY, 5, on[2] ) ;
+
+    
+    //-----------------------------------
+    // Middle element ( 2,3,4,5,6,8,9,0 )
+    //-----------------------------------
+
+    polyX[0] = leftX + polygonWidth      ;
+    polyY[0] = midY ;
+    polyX[1] = polyX[0] + polygonWidth   ;
+    polyY[1] = midY - polygonWidth/2     ;
+    polyX[2] = rightX - polygonWidth * 2 ;
+    polyY[2] = polyY[1] ;
+    polyX[3] = rightX - polygonWidth   ;
+    polyY[3] = midY ;
+    polyX[4] = polyX[2] ;
+    polyY[4] = midY + polygonWidth/2 ;
+    polyX[5] = leftX + polygonWidth * 2  ;
+    polyY[5] = polyY[4] ;
+
+
+    renderPolygon( g, polyX, polyY, 6, on[6] ) ;
+
+    //--------------------------------
+    // Bottom left element ( 2,6,8,0 )
+    //--------------------------------
+
+    polyX[0] = leftX ;
+    polyY[0] = botY - polygonWidth - 1  ;
+    polyX[1] = leftX ;
+    polyY[1] = botY - midY + 2  ;
+    polyX[2] = leftX    + polygonWidth ; 
+    polyY[2] = polyY[1] + polygonWidth ;
+    polyX[3] = leftX    + polygonWidth ;
+    polyY[3] = polyY[0] - polygonWidth ;
+    polyX[4] = polyX[0] ;
+    polyY[4] = polyY[0] ;
+
+    renderPolygon( g, polyX, polyY, 5, on[3] ) ;
+
+    //-------------------------------------------
+    // Bottom right element ( 1,3,4,5,6,7,8,9,0 )
+    //-------------------------------------------
+
+    polyX[0] = rightX ;
+    polyY[0] = botY - polygonWidth/2 - 1  ;
+    polyX[1] = rightX ;
+    polyY[1] = botY - midY + 2  ;
+    polyX[2] = rightX   - polygonWidth ; 
+    polyY[2] = polyY[1] + polygonWidth ;
+    polyX[3] = rightX   - polygonWidth ;
+    polyY[3] = polyY[0] - polygonWidth ;
+    polyX[4] = polyX[0] ;
+    polyY[4] = polyY[0] ;
+
+    renderPolygon( g, polyX, polyY, 5, on[4] ) ;
+    
+    //-------------------------------
+    // Bottom element ( 2,3,5,6,8,0 )
+    //-------------------------------
+
+    polyX[0] = leftX  ;
+    polyY[0] = botY   ;
+    polyX[1] = rightX ;
+    polyY[1] = botY   ;
+    polyX[2] = polyX[1] - polygonWidth ; 
+    polyY[2] = polyY[1] - polygonWidth ;
+    polyX[3] = leftX    + polygonWidth ;
+    polyY[3] = polyY[2] ;
+    polyX[4] = polyX[0] ;
+    polyY[4] = polyY[0] ;
+
+    renderPolygon( g, polyX, polyY, 5, on[5] ) ;
+  }
+
+  //-----------------------------------------------------------------------
+  // renderPolygon()
+  //
+  // Display one element of the LED cell either in the active or inactive
+  // color based upon the settings of the "on" array.
+  //-----------------------------------------------------------------------
+  private void renderPolygon( Graphics g, int [] polyX, int [] polyY, int numPoints, boolean on )
+  {
+    if ( on )
+    {
+      g.setColor( ACTIVE_COLOR ) ;
+    }
+    else
+    {
+      g.setColor( INACTIVE_COLOR ) ;
+    }
+
+    g.fillPolygon( polyX, polyY, numPoints ) ;
+  }
+
+
+  //---------------------------------------------------------------------
+  // mapCharToLed()
+  //
+  // 
+  // Simple mapping function that for a given character (integer) will 
+  // figure out which of the LED cell's elements need to be turned on to 
+  // represent that character.
+  //
+  // For the switch staement below, elements of the array "on" 
+  // correspond to the LED elements as follows:
+  //
+  //           0
+  //        
+  //       /------\
+  //      |        |
+  //   1  |        |  2
+  //      |    6   |
+  //      +--------+
+  //      |        |
+  //   3  |        |  4
+  //      |        |
+  //       \------/
+  //
+  //           5
+  //
+  // LATER: This could be enhanced to be table driven or use fall through.
+  //---------------------------------------------------------------------
+  private void mapCharToLED( int value, boolean [] on )
+  {
+    for ( int i=0; i<7; i++ )
+    {
+      on[i] = false ;
+    }
+
+
+    System.out.println( "Value is " + value ) ;
+
+    if ( this.cellActive )
+    {
+      switch( value )
+      {
+        case 1:
+        {
+          on[2] = true ;
+          on[4] = true ;
+        }
+        break ;
+
+        case 2:
+        {
+          on[0] = true ;
+          on[2] = true ;
+          on[6] = true ;
+          on[3] = true ;
+          on[5] = true ;
+        }
+        break ;
+
+        case 3:
+         {
+          on[0] = true ;
+          on[2] = true ;
+          on[4] = true ;
+          on[6] = true ;
+          on[5] = true ;
+         }
+        break ;
+
+        case 4:
+        {
+          on[1] = true ;
+          on[2] = true ;
+          on[4] = true ;
+          on[6] = true ;
+        }
+        break;
+
+        case 5:
+        {
+          on[0] = true ;
+          on[1] = true ;
+          on[6] = true ;
+          on[4] = true ;
+          on[5] = true ;
+        }
+        break ;
+
+        case 6:
+        {
+          on[0] = true ;
+          on[1] = true ;
+          on[6] = true ;
+          on[3] = true ;
+          on[4] = true ;
+          on[5] = true ;
+
+        }
+        break ;
+
+        case 7:
+        {
+          on[0] = true ;
+          on[2] = true ;
+          on[4] = true ;
+        }
+        break ;
+
+        case 8:
+        {
+         on[0] = true ;
+         on[1] = true ;
+         on[2] = true ;
+         on[6] = true ;
+         on[3] = true ;
+         on[4] = true ;
+         on[5] = true ;
+        }
+        break ;
+
+        case 9:
+        {
+          on[0] = true ;
+          on[1] = true ;
+          on[2] = true ;
+          on[6] = true ;
+          on[4] = true ;
+        }
+        break ;
+
+        case 0:
+        {
+          on[0] = true ;
+          on[1] = true ;
+          on[2] = true ;
+          on[3] = true ;
+          on[4] = true ;
+          on[5] = true ;
+        }
+        break ;
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+/*   LICENSE AND DISCLAIMER                                            */
+/*   ----------------------                                            */
+/*   This material contains IBM copyrighted sample programming source   */
+/*   code.  IBM grants you a nonexclusive license to use, execute,      */
+/*   display, reproduce, distribute and prepare derivative works of     */
+/*   this sample code.  The sample code has not been thoroughly tested  */
+/*   under all conditions.  IBM, therefore, does not warrant or         */
+/*   guarantee its reliability, serviceablity, or function.  All        */
+/*   sample code contained herein is provided to you "AS IS." ALL       */
+/*   IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED       */
+/*   WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR        */
+/*   PURPOSE, ARE EXPRESSLY DISCLAIMED.                                 */
+/*                                                                      */
+/*   COPYRIGHT                                                          */
+/*   ---------                                                          */
+/*   (C) Copyright IBM CORP. 1996, 1997                                 */
+/*   All rights reserved.                                               */
+/*   US Government Users Restricted Rights -                            */
+/*   Use, duplication or disclosure restricted                          */
+/*   by GSA ADP Schedule Contract with IBM Corp.                        */
+/*   Licensed Material - Property of IBM                                */
+/*                                                                      */
+/*   COMMENTS/QUESTIONS                                                 */
+/*   ------------------                                                 */
+/*   Please send comments or questions via e-mail to Mel Rothman        */
+/*   at mrothman@vnet.ibm.com                                           */
+/*                                                                      */
+/*   THIS FILE AVAILABLE FROM:                                          */
+/*   ------------------------                                           */
+/*   AS/400 Web Builder's Workshop's Snippets Page                     */
+/*   http://205.217.130.15/workshop/snippets/snippets.htm               */
+/*   It is included in SAVF CGIDEVD (identified as                      */
+/*   SAVEFILE OF CGIDEV LIBRARY)                                        */
+/* Create or change the contents of the CGIDEBUG data area */
+/* Display or clear htmldebug physical file member */
+/* Action codes: 0 = change cgidebug data area to '0', no debug output */
+/*               1 = change cgidebug data area to '1', produce debug output */
+/*               2 = display cgidebug data area */
+/*               3 = display htmldebug physical file member */
+/*               4 = clear htmldebug physical file member */
+             PGM        PARM(&action &DTAARA &LIB)
+             DCL        VAR(&ACTION) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&DTAARA) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+/* Handle data area change requests */
+             IF         COND(&ACTION = '0' *OR &ACTION = '1') THEN(DO)
+/* Create data area if it doesn't exist */
+             CHKOBJ     OBJ(&LIB/&DTAARA) OBJTYPE(*DTAARA)
+             MONMSG     MSGID(CPF9801) EXEC(DO)
+             CRTDTAARA  DTAARA(&LIB/&DTAARA) TYPE(*CHAR) +
+                          VALUE(&action) TEXT('CGI debugging data area')
+             ENDDO
+             CHGDTAARA  DTAARA(&LIB/&DTAARA) VALUE(&action)
+             RETURN
+             ENDDO
+/* Handle data area display request */
+             IF         COND(&ACTION = '2') THEN(DO)
+             DSPDTAARA  DTAARA(&LIB/&DTAARA)
+             ENDDO
+/* Handle HTMLDEBUG requests */
+             IF         COND(&ACTION = '3') THEN(DSPPFM +
+                          FILE(HTMLDEBUG))
+             IF         COND(&ACTION = '4') THEN(CLRPFM +
+                          FILE(HTMLDEBUG))
+             ENDPGM

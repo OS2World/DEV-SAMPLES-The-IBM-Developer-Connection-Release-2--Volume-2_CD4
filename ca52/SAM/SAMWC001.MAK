@@ -1,0 +1,10 @@
+SAMWC001.exe: SAMWC001.obj SAMWC001.res SAMWC001.def
+   link /nod SAMWC001,SAMWC001,SAMWC001,slibcew libw cclwin,SAMWC001.def
+   rcw SAMWC001.res
+
+SAMWC001.res: SAMWC001.rc SAMWC001.h
+   rcw -r SAMWC001.rc
+
+SAMWC001.obj: SAMWC001.c SAMWC001.h
+   cl /c SAMWC001.c
+

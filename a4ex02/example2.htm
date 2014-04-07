@@ -1,0 +1,188 @@
+/*
+<br>
+<head>
+<title>Program that retrieves return data from thread and writes trace data</title>
+</head>
+
+
+<h1>Program that retrieves return data from thread and writes trace data</h1>
+
+<p>This program demonstrates the following:
+<ul>
+<li>Using a global shared variable
+<li>Creating a thread
+<li>Waiting for the thread to end and detaching it
+<li>Writing trace points that can be displayed later
+</ul>
+
+<p>
+Choose your browser's option to <b>save to local disk</b> to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed V3R1 system and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+ */
+/************************************************************************/
+/*                                                                      */
+/* test case:    thread_rtv.c                                           */
+/*                                                                      */
+/* objective:    pthread_create() semantics demo/example                */
+/*                                                                      */
+/* scenario:     main(): pthread_create()                               */
+/*                       pthread_join()                                 */
+/*                                                                      */
+/*               thread: pthread_exit()                                 */
+/*                                                                      */
+/* description:  Call pthread_create with valid parameters              */
+/*               and default attributes. Wait for the thread to         */
+/*               terminate using pthread_join. Detach the thread        */
+/*               after the join has completed.                          */
+/*                                                                      */
+/*               Shows a simple example of retrieving return data       */
+/*               from a thread, of a global shared variable, of         */
+/*               Qp0zUprintf to put trace points to be displayed        */
+/*               by DSPCPATRC.                                          */
+/*                                                                      */
+/*               The Qp0zUprintf output will be identical to the        */
+/*               printf.                                                */
+/*                                                                      */
+/* internal routines: thread                                            */
+/*                                                                      */
+/* external routines: pthread_create                                    */
+/*                    pthread_join                                      */
+/*                    pthread_exit                                      */
+/*                    pthread_detach                                    */
+/*                    Qp0zUprintf                                       */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTCMOD and CRTCPAPGM(V3R1) */
+/*               or CRTPTHPGM (V3R2 or V3R6)                            */
+/*               Call it with no parameters, use DSPCPATRC to           */
+/*               display the Qp0zUprintf output if desired.             */  
+/************************************************************************/
+ 
+#include <pthread.h>
+#include <qp0ztrc.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
+
+/* Declare a thread start routine of a compatible type                  */
+static void *thread(void *);
+
+/* use volatile for shared variables as you see fit. In a threaded      */
+/* environment some variables should always be written immediately to   */
+/* main storage when modified.                                          */
+static volatile int thread_created = 0;
+  
+/* Declare the main function using the argc, argv format even if you    */
+/* don't intend to use them.                                            */
+/* CPA uses a macro of the form main(a,b) to remap main. The routine    */
+/* must have two parameters.                                            */
+int main (int argc, char **argv)
+{
+    pthread_t            thread_id;
+    void                *thr_status;
+    int                  status;
+    char                 threadarg[100];
+
+    /* All printf's in this test will have matching Qp0zUprintf         */
+    /* statements. This will allow the use of DSPCPATRC to examine the  */
+    /* output also.                                                     */
+    printf("main: Entering %s\n", argv[0]);
+    Qp0zUprintf("main: Entering %s\n", argv[0]);
+
+    strcpy(threadarg, "Thread Belongs to process: ");
+    strcat(threadarg, argv[0]);
+    /* Create the thread with an argument of the name of the program    */
+    /* NOTE: Any data passed to the thread must exist throughout the    */
+    /*       thread's use of that data and should not be shared between */
+    /*       threads in a non synchronized manner.                      */
+    status = pthread_create(&thread_id, pthread_attr_default,
+                            (pthread_startroutine_t)thread,
+                            (void *)threadarg);
+    if (status == -1) {
+        printf("main: pthread_create() failed\n");
+        Qp0zUprintf("main: pthread_create() failed\n");
+      }
+
+    /* Now use pthread_join to synchronize with the threads termination */
+    /* this synchronization allows us to not have a mutex for the       */
+    /* static int 'thread_created' declared globally to this process    */
+    /* the main thread will not proceed until the secondary thread      */
+    /* has completed                                                    */
+    printf("main: waiting for thread to end\n");
+    Qp0zUprintf("main: waiting for thread to end\n");
+    status = pthread_join(thread_id, &thr_status);
+    if (status == -1) {
+        printf("main: pthread_join() failed\n");
+        Qp0zUprintf("main: pthread_join() failed\n");
+      }
+
+    /* Mark the thread for deletion. We won't be doing any more joins   */
+    /* with it and we can free any resources that the thread is         */
+    /* maintaining that might allow us to join.                         */
+    status = pthread_detach(&thread_id);
+    if (status == -1) {
+        printf("main: pthread_detach() failed\n");
+        Qp0zUprintf("main: pthread_detach() failed\n");
+      }
+
+    /* Print out a failure message or the thread return data            */
+    printf("main: Data Returned from the thread: %s\n",
+           ((thr_status == NULL) ?
+            "<Thread Returned NULL!>" : (char *)thr_status));
+    Qp0zUprintf("main: Data Returned from the thread: %s\n",
+                 ((thr_status == NULL) ?
+                  "<Thread Returned NULL!>" : (char *)thr_status));
+    /* We're done with the threads allocated storage, free it           */
+    free(thr_status);
+    
+    /* Check the shared variable and use it as a judgement of success   */
+    /* or failure                                                       */
+    if ( thread_created )  {
+        printf("main: testcase successful\n");
+        Qp0zUprintf("main: testcase successful\n");
+        return(0);
+      }
+    printf("main: testcase failed\n");
+    Qp0zPrintf("main: testcase failed\n");
+    return(1);
+}
+ 
+
+
+void *thread(void *arg)
+{
+    char                *return_data;
+    char                *threadarg;
+
+    /* Note we cast the parameter of the thread start routine to the    */
+    /* expected type.                                                   */
+    threadarg = (char *)arg;
+    printf("inside thread: parameter received : %s\n", arg);
+
+    /* Allocate a return data 'structure' dynamically. This storage must*/
+    /* not be deallocated when the scope of this thread ends.           */
+    return_data = (char *)malloc(50);
+    if (return_data == NULL)
+        pthread_exit(NULL);
+    strcpy(return_data, "*** This can be return data of any type ***");
+    printf("inside thread: return data : %s\n",return_data);
+    
+    /* Note that if two threads were running through this code at       */
+    /* the same time, the following statement could cause a bug. The    */
+    /* thread_created variable is not protected by a mutex.  The only   */
+    /* threads running in this process are the main thread and this     */
+    /* function. These two threads are synchronized by the pthread_join */
+    /* call in the main routine.                                        */
+    ++thread_created;
+    
+    /* Use sleep just so the main thread has something to wait for      */
+    sleep(5);
+    /* pthread_exit will not return to this thread but we put a return  */
+    /* statement in to make the compiler happy                          */
+    pthread_exit((void *)return_data);
+    return(NULL);
+}

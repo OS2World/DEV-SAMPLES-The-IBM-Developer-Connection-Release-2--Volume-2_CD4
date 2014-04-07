@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>SQL Reference</TITLE>
+<!-- Begin Header Records  ========================================== -->
+<!-- F:\IDWB\TEMP\idwt1308\DB2S0.SCR converted by idb2h R3.1a (309)   -->
+<!-- ID Workbench Version (OS2) on 23 Jun 1997 at 11:53:50            -->
+<META HTTP-EQUIV="updated"  CONTENT="Mon, 23 Jun 1997 11:53:34">
+<META HTTP-EQUIV="review"  CONTENT="Tue, 23 Jun 1998 11:53:34">
+<META HTTP-EQUIV="expires"  CONTENT="Wed, 23 Jun 1999 11:53:34">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+<img src="bannerx.gif" border=0 height=92 width=490 alt="IBM Books">
+<br>
+<!-- End Header Records  ============================================ -->
+<A NAME=Top_Of_Page></A>
+<H2><A HREF=#HDRCR8PROC" NAME="HDRCR8PROC" >CREATE PROCEDURE</A></H2>
+<P>
+<P> 
+<P>This statement is used to register a stored procedure with an application
+server.
+<P><STRONG>Invocation</STRONG>
+<P>This statement can be embedded in an application program or issued through
+the use of dynamic SQL statements. It is an executable statement that can be
+dynamically prepared.
+<P><STRONG>Authorization</STRONG>
+<P>The privileges held by the authorization ID of the statement must include
+as least one of the following&#58; 
+<UL>
+<P><LI>SYSADM or DBADM authority
+<P><LI>IMPLICIT_SCHEMA authority on the database, if the implicit or explicit
+schema name of the procedure does not exist
+<P><LI>CREATEIN privilege on the schema, if the schema name of the procedure refers to an existing schema.
+</UL>
+<P>To create a not-fenced stored procedure, the privileges held by the
+authorization ID of the statement must also include at least one of the
+following&#58; 
+<UL>
+<P><LI>CREATE_NOT_FENCED authority on the database
+<P><LI>SYSADM or DBADM authority.
+</UL>
+<P>To create a fenced stored procedure, no additional authorities or
+privileges are required.
+<P>If the authorization ID has insufficient authority to perform the
+operation, an error (SQLSTATE 42502) is raised.
+<P><STRONG>Syntax</STRONG>
+<P><BR>
+<TABLE BORDER  WIDTH=100%><TR><TD><BR>
+<PRE>
+>>-CREATE PROCEDURE--------------------------------------------->
+>-<i>procedure-name</i>--(--+-----------------------------------------+-)-->
+                     | +-&#44;-----------------------------------+ |
+                     | V+-IN----+                            | |
+                     +--+-------+-<i>parameter-name</i>--<i>data-type</i>--+-+
+                        +-OUT---+
+                        +-INOUT-+
+ 
+                                      +-RESULT SETS 0---------+
+>-&#42;---+--------------------------+&#42;---+-----------------------+->
+      +-SPECIFIC--<i>specific-name</i>--+    +-RESULT SETS--<i>integer</i>--+
+>-&#42;--EXTERNAL--+---------------------+&#42;--LANGUAGE--+-C----+----->
+               +-NAME--+-<i>'string'</i>---++             +-JAVA-+
+                       +-<i>identifier</i>-+
+                                        +-NOT DETERMINISTIC-+
+>-&#42;--PARAMETER STYLE--+-DB2DARI----+&#42;---+-------------------+&#42;-->
+                      +-DB2GENERAL-+    +-DETERMINISTIC-----+
+   +-FENCED-----+  +-NULL CALL-+
+>--+------------+&#42;-+-----------+--&#42;---------------------------->&lt;
+   +-NOT FENCED-+
+</PRE><BR>
+</TD></TR></TABLE>
+<P><STRONG>Description</STRONG>
+<DL>
+<P><DT><VAR>procedure-name</VAR>
+<P><DD>Names the procedure being defined. It is a qualified or unqualified name
+that designates a stored procedure. The unqualified form of
+<VAR>procedure-name</VAR> is an SQL identifier (with a maximum length of 18). An
+unqualified <VAR>procedure-name</VAR> is implicitly qualified by the
+authorization ID. The qualified form is a schema-name followed by a period and
+an SQL identifier. 
+<P>The name, including the implicit or explicit qualifiers, together with the
+number of parameters must not identify a procedure described in the catalog
+(SQLSTATE 42723). The unqualified name, together with the number of the
+parameters, while of course unique within its schema, need not be unique
+across schemas. 
+<P>If a qualifed name is specified, the schema-name cannot begin with
+&quot;SYS&quot;. Otherwise, an error (SQLSTATE 42939) is raised.
+<P><DT><VAR>(</VAR> IN&nbsp;|&nbsp;OUT&nbsp;|&nbsp;INOUT <VAR>parameter-name
+data-type,...)</VAR>
+<P><DD>Identifies the parameters of the procedure, and specifies the mode, name
+and data type of each parameter. One entry in the list must be specified for
+each parameter that the procedure will expect.  
+<P>It is possible to register a procedure that has no parameters. In this
+case, the parentheses must still be coded, with no intervening data types. For
+example, 
+<PRE>  <B>CREATE PROCEDURE</B> SUBWOOFER() ...
+</PRE> 
+<P>No two identically-named procedures within a schema are permitted to have
+exactly the same number of parameters. Lengths, precisions and scales are not
+considered in this type comparison. Therefore CHAR(8) and CHAR(35) are
+considered to be the same type, as are DECIMAL(11,2) and DECIMAL (4,3). There
+is some further bundling of types that causes them to be treated as the same
+type for this purpose, such as DECIMAL and NUMERIC. A duplicate signature
+raises an SQL error (SQLSTATE 42723). 
+<P>For example, given the statements&#58; 
+<PRE>  <B>CREATE PROCEDURE</B> PART (<B>IN</B> NUMBER <B>INT</B>, <B>OUT</B> PART_NAME <B>CHAR</B>(35)) ...
+  <B>CREATE PROCEDURE</B> PART (<B>IN</B> COST <B>DECIMAL</B>(5,3), <B>OUT</B> COUNT <B>INT</B>) ...
+</PRE> 
+<P>the second statement will fail because the number of parameters of the
+procedure are the same even if the data types are not. 
+<DL>
+<P><DT>IN&nbsp;|&nbsp;OUT&nbsp;|&nbsp;INOUT
+<P><DD>Specifies the mode of the parameter. 
+<UL>
+<P><LI>IN - parameter is input only
+<P><LI>OUT - parameter is output only
+<P><LI>INOUT - parameter is both input and output
+</UL>
+<P><DT><VAR>parameter-name</VAR>
+<P><DD>Specifies the name of the parameter.
+<P><DT><VAR>data-type</VAR>
+<P><DD>Specifies the data type of the parameter. 
+<UL>
+<P><LI>SQL data type specifications and abbreviations which may be specified in
+the <VAR>data-type</VAR> definition of a CREATE TABLE statement and have a
+correspondence in the language that is being used to write the procedure may
+be specified. See the language-specific sections of the <CITE>Embedded SQL Programming Guide</CITE> for details on the mapping between the SQL data types and host
+language data types with respect to store procedures.
+</UL>
+</DL>
+<P><DT>SPECIFIC <VAR>specific-name</VAR>
+<P><DD>Provides a unique name for the instance of the procedure that is being
+defined. This specific name can be used when dropping the procedure or
+commenting on the procedure. It can never be used to invoke the procedure. The
+unqualified form of <VAR>specific-name</VAR> is an SQL identifier (with a
+maximum length of 18). The qualified form is a <VAR>schema-name</VAR> followed
+by a period and an SQL identifier. The name, including the implicit or
+explicit qualifier, must not identify another procedure instance that exists
+at the application server; otherwise an error (SQLSTATE 42710) is raised. 
+<P>The <VAR>specific-name</VAR> may be the same as an existing
+<VAR>procedure-name</VAR>. 
+<P>If no qualifier is specified, the qualifier that was used for
+<VAR>procedure-name</VAR> is used. If a qualifier is specified, it must be the
+same as the explicit or implicit qualifier of <VAR>procedure-name</VAR> or an
+error (SQLSTATE 42882) is raised. 
+<P>If <VAR>specific-name</VAR> is not specified, a unique name is generated by
+the database manager. The unique name is SQL followed by a character timestamp,
+SQLyymmddhhmmsshhn.
+<P><DT>RESULT SETS <VAR>integer</VAR>
+<P><DD>Indicates the estimated upper bound of returned result sets for the stored
+procedure. 
+<P><DT>EXTERNAL
+<P><DD>This clause indicates that the CREATE PROCEDURE statement is being used to
+register a new procedure based on code written in an external programming
+language and adhering to the documented linkage conventions and interface. 
+<P>If NAME clause is not specified "NAME <VAR>procedure-name</VAR>" is assumed. 
+<DL>
+<P><DT>NAME <VAR>&#39;string&#39;</VAR>
+<P><DD>This clause identifies the name of the user-written code which implements
+the procedure being defined. 
+<P>The &#39;string&#39; option is a string constant with a maximum of 254
+characters. The format used for the string is dependent on the LANGUAGE
+specified. 
+<UL>
+<P><LI>For LANGUAGE C&#58; 
+<P>The <VAR>string</VAR> specified is the library name and procedure within the
+library, which the database manager invokes to execute the stored procedure
+being CREATEd. The library (and the procedure within the library) do not need
+to exist when the CREATE PROCEDURE statement is performed. However, when the
+procedure is called, the library and procedure within the library must exist
+and be accessible from the database server machine. 
+<PRE>
+>>-&#39;--+-<i>library_id</i>-------+-+-------------+--&#39;------------------>&lt;
+      +-<i>absolute_path_id</i>-+ +-!--<i>proc_id</i>--+
+</PRE> 
+<P>The name must be enclosed in single quotes. Extraneous blanks are not
+permitted within the single quotes. 
+<DL>
+<P><DT><VAR>library_id</VAR>
+<P><DD>Identifies the library name containing the procedure. The database manager
+will look for the library in the .../sqllib/function/unfenced directory and the
+.../sqllib/function directory (UNIX-based systems), or
+...&#92;sqllib&#92;function&#92;unfenced directory and the...&#92;sqllib&#92;function directory (OS/2, Windows 95 and Windows NT), where the database manager will locate the controlling sqllib
+directory which is being used to run the database manager. For example, the
+controlling sqllib directory in UNIX-based systems is /u/$DB2INSTANCE/sqllib. 
+<P>If &#39;myproc&#39; were the <VAR>library_id</VAR> in a UNIX-based system
+it would cause the database manager to look for the procedure in library /u/production/sqllib/function/unfenced/myfunc and 
+/u/production/sqllib/function/myfunc, provided the database manager is being
+run from /u/production. 
+<P>Stored procedures located in any of these directories do not use any of the
+registered attributes.
+<P><DT><VAR>absolute_path_id</VAR>
+<P><DD>Identifies the full path name of the procedure. 
+<P>In a UNIX-based system, for example, &#39;/u/jchui/mylib/myproc&#39;
+would cause the database manager to look in /u/jchui/mylib for the myproc
+procedure. 
+<P>In OS/2, Windows 95 and Windows NT &#39;d&#58;&#92;mylib&#92;myproc&#39; would cause the
+database manager to load the myproc.dll file from the d&#58;&#92;mylib
+directory. 
+<P>If absolute path is specified, the procedure will run as fenced, ignoring
+the FENCED or NOT FENCED attribute.
+<P><DT><VAR>! proc_id</VAR>
+<P><DD>Identifies the entry point name of the procedure to be invoked. The !
+serves as a delimiter between the library id and the procedure id. If <VAR>!
+proc_id</VAR> is omitted, the database manager will use the default entry point
+established when the library was linked. 
+<P>In a UNIX-based system, for example, &#39;mymod!proc8&#39; would direct
+the database manager to look for the library
+$inst_home_dir/sqllib/function/mymod and to use entry point proc8 within that
+library. 
+<P>In OS/2, Windows 95 and Windows NT &#39;mymod!proc8&#39; would direct the database manager to load
+the mymod.dll file and call the proc8() procedure in the dynamic link library
+(DLL).
+</DL> 
+<P>If the string is not properly formed, an error (SQLSTATE 42878) is raised. 
+<P>The body of every stored procedure should be in a directory which is
+mounted and available on every partition of the database.
+<P><LI>For LANGUAGE JAVA&#58; 
+<P>The <VAR>string</VAR> specified is the class identifier and method
+identifier, which the database manager invokes to execute the stored procedure
+being CREATEd. The class identifier and method identifier do not need to exist
+when the CREATE PROCEDURE statement is performed. However, when the procedure
+is called, the class identifier and the method identifier must exist and be accessible from the
+database server machine, otherwise an error (SQLSTATE 42884) is raised. 
+<PRE>
+>>-&#39;--<i>class_id</i>--!--<i>method_id</i>--&#39;-------------------------------->&lt;
+</PRE> 
+<P>The name must be enclosed in single quotes. Extraneous blanks are not
+permitted within the single quotes. 
+<DL>
+<P><DT><VAR>class_id</VAR>
+<P><DD>Identifies the class identifier of the Java object. If the class is part
+of a package, the class identifier part must include the complete package
+prefix, for example, "myPacks.StoredProcs". The Java virtual machine will
+look in directory "../myPacks/StoredProcs/" for the classes. In OS/2 and
+Windows 95 and Windows NT, the Java virtual machine will look in directory
+"..\myPacks\StoredProcs\".
+<P><DT><VAR>method_id</VAR>
+<P><DD>Identifies the method name within the Java class to be invoked.
+</DL>
+</UL>
+<P><DT>NAME <VAR>identifier</VAR>
+<P><DD>This <VAR>identifier</VAR> specified is an SQL identifier. The SQL
+identifier is used as the <VAR>library-id</VAR> in the string. Unless it is a
+delimited identifier, the identifier is folded to upper case. If the
+identifier is qualified with a schema name, the schema name portion is
+ignored. This form of NAME can only be used with LANGUAGE C.
+</DL>
+<P><DT>LANGUAGE
+<P><DD>This mandatory clause is used to specify the language interface convention
+to which the stored procedure body is written. 
+<DL>
+<P><DT><B>C
+</B><DD>This means the database manager will call the stored procedure as if it
+were a C procedure. The stored procedure must conform to the C language
+calling and linkage convention as defined by the standard ANSI C prototype.
+<P><DT><B>JAVA
+</B><DD>This means the database manager will call the stored procedure as a method
+in a Java class.
+</DL>
+<P><DT>PARAMETER STYLE
+<P><DD>This clause is used to specify the conventions used for passing parameters
+to and returning the value from stored procedures. 
+<DL>
+<P><DT><B>DB2DARI
+</B><DD>This means that the stored procedure will use a parameter passing
+convention that conforms to C language calling and linkage conventions. This
+must be specified when LANGUAGE C is used.
+<P><DT><B>DB2GENERAL
+</B><DD>This means that the stored procedure will use a parameter passing
+convention that is defined for use with Java methods. This must be specified
+when LANGUAGE JAVA is used. 
+<P>The value DB2GENRL may be used as a synonym for DB2GENERAL.
+</DL>
+<P>
+<P>Refer to <CITE>Embedded SQL Programming Guide</CITE> for details on passing parameters.
+<P><DT>DETERMINISTIC &nbsp;or&nbsp; NOT DETERMINISTIC
+<P><DD>This clause specifies whether the function always returns the same results
+for given argument values (DETERMINISTIC) or whether the function depends on
+some state values that affect the results (NOT DETERMINISTIC). That is, a
+DETERMINISTIC function must always return the same result from successive
+invocations with identical inputs.
+<P><DT>FENCED &nbsp;or&nbsp; NOT FENCED
+<P><DD>This clause specifies whether or not the stored procedure is considered
+"safe" to run in the database manager operating environment&#39;s
+process or address space (NOT FENCED), or not (FENCED). 
+<P>If a stored procedure is registered as FENCED, the database manager
+insulates its internal resources (e.g. data buffers) from access by the
+procedure. All procedures have the option of running as FENCED or NOT FENCED. In general, a
+procedure running as FENCED will not perform as well as a similar one running
+as NOT FENCED. 
+<P>If the stored procedure is located in
+...&#92;sqllib&#92;function&#92;unfenced directory and the
+...&#92;sqllib&#92;function directory (UNIX-based systems), or
+...&#92;sqllib&#92;function&#92;unfenced directory and the
+...&#92;sqllib&#92;function directory (OS/2, Windows 95 and Windows
+NT), then the FENCED or NOT FENCED registered attribute (and every other
+registered attribute) will be ignored. 
+<TABLE><TR><TD ALIGN=LEFT VALIGN=TOP><B>Warning:</B></TD><TD ALIGN=LEFT VALIGN=TOP>Use of NOT FENCED for procedures not adequately checked out can compromise
+the integrity of DB2. DB2 takes some precautions against many of the common
+types of inadvertent failures that might occur, but cannot guarantee complete
+integrity when NOT FENCED stored procedures are used.
+</td></tr></table> 
+<P>To change from FENCED to NOT FENCED, the procedure must be re-registered
+(by first dropping it and then re-creating it). Either SYSADM authority, DBADM
+authority or a special authority (CREATE_NOT_FENCED) is required to register a
+stored procedures as NOT FENCED.
+<P><DT>NULL CALL
+<P><DD>NULL CALL always applies to stored procedures. This means that regardless
+if any arguments are null, the stored procedure is called. It can return a null value or a normal (non-null) value.
+Responsibility for testing for null argument values lies with the stored
+procedure.
+</DL>
+<P><STRONG>Notes</STRONG>
+<UL>
+<P><LI>For information on creating the programs for a stored procedure, see the
+<CITE>Embedded SQL Programming Guide</CITE>.
+<P><LI>Creating a procedure with a schema name that does not already exist will
+result in the implicit creation of that schema provided the authorization ID
+of the statement has IMPLICIT_SCHEMA authority. The schema owner is SYSIBM.
+The CREATEIN privilege on the schema is granted to PUBLIC.
+</UL>
+<P><STRONG>Examples</STRONG>
+<P><I>Example 1&#58;</I>&nbsp; Create the procedure definition for a
+stored procedure, written in Java, that is passed a part number and returns
+the cost of the part and the quantity that are currently available. 
+<PRE>   <B>CREATE PROCEDURE</B> PARTS_ON_HAND <B>(IN</B>  PARTNUM  <B>INTEGER,</B> 
+                                   <B>OUT</B> COST     <B>DECIMAL(7,2),</B> 
+                                   <B>OUT</B> QUANTITY <B>INTEGER)</B>
+                    <B>EXTERNAL NAME</B> &#39;parts!onhand&#39; 
+                    <B>LANGUAGE JAVA PARAMETER STYLE DB2GENERAL</B>
+</PRE>
+<P><I>Example 2&#58;</I>&nbsp; Create the procedure definition for a
+stored procedure, written in C, that is passed an assembly number and returns
+the number of parts that make up the assembly, total part cost and a result
+set that lists the part numbers, quantity and unit cost of each part. 
+<PRE>   <B>CREATE PROCEDURE</B> ASSEMBLY_PARTS <B>(IN</B>  ASSEMBLY_NUM  <B>INTEGER,</B> 
+                                    <B>OUT</B> NUM_PARTS     <B>INTEGER,</B> 
+                                    <B>OUT</B> COST <B>DOUBLE)</B>
+                    <B>EXTERNAL NAME</B> &#39;parts!assembly&#39; 
+                    <B>RESULT SETS 1 NOT FENCED</B>
+                    <B>LANGUAGE C PARAMETER STYLE DB2DARI</B>
+</PRE>
+<P><P>
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A HREF="db2a0107.htm">Previous Page</A> &#124; <A HREF="sqls0607.htm">Next Page</A> &#93; </B> 
+<A NAME=Bot_Of_Page></A>
+</BODY></HTML>

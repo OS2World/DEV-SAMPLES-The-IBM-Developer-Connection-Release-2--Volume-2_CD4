@@ -1,0 +1,31 @@
+<html>
+<head>
+<base target="_blank">
+<title>SCSI Device Driver Sample Code (M4)</title>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="../../template.css" TITLE="onlinebook">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="0000FF" alink="800080" vlink="800080">
+<h2>SCSI Device Driver Sample Code (M4)</h2>
+<br>
+<!--<P>
+<BIG><b>SCSI Device Driver Sample Code</b></BIG>
+<P>
+<b>Platform:</b> AIX-->
+<P>
+This sample device driver is an example of the interface between a SCSI device
+driver head and a SCSI adapter device driver.  The head (which is what this sample
+represents) is the upper layer in the AIX V3 SCSI subsystem and it talks to the adapter
+driver.  It does not talk directly to the SCSI adapter.  The adapter driver is the lower
+layer which talks to the SCSI adapter and other system hardware.  The two layers communicate
+via system calls.
+<P>
+<BIG><b>Installation Instructions:</b></BIG>
+<OL>
+<LI>Copy /scsisamp/scsi.tar.Z to a temporary directory.
+<LI>Make the temporary directory the current directory.
+<LI>Type <B>uncompress scsi.tar.Z </B>
+<LI>Type <B>tar -xvf scsi.tar</B>
+</OL>
+
+</body>
+</html>

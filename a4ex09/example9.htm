@@ -1,0 +1,177 @@
+/*
+<br>
+<head>
+<title>Program that is replacement for gettimeofday()</title>
+</head>
+
+
+<h1>Program that is replacement for gettimeofday()</h1>
+
+<p>
+This function will populate the timeval structure at the address passed to it with the seconds and microseconds (for Greenwich time) since the epoch.                                                     
+<p>
+Note that this workaround has only one parameter to the function and it populates the timeval struct with the current Greenwich time. It does not return any timezone information.
+                                                                 
+<p>
+It retrieves the local time of day using the AS/400 MI instruction MATTOD.                                                     
+<p>
+The MI TOD is laid out with the leftmost 42 bits defined as the value and the remaining 22 bits undefined. The 42 bits are essentially a binary number that is incremented every 1,024  microseconds. The low order bits of the 42 bits must be extracted from char[8] field and multiplied by 1024 to obtain the correct number of microseconds. This will be done by clearing the 10 bits to the right of the 42 bits (10 bits=1024) and then shifting the 20 low order bits (existing 10 + clear 10) right until the remaining reserved bits are removed. The result is the time in microseconds.
+                                                                
+<p>
+A similar value exists for the epoch (Jan. 1, 1970), and this value will be subtracted from the value for the time retrieved to populate the timeval struture. Another system API CEEUTCO is used to get the offset from Greenwich time and this offset is used to adjust the seconds calculated above for current time to get UTC (Universal Time Coordinated) time.
+                                                                  
+<p>
+Choose your browser's option to <b>save to local disk</b> and then reload this document to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed and tested on V3R1, V3R2 and V3R6 systems. Define macro OS400_V3R1_OR_V3R2 for V3R1 or OS400_V3R6 for V3R6 while compiling.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+
+<xmp>
+*/
+/************************************************************************/
+/*                                                                      */
+/* test case:    gettimeofday.c                                         */
+/*                                                                      */
+/* objective:    gettimeofday() workaround                              */
+/*                                                                      */
+/* usage notes:  Compile this module using CRTCMOD and then bind the    */
+/*               module with other modules using gettimeofday() to      */
+/*               create program object. Define macro OS400_V3R1_OR_V3R2 */
+/*               or OS400_V3R6, depending on the OS400 version you are  */
+/*               using, while compiling.                                */  
+/*                                                                      */  
+/************************************************************************/
+#include <stdio.h>
+#include <sys/time.h>
+#include <unistd.h>
+#ifdef OS400_V3R1_OR_V3R2
+#include <milib.h>           /* _MI_Time structure           */
+#include <mimchint.h>        /* _MATTOD macro                */
+#endif
+
+#ifdef OS400_V3R6
+#include <mih/micommon.h>    /* _MI_Time structure           */
+#include <mih/mattod.h>      /* _MATTOD macro                */
+#endif
+
+#include <leawi.h>           /* CEE system API header file   */
+
+typedef struct time_map {
+  unsigned int high_int;
+  unsigned int low_int;
+} time_map_t;
+
+/* variables for retrieving Universal Time Coordinated Offset */
+
+_INT4 utco_hrs,
+      utco_min;
+
+_FLOAT8 utco_sec;
+
+_FEEDBACK utco_fc;
+
+int gettimeofday(Tp)
+struct timeval *Tp;
+
+{
+/* Valid bits in the low order word                           */
+    #define TIME_MASK       0xFFC00000
+    #define TWO_TO_20TH     1048576.0
+    #define ONE_MILLION     1000000.0
+    #define EPOCH_SECS      1305115013.685248
+    
+    _MI_Time MI_time;
+    double micro_epoch;           /* epoch in microseconds          */
+    double micro_cur_time;        /* time passed in in microseconds */
+    double low_int, high_int;     /* work variables                 */
+    time_map_t *mi_map;           /* MI time in int form            */
+
+    _MATTOD(MI_time);             /* Get the local system time      */
+
+    Tp->tv_sec = 0;
+    Tp->tv_usec = 0;
+
+    /*
+     *  Map the MI TOD value to two integers. high_int will contain
+     *  the high order 32 bits and low_int will contain the low order
+     *  10 bits. The remaining bits in low_int are not used.
+     *
+     *  _MI_Time is typedef'd as a char[8]
+     */
+    mi_map = (time_map_t *)MI_time;
+
+
+    /*
+     *  Clear ALL the 22 reserved bits to the right of the 42 TOD bits.
+     */
+    mi_map->low_int &= TIME_MASK;
+
+    /*
+     *  Shift 20 high order bits of the low_int, (the low order 10 bits
+     *  of the 42 bit MI TOD value + 10 bits of the ones that we've
+     *  just cleared to a byte boundary)
+     *
+     *  We keep the 10 cleared bits, because MI Time has only millisecond
+     *  granularity, but we're going to return microsecond information.
+     *  - approx millisecond ticks * 1024 == microseconds
+     */
+    low_int = mi_map->low_int >> 12;
+
+    /*
+     *  Multiply the high order bits by 1,048,576 (2 to the 20th power)
+     *  to account for the 20 bits below them.
+     */
+    high_int = (double)(mi_map->high_int * TWO_TO_20TH);
+
+    /*
+     *  Add the low order bits and the high order bits to get the
+     *  time in microseconds.
+     */
+    micro_cur_time = low_int + high_int;
+
+    /*
+     *  Get epoch in microseconds. This value has previously been
+     *  calculated using the method above and is accessed as a
+     *  constant in units of seconds. Multipying by a million gives
+     *  microseconds.
+     *
+     *  No way to do a constant double variable, so we have to
+     *  Calculate this value.
+     */
+    micro_epoch = ONE_MILLION * EPOCH_SECS;
+
+
+    /*
+     *  timeval is time since the epoch, so Subtract epoch from
+     *  time calculated from what was passed in and convert to struct
+     *  timeval.
+     */
+    micro_cur_time -= micro_epoch;
+
+    /*
+     * Drop remainder (microseconds)
+     */
+    high_int = micro_cur_time / ONE_MILLION;
+    Tp->tv_sec = (long int)high_int;
+
+    /*
+     * Calculate the remainder that was dropped.
+     */
+    low_int = micro_cur_time - (Tp->tv_sec * ONE_MILLION);
+    Tp->tv_usec = (long int)low_int;
+  
+    /*
+     *  Get offset from UTC time using CEEUTCO system API
+     */
+  
+    CEEUTCO(&utco_hrs, &utco_min, &utco_sec, &utco_fc);
+
+
+    /*
+     *  Adjust time using offset just calculated. If offset is
+     *  negative, we're behind GMT, so offset must be added. If offset
+     *  is positive, we're ahead of GMT, so offset must be subtracted.
+     */
+    Tp->tv_sec -= (long) utco_sec;
+    return(0);
+}

@@ -1,0 +1,64 @@
+Mon Apr 21 11:23:25 PDT 1997
+Our current time zone is CST
+Current time zone uses daylight savings time.
+Current time zone is in daylight savings time now.
+List of supported time zones...
+GMT
+ECT
+EET
+ART
+EAT
+MET
+NET
+PLT
+IST
+BST
+VST
+CTT
+JST
+ACT
+AET
+SST
+NST
+MIT
+HST
+AST
+PST
+PNT
+MST
+CST
+EST
+IET
+PRT
+CNT
+AGT
+BET
+CAT
+Raw offset from GMT in millis is -21600000
+Offset from GMT in minutes is -360
+Time for Calendar in:CST
+01:23:25 pm Daylight Time
+Time derived from deprectated Date methods:
+13:23:25
+AM_PM value follows (0=AM, 1=PM) ...
+1
+Time for Calendar in:GMT
+07:23:25 pm Daylight Time
+Time for Calendar in:HST
+09:23:25 am Daylight Time
+Time for Calendar in:PST
+11:23:25 am Daylight Time
+Time for Calendar in:MST
+12:23:25 pm Daylight Time
+Time for Calendar in:CST
+01:23:26 pm Daylight Time
+Time for Calendar in:EST
+02:23:26 pm Daylight Time
+Time for Calendar in:JST
+03:23:26 am Standard Time
+Time for Calendar in:ACT
+04:53:26 am Daylight Time
+Time for Calendar in:AET
+05:23:26 am Daylight Time
+Time for Calendar in:NST
+07:23:26 am Daylight Time

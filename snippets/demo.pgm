@@ -1,0 +1,464 @@
+/*   LICENSE AND DISCLAIMER                                            */
+/*   ----------------------                                            */
+/*   This material contains IBM copyrighted sample programming source   */
+/*   code.  IBM grants you a nonexclusive license to use, execute,      */
+/*   display, reproduce, distribute and prepare derivative works of     */
+/*   this sample code.  The sample code has not been thoroughly tested  */
+/*   under all conditions.  IBM, therefore, does not warrant or         */
+/*   guarantee its reliability, serviceablity, or function.  All        */
+/*   sample code contained herein is provided to you "AS IS." ALL       */
+/*   IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED       */
+/*   WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR        */
+/*   PURPOSE, ARE EXPRESSLY DISCLAIMED.                                 */
+/*                                                                      */
+/*   COPYRIGHT                                                          */
+/*   ---------                                                          */
+/*   (C) Copyright IBM CORP. 1996, 1997                                 */
+/*   All rights reserved.                                               */
+/*   US Government Users Restricted Rights -                            */
+/*   Use, duplication or disclosure restricted                          */
+/*   by GSA ADP Schedule Contract with IBM Corp.                        */
+/*   Licensed Material - Property of IBM                                */
+/*                                                                      */
+/*   COMMENTS/QUESTIONS                                                 */
+/*   ------------------                                                 */
+/*   Please send comments or questions via e-mail to Mel Rothman        */
+/*   at mrothman@vnet.ibm.com                                           */
+/*                                                                      */
+/*   THIS FILE AVAILABLE FROM:                                          */
+/*   ------------------------                                           */
+/*   AS/400 Web Builder's Workshop's Snippets Page                     */
+/*   http://205.217.130.15/workshop/snippets/snippets.htm               */
+/*   It is included in SAVF CGIDEVD (identified as                      */
+/*   SAVEFILE OF CGIDEV LIBRARY)                                        */
+/* Template for CGI-BIN Post Processing
+
+   TEMPLATE contains several subroutines.  See each subroutine's prolog
+   for details about its inputs, processing, and outputs.  Here is a brief
+   description of each:
+
+     initialize     initializes the template
+     syntax         traps syntax errors
+     failure        traps CPF0001 and CPF9999 errors
+     error          traps command errors other than CPF0001 and CPF9999
+     novalue        traps use of variables that have not been defined
+     getparse       gets and parses browser's standard input
+     gettable       loads a translate table.  Modify the translate table's name
+                    is necessary.
+     handleescape   handles http escape sequences
+     donames        creates stem variable for each form field.
+     sayh           For sending strings to standard out.
+     getenv         gets the value of an environment variable.
+     inccnt         increments and returns the value of a named counter
+
+     Global variables
+     ----------------
+     Global variables are defined in subroutines initialze, getparse,
+     and donames.  Many of them have been named g.1xxxxxxxxxx, where
+     xxxxxxxx identifies the variable (e.g. g.1stdout).  Global variables
+     that describe the data received from the browser do not follow this
+     convention (for details see the prolog of subroutine getparse).
+     Finally, global variables i and j, which are used as stem variable
+     tails, are also defined in subroutine initialize.
+
+*/
+call initialize                            /* initialization */
+call getparse                              /* get and parse input from the browser */
+if alldataln > 0                           /* if alldataln = 0, there is no input to handle */
+  then
+    do
+      call gettable                        /* load translate table for use by handleescape */
+      call handleescape                    /* handle escaped characters */
+      call donames                         /* creates stem variables */
+    end
+/***************************************************************************
+*     Start Mainline                                                       *
+****************************************************************************/
+hr='<HR WIDTH="100%" CENTER SIZE=3>' /* setup horizontal rule */
+/* Send output to the browser */
+call sayh 'Content-type: text/html'        /* HTML output header */
+call sayh                                  /* HTTP protocol-required blank line */
+call sayh '<HTML>'
+call sayh '<HEAD><TITLE>Sample output from a REXX procedure</TITLE></HEAD>'
+call sayh '<BODY>'
+call sayh '<BR>'
+call sayh '<H1>Sample output from REXX procedure' g.1procname'</H1>'
+if custname.0 > 0 then
+    call sayh '<H2>This output was requested by' custname.1'</H2>'
+call sayh hr
+call sayh 'This REXX procedure is' g.1procname', loaded from source file' g.1procfile
+call sayh 'in library' g.1proclib'.<P>'
+call sayh '<HR>'
+call sayh '<H2>Example of updating a counter by calling an ILE-RPG program</H2>'
+call sayh 'This REXX procedure has been run <B>' inccnt('REXX 'g.1procname)'</B> times.'
+call sayh hr
+call sayh '<H2>Examples of retrieving environment variables by calling an ILE-RPG program</H2><P>'
+call sayh '<TABLE Border Width=80%>'
+call sayh '<TR><TH ALIGN="left">Environment Variable</TH>'
+call sayh '<TH ALIGN="left">Value</TH></TR>'
+envvars='CONTENT_LENGTH',
+        'CONTENT_TYPE',
+        'GATEWAY_INTERFACE',
+        'HTTP_ACCEPT',
+        'HTTP_COOKIE',
+        'HTTP_USER_AGENT',
+        'HTTP_REFERER',
+        'IBM_CCSID_VALUE',
+        'PATH_INFO',
+        'PATH_TRANSLATED',
+        'QUERY_STRING',
+        'REMOTE_ADDRESS',
+        'REMOTE_HOST',
+        'REQUEST_METHOD',
+        'SCRIPT_NAME',
+        'SERVER_NAME',
+        'SERVER_PORT',
+        'SERVER_PROTOCOL',
+        'SERVER_SOFTWARE'
+do i = 1 to words(envvars)
+  envval = strip(getenv(word(envvars,i)))
+  if length(envval) = 0
+    then
+      envval= '&nbsp;' /* a non-breaking space */
+/*call sayh '<TR align="left" valign=top><TD>'word(envvars,i)'</TD><TD>'getenv(word(envvars,i))'</TD></TR>'*/
+  call sayh '<TR align="left" valign=top><TD>'word(envvars,i)'</TD><TD>'envval'</TD></TR>'
+end
+call sayh '</TABLE>'
+call sayh hr
+call sayh '<H2>Data received from' getenv('REQUEST_METHOD') 'method</H2>'
+call sayh '<B>Note: + signs have already been converted to blanks.</B><P>'
+call sayh 'Input data stream:' alldata'<BR>'
+call sayh 'Input data stream length:' alldataln'<BR>'
+call sayh 'Number of variables, including duplicates: 'data.0'<BR>' /* count of variables */
+call sayh '<TABLE Border Width=80%>'
+call sayh '<CAPTION><B>Data passed into REXX procedure' translate(g.1procname) '</B></CAPTION>'
+call sayh '<TR align="left" valign="top"><TH>#</TH>'
+call sayh     '<TH>Variable=Value</TH>'
+call sayh     '<TH>Parsed Variable Name</TH>'
+call sayh     '<TH>Parsed Variable Value</TH></TR>'
+do i = 1 to data.0
+    call sayh '<TR align="left" valign="top">'
+    call sayh '<TD Align=top>'i'</TD>'
+    call sayh   '<TD>'data.i'</TD>'
+    call sayh '<TD Align="left">'varname.i'</TD>'
+    call sayh  '<TD>' value.i'</TD>'
+    call sayh '</TR>'
+end
+call sayh '</TABLE>'
+call sayh hr
+call sayh '<H2>Example of referencing a multiple-occurrence field (Operating System)</H2>'
+call sayh 'Operating systems used are: '
+if symbol('os.0') <> 'VAR'
+  then
+    call sayh 'none.'
+else
+    do
+      do i = 1 to os.0-1
+        call sayh os.i', '
+      end
+      i=os.0
+      call sayh os.i
+    end
+call sayh '</BODY>'
+call sayh '</HTML>'
+call sayh '(((((FLUSH'
+exit
+/***************************************************************************
+*     End Mainline                                                         *
+****************************************************************************
+*     Subroutines                                                          *
+****************************************************************************
+Initialization
+****************************************************************************/
+initialize:
+g.1jobtype = ''                            /* job typek 0=batch, 1=interactive */
+'rtvjoba TYPE(&g.1jobtype)'                /* if interactive, uses say; else stdout */
+parse source . . g.1procname g.1procfile g.1proclib /* get REXX procedure's name, source file and library */
+signal on syntax                           /* trap syntax errors */
+signal on failure                          /* trap function checks (CPF0001 or CPF9999)*/
+signal on error                            /* trap system command errors other than above */
+signal on novalue                          /* trap variables that have no value */
+g.1maxparmlength=9999                      /* maximum length for character cl pseudovariables */
+g.1parm=copies(' ',g.1maxparmlength)       /* buffer for character parameters */
+g.1maxnonl=250                             /* maximum output characters without a newline     */
+g.1stdout = ''                             /* standard output data */
+g.1stdoutl = 0                             /* standard output length */
+g.1newline = x2c('15')                     /* newline character */
+g.1content_length=''                       /* for content_length */
+i=0                                        /* work variable */
+j=0                                        /* work variable */
+g.1toget=0                                 /* subroutine getparse, for call to STDIN */
+g.1recvd=0                                 /* subroutine getparse, for call to STDIN */
+g.1work=''                                 /* subroutine getparse, work variable */
+                                           /* also used in subroutine donames */
+g.1prevwork=''                             /* subroutine donames, work variable */
+return
+****************************************************************************
+Syntax error handler
+****************************************************************************/
+syntax:
+call sayh 'Syntax error' rc 'in REXX procedure' g.1procname 'from source file' g.1proclib'/'g.1procfile'.<BR>'
+call sayh 'Line in error:' SIGL SOURCELINE(SIGL)'<BR>'
+call sayh 'REXX error text is' errortext(rc)'<BR>'
+exit
+/***************************************************************************
+Error handler
+****************************************************************************/
+error:
+call sayh 'Error' rc 'in REXX procedure' g.1procname 'from source file' g.1proclib'/'g.1procfile'.<BR>'
+call sayh 'Line in error:' SIGL SOURCELINE(SIGL)'<BR>'
+exit
+/***************************************************************************
+Failure handler
+****************************************************************************/
+failure:
+call sayh 'Failure' rc 'in REXX procedure' g.1procname 'from source file' g.1proclib'/'g.1procfile'.<BR>'
+call sayh 'Line in error:' SIGL SOURCELINE(SIGL)'<BR>'
+exit
+/*************************************************************************************************
+Novalue handler
+*************************************************************************************************/
+novalue:
+call sayh 'Undefined variable in REXX procedure' g.1procname 'from source file' g.1proclib'/'g.1procfile'.<BR>'
+call sayh 'Line in error:' SIGL SOURCELINE(SIGL)'<BR>'
+call sayh 'The variable name was' CONDITION('D')'<BR>'
+exit
+/*************************************************************************************************
+Getparse subroutine
+****************************************************************************
+Outputs:
+  alldata:  standard input string minus any imbedded end-of-line characters and any
+    trailing '00'x characters.
+  alldataln: length of alldata
+  data.0:  number of variables.
+  data.i: varname=value format for 'i'th variable
+  varname.i:  variable name for 'i'th variable
+  value.i:  value of the 'i'th variable.
+Processing flow:
+  repeatedly pulls from standard input until no more input
+  with each pull, strips off any trailing '00'x characters
+  concatenates all the input into variable alldata
+  converts any + characters in alldata to blanks
+  places length of alldata into alldataln variable
+  parses from alldata the stem variables data. varname. value.
+***************************************************************************/
+getparse:
+/**************************************************************************/
+if g.1jobtype='1'
+  then
+    do
+      say 'Enter standard input data'
+      parse pull alldata
+      alldataln = length(alldata)
+    end
+  else
+    do
+      alldata=''
+      alldataln=0
+      g.1content_length=getenv('CONTENT_LENGTH')
+      g.1recvd = 0
+      if g.1content_length = 1 then return  /* Bug, OS/2 Web Explorer returning */
+                                            /* length 1 when should be 0 */
+      do while g.1content_length > 0
+        if g.1content_length > g.1maxparmlength
+          then
+            g.1toget = g.1maxparmlength
+          else
+            g.1toget = g.1content_length
+        'CALL PGM(STDIN) PARM(&g.1parm &g.1toget &g.1recvd)'
+        alldataln = alldataln + g.1recvd
+        alldata = alldata || substr(g.1parm,1,g.1recvd)
+        g.1content_length = g.1content_length - g.1toget
+      end
+    end
+if alldata = '' | alldata = ' '            /* if no content, return */
+  then
+    do
+      alldata=''
+      alldataln=0
+      return
+    end
+alldata = translate(alldata,' ','+') /* translate + to blank */
+g.1work = alldata                       /* copy input data to work for parsing */
+data.0 = 0
+do i = 1 while g.1work <> ''
+    parse var g.1work data.i '&' g.1work   /* parse out each variable into data.i */
+    parse var data.i varname.i '=' value.i   /* parse out variable names and values */
+    data.0 = data.0 + 1              /* increment variable count */
+end
+return
+/**************************************************************************
+donames subroutine
+***************************************************************************
+Creates stem variables with same names as the names used in the form.
+Name.0 is the number of occurences, name.i is the value of the 'i' occurence.
+***************************************************************************/
+donames:
+g.1prevwork=''
+j=1
+do i = 1 to data.0
+  interpret 'g.1work=' "'"varname.i"'"
+  if g.1work=g.1prevwork then
+    do
+      j=j+1
+      interpret g.1work'.'j '=  value.i'
+    end
+  else
+    do
+      interpret g.1work'.1 = value.i'
+    end
+  interpret g.1work'.0 =' j
+  g.1prevwork=g.1work
+end
+return
+/**************************************************************************
+gettable subroutine
+***************************************************************************
+Loads 256-byte exposed tabledata variable with ASCII to EBCDIC table data extracted from the
+table and library specifed in the table and tablelib variables, below.
+****************************************************************************/
+gettable: procedure expose g.
+table='QAEUSBB1  '
+tablelib='QUSRSYS   '
+tablelen=256
+tablelenx='00256F'X
+g.1tbldata=xrange()  /* hex 00 to hex ff */
+'CALL PGM(QDCXLATE) PARM(&tablelenx &g.1tbldata &table &tablelib)'
+return
+/***************************************************************************
+handleescape subroutine
+****************************************************************************
+Converts all %xx escape sequences in the value stem variable to a single EBCDIC character.
+Ignores escape sequences in variable names.  Variable names to work well with REXX should
+contain only valid REXX characters and no escape sequences.
+
+Requires that gettable has been executed previously.
+****************************************************************************/
+handleescape:
+do i = 1 to data.0
+    j=1
+    do until j = 0
+        j=pos('%',value.i,j)
+        if j > 0 then
+          do
+            theindex = c2d(x2c(substr(value.i,j+1,2)))+1
+            value.i = substr(value.i,1,j-1) || substr(g.1tbldata,theindex,1) || substr(value.i,j+3)
+            j=j+1
+          end
+    end
+end
+return
+/***************************************************************************
+stdout
+***************************************************************************/
+stdout: procedure expose g.
+parse arg data '((((('options
+dataln = length(data)
+if g.1jobtype='1' /* an interactive job */
+  then
+    do
+      say data
+    end
+else
+  do
+    /* Flush buffer if option = 'FLUSH'.  */
+    if wordpos('FLUSH',translate(options)) > 0
+      then
+        do
+          'CALL PGM(STDOUT) PARM(&g.1stdout &g.1stdoutl)'
+          g.1stdout=''
+          g.1stdoutl=0
+          if dataln = 0
+            then
+              return
+        end
+    if right(data,1) <> g.1newline then
+      data = data || g.1newline
+    dataln = length(data)
+    if (dataln + g.1stdoutl) > g.1maxparmlength
+      then
+        do
+          'CALL PGM(STDOUT) PARM(&g.1stdout &g.1stdoutl)'
+          g.1stdout = data
+          g.1stdoutl = dataln
+        end
+      else
+        do
+          g.1stdout = g.1stdout || data
+          g.1stdoutl = g.1stdoutl + dataln
+        end
+  end
+return
+/***************************************************************************
+Get environment
+****************************************************************************
+Gets an environment variable.
+Parameters: envvarname: name of environment variable go get
+Returns:    value of environment or *NONE if not found or null value
+****************************************************************************/
+getenv: procedure expose g.
+parse arg envvarname
+v1=envvarname                         /* environment variable's name */
+v2=copies(' ',500)                    /* receiver variable */
+'CALL PGM(GETENV) PARM(&v1 &v2)'      /* call ILE RPG program GETENV to get environment variable */
+parse var v2 v3 '00'x .
+return v3                             /* return value.  It will be *NONE if not set or invalid */
+
+/***************************************************************************
+Sayh
+****************************************************************************
+Syntax: call SAYH the_data [(((((FLUSH
+Writes the_data to standard out by calling subroutine stdout,
+calls RPG program STDOUT>
+
+Whereever the_data has more than the maximum number of
+characters allowed without a newline, sayh attempts to insert
+newline characters to make the_data conform to the "newline
+character rule.
+
+In addition, if the option (((((FLUSH appears in the
+argument list, subroutine stdout (called by sayh)
+forces any pending output to standard output before
+processing the_data.
+
+  Examples: call sayh now is the time
+            call sayh for all good men (((((FLUSH
+            call sayh (((((FLUSH
+****************************************************************************/
+sayh: procedure expose g.
+parse arg x                             /* read string argument */
+do until x = ''
+  if length(x) <= g.1maxnonl
+    then
+      do
+        call stdout x
+        x = ''
+      end
+  else
+    do
+      i = lastpos(' ',x,g.1maxnonl)
+      if i = 0
+        then i = g.1maxnonl /* couldn't find blank, break at maximum */
+      y = left(x,i)
+      call stdout y     /* write first i bytes */
+      x = delstr(x,1,i) /* delete first i bytes */
+      x = strip(x)  /* strip leading and trailing blanks */
+    end
+end
+return
+/***************************************************************************
+Increment counter
+****************************************************************************
+Creates or increments a named counter in database file CGICOUNT.  Returns
+the counter value.
+Parameters: cname         May be up to 10 characters in length.  If the
+                          named counter does not exist it is created and
+                          initialized to 1.
+Returns:    new value for the named counter
+Dependency: RPG program COUNT
+****************************************************************************/
+inccnt: procedure expose g.
+parse arg cname
+cvalue=0
+'CALL PGM(CGIDEV/COUNT) PARM(&cname &cvalue)' /* call ILE RPG program COUNT to get counter value */
+return cvalue                   /* return counter value value.  */

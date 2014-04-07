@@ -1,0 +1,6 @@
+GRLPC001.Obj
+GRLPC001.Exe
+GRLPC001.Map /NOD /CO
+os2 + llibce + CCLOS2
+GRLPC001.Def
+

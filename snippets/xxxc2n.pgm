@@ -1,0 +1,74 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+     Hnomain
+      /copy cgidev/qrpglesrc,prototypes
+      * nomain c2n subprocedure
+     Pc2n              B                   export
+     Dc2n              PI            30p 9
+     Dc                              32    options(*varsize)
+      * variables
+     Dn                s             30p 9
+     Dwknum            s             30p 0 inz(0)
+     Dsign             s              1  0 inz(1)
+     Ddecpos           s              3  0 inz(0)
+     Dindecimal        s              1    inz('0')
+     Di                s              3  0
+     Dj                s              3  0
+     D                 ds
+     Dalpha1                          1
+     Dnumber1                         1  0 overlay(alpha1) inz(0)
+     C                   eval      c = %triml(c)
+     C     ' '           checkr    c             j
+     C     1             do        j             i
+     C                   eval      alpha1=%subst(c:i:1)
+     C                   select
+     C                   when      alpha1='-'
+     C                   eval      sign= -1
+     C                   when      alpha1='.'
+     C                   eval      indecimal='1'
+     C                   when      alpha1 >='0' and alpha1 <= '9'
+     C                   eval      wknum  = wknum  * 10 + number1
+     C                   if        indecimal = '1'
+     C                   eval      decpos = decpos + 1
+     C                   endif
+     C                   endsl
+     C                   enddo
+     C                   eval      n = wknum  / (10 ** decpos)
+     C                   if        sign = -1
+     C                   eval      wknum = -wknum
+     C                   end
+     C                   return    n
+     Pc2n              E

@@ -1,0 +1,457 @@
+/********************************************************************/
+/*                                                                  */
+/*            Author: David Money                                   */
+/*            E-mail: money@vnet.ibm.com                            */
+/*                                                                  */
+/*  This a multi-function parser for CGI programming on AS/400.     */
+/*  Compile this source as module and link to it when you create    */
+/*  your CGI program.  Also available are a driver program          */
+/*  (DDMPARSDRV) and include file (DDMPARSINC) that has the         */
+/*  function prototypes.  There is also an HTML form to use for     */
+/*  input and to launch the CGI program. It is titled DDMPARSER     */
+/*  in the HTMLSRC file.                                            */
+/*                                                                  */
+/*  Features included:                                              */
+/*     Parses query string into 3 parallel arrays                   */
+/*         names    --   form variable name                         */
+/*         values   --   form variable values                       */
+/*         occurs   --   the number of occurences of this variable  */
+/*     Replaces '+' with spaces                                     */
+/*     Replace ASCII escape sequences with EBCDIC character         */
+/*         Customizable for CCSIDs and character sizes              */
+/*     Retrieves all form variables or,                             */
+/*     Retrieves one form variable or,                              */
+/*     Retrieves all consecutive occurences of a variable.          */
+/*     Parse is independent of method used.                         */
+/*     All responses are in the form of character strings           */
+/*         (i.e. 1 is a character string not an integer)            */
+/*                                                                  */
+/*                  LICENSE AND DISCLAIMER                          */
+/*                                                                  */
+/* This material contains IBM copyrighted sample programming        */
+/* source code. IBM grants you a nonexclusive license to use,       */
+/* execute, display, reproduce, distribute and prepare derivatives  */
+/* of this sample code. The sample code has not been thoroughly     */
+/* tested under all conditions.  IBM, therefore, does not warrant   */
+/* or guarantee its reliability, serviceablity, or function. All    */
+/* sample code contained herein is provided to you "AS IS." ALL     */
+/* IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED     */
+/* WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR      */
+/* PURPOSE, ARE EXPRESSLY DISCLAIMED.                               */
+/*                                                                  */
+/*                  COPYRIGHT                                       */
+/*                  ---------                                       */
+/*   (C) Copyright IBM CORP. 1997                                   */
+/*   All rights reserved.                                           */
+/*   US Government Users Restricted Rights -                        */
+/*   Use, duplication or disclosure restricted                      */
+/*   by GSA ADP Schedule Contract with IBM Corp.                    */
+/*   Licensed Material - Property of IBM                            */
+/*                                                                  */
+/********************************************************************/
+
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <qp0z1170.h>  /*Part of the CPA toolkit*/
+
+#define FROMCCSID 819      /*Incoming ASCII CCSID*/
+#define INPUTSIZE 1        /*Input character size*/
+#define TOCCSID 37         /*OS EBCDIC CCSID*/
+#define OUTPUTSIZE 1       /*Output character size*/
+
+#define MAXFORMVARS 200
+#define MAXQSTRING 2048
+#define CR 0x0D
+#define LF 0x15
+
+static int parsed = 0;
+static char *(variable[MAXFORMVARS]);
+static char *(value[MAXFORMVARS]);
+static int sequence[MAXFORMVARS];
+static int var_len[MAXFORMVARS], val_len[MAXFORMVARS], num_vars;
+
+
+int FindVar (char *VarName, int Number)
+{
+    int found = 0;
+    int where = -1;
+    int ct = 0;
+
+    while ((variable[ct] != NULL) && (!(found)) )
+    {
+        if ( (!(strcmp(variable[ct], VarName)))&& (sequence[ct] == Number) )
+        {
+            found = 1;
+            where = ct;
+        } /*if*/
+        else
+        {
+            ct++;
+        } /*else*/
+    } /*while*/
+    return (where);
+} /*FindVar*/
+
+/*****************************************************************/
+
+#ifndef RAD_CDRA
+#define RAD_CDRA
+
+#define CDRA_NOT_NULL_TERMINATED 0
+#define CDRA_NULL_TERMINATED 1
+#define CDRA_SPACE_PADDED 2
+#define CDRA_INSTALLATION_DEFAULT 0
+#define CDRA_CDRA_DEFAULT
+
+#pragma linkage(CDRCVRT, OS)
+void CDRCVRT(int,       /* Input CCSID */							
+             int,       /* Input string type, 1 for null terminated */	
+             char *,    /* Input string */					
+             int,       /* Input length */		
+             int,       /* Output CCSID */					
+             int,       /* Output string type, 1 for null terminated */	
+		           int,       /* Conversion alternative */				
+             int,       /* Output buffer length */		
+             char *,    /* Output string */				
+             int *,     /* Output string length */				
+             int *,     /* Byte error indicator */			
+             int *);    /* Feedback array (3 integers) */			
+#endif
+/********************************************************************/
+
+int GetNextChar (char **Next)
+{
+
+
+  int feedback[3];
+  int rlength;
+  int error_byte;
+
+    char *temp;
+
+    temp = *Next;
+
+    /*Spaces in URL are represented by a '+' character*/
+    if (*temp == '+')
+    {
+        *temp = ' ';
+    } /*if*/
+
+    else
+    {
+        /*Non-alphanumeric characters are represented by a '%'
+        character and 2 hexadecimal digits*/
+        if (*temp == '%')
+        {
+            int tens, ones, decimal;
+
+            /*get tens digit and convert to decimal*/
+            (*Next)++;
+            temp = *Next;
+
+            /*Convert '0'-'9' to numeric equivlaent*/
+            if ((*temp <= '9') && (*temp >= '0'))
+            {
+                tens = *temp - '0';
+            } /*if*/
+
+            /*Convert A,B,C,D,E to numeric equivlaent*/
+            else
+            {
+                tens = *temp - 'A' + 10;
+            }/*else*/
+
+            /*get ones digit and convert to decimal*/
+            (*Next)++;
+            temp = *Next;
+
+            /*Convert '0'-'9' to numeric equivlaent*/
+            if ((*temp <= '9') && (*temp >= '0'))
+            {
+                ones = *temp - '0';
+            } /*if*/
+
+            /*Convert A,B,C,D,E to numeric equivlaent*/
+            else
+            {
+                ones = *temp - 'A' + 10;
+            }/*else*/
+
+            /*get decimal equivalent and convert from ASCII to EBCDIC*/
+            decimal = tens * 16 + ones;
+            *temp = decimal;
+
+	          	/* Use system program to translate character from ascii to ebcdic*/
+  	        	CDRCVRT (FROMCCSID, CDRA_NOT_NULL_TERMINATED,
+          			        temp, INPUTSIZE,
+          		        	TOCCSID, CDRA_NOT_NULL_TERMINATED,
+          			        CDRA_INSTALLATION_DEFAULT,
+                	  		OUTPUTSIZE, temp,
+          		        	&rlength, &error_byte, feedback);
+             /*  if (feedback[0] == 0)  */
+                   /*convert was successful*/
+        } /*if*/
+    } /*else*/
+
+    (*Next)++;
+    return (*temp);
+} /*GetNextChar*/
+
+/********************************************************************/
+
+
+void parse(char *Qstring)
+{
+    int VarNum = 0;
+    char temp[1000];
+    int charCt = 0;
+    int end_string = 0;
+
+    while (! (end_string) )
+    {
+        /*Get variable name*/
+        while (! (end_string) )
+        {
+            /*append current significant character onto temp*/
+            /*advance string to next significant character*/
+            temp[charCt++] = GetNextChar (&Qstring);
+
+            /*Check for end of Variable name*/
+            if (*Qstring == '=')
+            {
+                end_string = 1;
+            }
+        }
+
+        /*End of variable name, store in variable array*/
+        temp[charCt] = '\0';
+        var_len[VarNum] = strlen(temp);
+        variable[VarNum] = malloc((sizeof(char))*(strlen(temp) +1));
+        strcpy (variable[VarNum], temp);
+
+
+        end_string = 0;
+        charCt = 0;
+        /*Advance past '='*/
+        Qstring++;
+
+        /*Get variable value*/
+        while (! (end_string) )
+        {
+
+             /*check for end of value or end of query string*/
+             if ((*Qstring == '&') || (*Qstring == CR) ||
+                (*Qstring == LF) || (*Qstring == '\0'))
+             {
+                 end_string = 1;
+             }
+             else
+             {
+                /*append current significant character onto temp*/
+                /*advance string to next significant character*/
+                temp[charCt++] = GetNextChar (&Qstring);
+             }
+         }
+
+         /*End of variable name, store in variable array*/
+         temp[charCt] = '\0';
+         val_len[VarNum] = strlen(temp);
+         value[VarNum] = malloc((sizeof(char))*(strlen(temp) +1));
+         strcpy (value[VarNum], temp);
+
+
+         /*Set sequence to number of occurences of variable name*/
+         if (VarNum > 0)
+         {
+             /*if the preceding variable has the same name then
+               sequence is one greater than preceeding vallue*/
+             if (! (strcmp(variable[VarNum], variable[VarNum - 1])))
+             {
+                 sequence[VarNum] = sequence[VarNum - 1] + 1;
+             }
+
+             /*otherwise sequence is 1st*/
+             else
+             {
+                 sequence[VarNum] = 1;
+             }
+         }
+         else
+         {
+             sequence[VarNum] = 1;
+         }
+
+
+         /*check if end of query string has been reached*/
+         if ((*Qstring!=LF) && (*Qstring!=CR) && (*Qstring!='\0'))
+         {
+             end_string = 0;
+             VarNum++;
+             charCt = 0;
+             Qstring++;
+         }
+         else
+         {
+             num_vars = ++VarNum;
+         }
+    }
+} /*parse*/
+
+
+void GetFormData (char **buffer)
+{
+    char *length;
+    char x[1];
+
+    length = getenv("CONTENT_LENGTH");
+    if (strcmp (length, "0"))
+    {
+       if (strcmp (getenv("REQUEST_METHOD"), "GET"))
+       {
+           char temp[MAXQSTRING];
+           int ct, len;
+           int NOTeof = 1;
+
+           ct = 0;
+           len = 0;
+           temp [len] = '1';
+
+           while (NOTeof)
+           {
+               while (ct < 81)
+               {
+                   temp[len] = getchar();
+                   if ( (temp[len] == '\0' ) || (temp[len] == EOF) )
+                   {
+                       if (temp[len] == EOF)
+                       {
+                           temp[len] = '\0';
+                       }  /*if*/
+                       NOTeof = 0;
+                       break;
+                   }   /*if*/
+                   len++;
+
+
+         /*comment out the following line if standard input limit is fixed*/
+                   ct++;
+
+
+                }  /*while*/
+
+
+      /*comment out the following 5 lines  if standard input limit is fixed*/
+                if ( NOTeof )
+                {
+                    len--;
+                    ct = 0;
+                }  /*if*/
+                else
+                {
+                     *buffer = temp;
+                } /*else*/
+
+           } /*while*/
+       } /*if*/
+       else
+       {
+           *buffer = getenv("QUERY_STRING");
+       }
+    }
+    else
+    {
+        strcpy (x, "");
+        *buffer = x;
+    }
+} /*GetFormData*/
+
+/**************************************************************/
+
+void PARSE()
+{
+    char *query_string;
+    char *buffer;
+
+    /*set aside space in memory for query_string*/
+    query_string = malloc(sizeof(char) * MAXQSTRING);
+
+    /*return address of query string contents*/
+    GetFormData (&buffer);
+
+    strcpy (query_string, buffer);
+
+    /*parse query_string into 3 parallel arrays*/
+    parse (query_string);
+
+    parsed++;
+} /*PARSE*/
+
+/*******************************************************************/
+
+int cGetAllVars(char ***VarNames, char ***VarValues,
+                int **Occurs)
+{
+    if (!parsed)
+    {
+        PARSE();
+    } /*if*/
+
+    *VarNames = variable;
+    *VarValues = value;
+    *Occurs = sequence;
+    return (num_vars);
+} /*cGetAllVars*/
+
+/********************************************************************/
+
+int cGetMVar(char *VarName, char ***VarValues)
+{
+    int found, ct = 0;
+
+    if (!parsed)
+    {
+        PARSE();
+    } /*if*/
+
+    found = FindVar (VarName, ct + 1);
+    while (found >= 0)
+    {
+        VarValues[ct] = &(value[found]);
+        ct++;
+        found = FindVar (VarName, ct + 1);
+    } /*while*/
+    if (ct == 0)
+    {
+        return (-1);
+    } /*if*/
+    else
+    {
+        return (ct);
+    } /*else*/
+} /*cGetMVar*/
+
+/********************************************************************/
+
+char *cGetVar(char *VarName)
+{
+    int found;
+
+    if (!parsed)
+    {
+        PARSE();
+    } /*if*/
+
+    found = FindVar (VarName, 1);
+    if (found != -1)
+    {
+        return(value[found]);
+    }
+    else
+    {
+        return(NULL);
+    } /*else*/
+} /*cGetVar*/
+
+

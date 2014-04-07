@@ -1,0 +1,16 @@
+Classpath for System (client machines):
+	c:\jdk1.1.4\bin;c:\java_connectors\bin;c:\java_connectors\util;
+		c:\IBMVJava\eab\bin;c:\Program Files\DevStudio\SharedIDE\bin;
+		c:\Program Files\DevStudio\vc\bin;%SystemRoot%\system32;%SystemRoot%;
+		c:\IMNNQ_NT;c:\WWW\Bin;c:\WWW\Bin\java\bin;c:\net_q;
+		c:\ServletExpress\plugins\nt;c:\IMNNQ_NT;c:\ifor\WIN\BIN;
+		c:\ifor\WIN\BIN\EN_US;c:\SQLLIB\BIN;c:\SQLLIB\FUNCTION;
+		c:\SQLLIB\SAMPLES\REPL;c:\SQLLIB\HELP
+	
+
+Classpath for ServletExpress (client machines):
+	c:\jdk1.1.4\lib\classes.zip;c:\ServletExpress\lib\servexp.jar;
+		c:\ServletExpress\lib\jst.jar;c:\ServletExpress\lib\jsdk.jar;
+		c:\ServletExpress\lib\x509v1.jar;c:\ServletExpress\lib;
+		c:\ServletExpress\web\classes\ibmjbrt.jar;c:\ServletExpress\web\classes;
+		c:\ServletExpress\servlets;c:\sqllib\java\db2java.zip;

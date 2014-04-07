@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3//EN">
+<HTML><HEAD>
+<TITLE>SQL Reference</TITLE>
+<!-- Begin Header Records  ========================================== -->
+<!-- F:\IDWB\TEMP\idwt1308\DB2S0.SCR converted by idb2h R3.1a (309)   -->
+<!-- ID Workbench Version (OS2) on 23 Jun 1997 at 11:53:50            -->
+<META HTTP-EQUIV="updated"  CONTENT="Mon, 23 Jun 1997 11:53:34">
+<META HTTP-EQUIV="review"  CONTENT="Tue, 23 Jun 1998 11:53:34">
+<META HTTP-EQUIV="expires"  CONTENT="Wed, 23 Jun 1999 11:53:34">
+</HEAD><BODY BGCOLOR="#FFFFFF">
+<img src="bannerx.gif" border=0 height=92 width=490 alt="IBM Books">
+<br>
+<!-- End Header Records  ============================================ -->
+<A NAME=Top_Of_Page></A>
+<H2><A NAME="HDRCALLST" HREF="#HDRCALLST">CALL</A></H2>
+<A NAME=IDX6447></A>
+<A NAME=IDX6448></A>
+<A NAME=IDX6449></A>
+<P>
+<P>Invokes a procedure stored at the location of a database. A stored
+procedure, for example, executes at the location of the database, and returns
+data to the client application.
+<P>Programs using the SQL CALL statement are designed to run in two parts, one
+on the client and the other on the server. The server procedure at the
+database runs within the same transaction as the client application. If the
+client application and stored procedure are on the same partition, the stored procedure is executed locally.
+<P><STRONG>Invocation</STRONG>
+<P>This statement can only be embedded in an application program. It is an
+executable statement that cannot be dynamically prepared. However, the
+procedure name may be specified via a host variable and this, coupled with the
+use of the USING DESCRIPTOR clause, allows both the procedure name and the
+parameter list to be provided at run time; thus achieving the same effect as a
+dynamically prepared statement.
+<P><STRONG>Authorization</STRONG>
+<P>The authorization rules vary according to the server at which the procedure
+is stored. 
+<DL>
+<P><DT>DB2 Universal Database&#58;
+<DD>The privileges held by the authorization ID of the CALL statement <B>at
+run time</B> statement must include at least one of the following&#58; 
+<UL COMPACT>
+<LI>EXECUTE privilege for the package associated with the stored procedure
+<LI>CONTROL privilege for the package associated with the stored procedure
+<LI>SYSADM or DBADM authority
+</UL>
+<P><DT>DB2 for MVS server&#58;
+<DD>The privileges held by the authorization ID of the CALL statement <B>at
+bind time</B> must include at least one of the following&#58; 
+<UL COMPACT>
+<LI>EXECUTE privilege for the package associated with the stored procedure
+<LI>Ownership of the package associated with the stored procedure
+<LI>PACKADM authority for the package&#39;s collection
+<LI>SYSADM authority
+</UL>
+<P><DT>DB2/400 server&#58;
+<DD>The privileges held by the authorization ID of the CALL statement <B>at
+bind time</B> must include at least one of the following&#58; 
+<UL COMPACT>
+<LI>If the stored procedure is written in REXX&#58; 
+<UL COMPACT>
+<LI>The system authorities *OBJOPR and *READ on the source file associated
+with the procedure
+<LI>The system authority *EXECUTE on the library containing the source file
+and the system authority *USE to the CL command
+</UL>
+<LI>If the stored procedure is not written in REXX&#58; 
+<UL COMPACT>
+<LI>The system authority *EXECUTE on both the program associated with the
+procedure and on the library containing that program
+</UL>
+<LI>Administrative authority
+</UL>
+</DL>
+<P><STRONG>Syntax</STRONG>
+<P><BR>
+<TABLE BORDER  WIDTH=100%><TR><TD><BR>
+<PRE>
+>>-CALL---+-<i>procedure-name</i>-+------------------------------------>
+          +-<i>host-variable</i>--+
+ 
+>--+-------------------------------------+--------------------->&lt;
+   +-(--+-----------------------+-)------+
+   |    | +-&#44;-----------------+ |        |
+   |    | V              (1)  | |        |
+   |    +--<i>host-variable</i>------+-+        |
+   +-USING--DESCRIPTOR--<i>descriptor-name</i>--+
+ 
+</PRE><BR>
+<BR>
+<TABLE CELLPADDING=3><BR>
+<TR VALIGN=TOP><TD><P><B>1<BR>
+</B></TD><TD><P>Stored procedures located at DB2 for MVS and DB2/400 serversand invoked by<BR>
+DB2 for MVS or DB2/400 clients support additional sources forprocedure<BR>
+arguments (for example constant values). However, ifthe stored procedure is<BR>
+located on a DB2 Universal Database or theprocedure is invoked from a DB2<BR>
+Universal Database client, all arguments mustbe provided via host variables.<BR>
+</TD></TR></TABLE><BR>
+<BR>
+</TD></TR></TABLE>
+<P><STRONG>Description</STRONG>
+<DL>
+<P><DT><VAR>procedure-name</VAR> &nbsp;or&nbsp; <VAR>host-variable</VAR>
+<P><DD>Identifies the procedure to call. The procedure name may be specified
+either directly or within a host variable. The procedure identified must exist
+at the current server (SQLSTATE 42724). 
+<P>If <VAR>procedure-name</VAR> is specified it must be an ordinary identifier
+not greater than 254 bytes. Since this can only be an ordinary identifier, it
+cannot contain blanks or special characters and the value is converted to
+upper case. Thus, if it is necessary to use lower case names, blanks or
+special characters, the name must be specified via a <VAR>host-variable</VAR>. 
+<P>If <VAR>host-variable</VAR> is specified, it must be a character-string
+variable with a length attribute that is not greater than 254 bytes, and it
+must not include an indicator variable. Note that the value is <B>not</B>
+converted to upper case. <VAR>procedure-name</VAR> must be left-justified. 
+<P>The procedure name can take one of several forms. The forms supported vary
+according to the server at which the procedure is stored. 
+<DL>
+<P><DT>DB2 Universal Database&#58;
+<DD>
+<DL>
+<P><DT><VAR>procedure-name</VAR>
+<DD>The name (with no extension) of the procedure to execute. The procedure
+invoked is determined as follows. 
+<OL>
+<P><LI>The <VAR>procedure-name</VAR> is used both as the name of the stored
+procedure library and the function name within that library. For example, if
+<VAR>procedure-name</VAR> is <TT>proclib</TT>, the DB2 server will load the
+stored procedure library named <TT>proclib</TT> and execute the function
+routine <TT>proclib()</TT> within that library. 
+<P>In UNIX-based systems, the DB2 server finds the stored procedure library in
+the default directory <TT>sqllib/function</TT>. Unfenced stored procedures
+are in the <TT>sqllib/function/unfenced</TT> directory. 
+<P>In OS/2, the location of the stored procedures is specified by the LIBPATH
+variable in the CONFIG.SYS file. Unfenced stored procedures are in the
+<TT>sqllib&#92;dll&#92;unfenced</TT> directory.
+<P><LI>If the library or function could not be found, the <VAR>procedure-name</VAR>
+is used to search the defined procedures (in SYSCAT.PROCEDURES) for a matching
+procedure. A matching procedure is determined using the steps that follow. 
+<OL>
+<P><LI>Find the procedures from the catalog (SYSCAT.PROCEDURES) where the
+PROCNAME matches the <VAR>procedure-name</VAR> specified and the PROCSCHEMA is a
+schema name in the function path.
+<P><LI>Next, eliminate any of these procedures that do not have the same number
+of parameters as the number of arguments specified in the CALL statement.
+<P><LI>Chose the remaining procedure that is earliest in the function path.
+<P><LI>If there are no remaining procedures after step 2, an error is returned
+(SQLSTATE 42884).
+</OL>
+<P>Once the procedure is selected, DB2 will invoke the procedure defined by
+the external name.
+</OL>
+<P><DT><VAR>procedure-library!function-name</VAR>
+<DD>The exclamation character (!) , acts as a delimiter between the library
+name and the function name of the stored procedure. For example, if
+<TT>proclib!func</TT> was specified, then <TT>proclib</TT> would be loaded
+into memory and the function <TT>func</TT> from that library would be
+executed. This allows multiple functions to be placed in the same stored
+procedure library. 
+<P>The stored procedure library is located in the directories or specified in
+the LIBPATH variable, as described in <VAR>procedure-name</VAR>.
+<P><DT><VAR>absolute-path!function-name</VAR>
+<DD>The <VAR>absolute-path</VAR> specifies the complete path to the stored
+procedure library. 
+<P>In a UNIX-based system, for example, if <TT>/u/terry/proclib!func</TT>
+was specified, then the stored procedure library <TT>proclib</TT> would be
+obtained from the directory <TT>/u/terry</TT> and the function
+<TT>func</TT> from that library would be executed. 
+<P>In OS/2, if <TT>d&#58;&#92;terry&#92;proclib!func</TT> was
+specified, then it would cause the database manager to load the func.dll file
+from the <TT>d&#58;&#92;terry&#92;proclib</TT> directory.
+</DL>
+<P>
+<P>In all these cases, the total length of the procedure name including its
+implicit or explicit full path must not be longer than 254 bytes.
+<P><DT>DB2 for MVS (V4.1 or later) server&#58;
+<DD>An implicit or explicit three part name. The parts are as follows. 
+<DL>
+<P><DT>high order&#58;
+<DD>The location name of the server where the procedure is stored.
+<P><DT>middle&#58;
+<DD>SYSPROC
+<P><DT>middle&#58;
+<DD>Some value in the PROCEDURE column of the SYSIBM.SYSPROCEDURES catalog
+table.
+</DL>
+<P><DT>DB2 for OS/400 (V3.1 or later) server&#58;
+<DD>The external program name is assumed to be the same as the
+<I>procedure-name</I>.
+</DL>
+<P>
+<P>For portability, <VAR>procedure-name</VAR> should be specified as a single
+token no larger than 8 bytes.
+<P><DT><VAR>(host-variable,...)</VAR>
+<P><DD>Each specification of <VAR>host-variable</VAR> is a parameter of the CALL.
+The nth parameter of the CALL corresponds to the nth parameter of the
+server&#39;s stored procedure. 
+<P>Each <VAR>host-variable</VAR> is assumed to be used for exchanging data in
+both directions between client and server. In order to avoid sending
+unnecessary data between client and server, the client application should
+provide an indicator variable with each parameter and set the indicator to -1
+if the parameter is not used to transmit data to the stored procedure. The
+stored procedure should set the indicator variable to -128 for any parameter
+that is not used to return data to the client application. 
+<P>If the server is DB2 Universal Database the parameters must have matching
+data types in both the client and server program.
+<A NAME="Footnote_Used_42" HREF="#Footnote_42" >(42)</A>
+<P><DT>USING DESCRIPTOR <VAR>descriptor-name</VAR>
+<P><DD>Identifies an SQLDA that must contain a valid description of host
+variables. The nth SQLVAR element corresponds to the nth parameter of the
+server&#39;s stored procedure. 
+<P>Before the CALL statement is processed, the application must set the
+following fields in the SQLDA&#58; 
+<UL>
+<P><LI>SQLN to indicate the number of SQLVAR occurrences provided in the SQLDA
+<P><LI>SQLDABC to indicate the number of bytes of storage allocated for the SQLDA
+<P><LI>SQLD to indicate the number of variables used in the SQLDA when processing
+the statement
+<P><LI>SQLVAR occurrences to indicate the attributes of the variables. The
+following fields of each Base SQLVAR element passed must be initialized&#58;
+<UL COMPACT>
+<LI>SQLTYPE
+<LI>SQLLEN
+<LI>SQLDATA
+<LI>SQLIND
+</UL>
+<P>The following fields of each Secondary SQLVAR element passed must be
+initialized&#58; 
+<UL COMPACT>
+<LI>LEN&#46;SQLLONGLEN
+<LI>SQLDATALEN
+<LI>SQLDATATYPE&#95;NAME
+</UL>
+</UL>
+<P>Each SQLDA is assumed to be used for exchanging data in both directions
+between client and server. In order to avoid sending unnecessary data between
+client and server, the client application should set the SQLIND field to -1 if
+the parameter is not used to transmit data to the stored procedure. The stored
+procedure should set the SQLIND field -128 for any parameter that is not used
+to return data to the client application.
+</DL>
+<P><A NAME="HDRCALLNTS"><STRONG>Notes</STRONG></A>
+<UL>
+<P><LI><B><I>Use of Large Object (LOB) data types</I></B>&#58;&nbsp; 
+<P>If the client and server application needs to specify LOB data from an
+SQLDA, allocate double the number of SQLVAR entries. 
+<P>LOB data types are supported by stored procedures in DB2 Version 5. The LOB
+data types are not supported by either down level clients or servers. They are
+also not supported for requests made from a DRDA application requestor or to a
+DRDA application server.
+<P><LI><B><I><A NAME="SPTSPRES"></A>Returning Result Sets
+from Stored Procedures</I></B>&#58;&nbsp; 
+<P>If the client application program is written using CLI, result sets can be
+returned directly to the client application. The stored procedure indicates
+that a result set is to be returned by declaring a cursor on that result set,
+opening a cursor on the result set, and leaving the cursor open when exiting
+the procedure. 
+<P>At the end of a procedure that is invoked via CLI&#58; 
+<UL>
+<P><LI>For every cursor that has been left open, a result set is returned to the
+application.
+<P><LI>If more than one cursor is left open, the result sets are returned in the
+order in which their cursors were opened.
+<P><LI>Only unread rows are passed back. For example, if the result set of a
+cursor has 500 rows, and 150 of those rows have been read by the stored
+procedure at the time the stored procedure is terminated, then rows 151
+through 500 will be returned to the stored procedure.
+</UL>
+<P>For additional information refer to the <CITE>Embedded SQL
+Programming Guide</CITE> and the <CITE>CLI Guide and Reference</CITE>.
+<P><LI><B><I>Inter-operability between the CALL statement and the DARI
+API</I></B>&#58;&nbsp; 
+<P>In general, the CALL statement will not work with existing DARI procedures.
+See the <CITE>Embedded SQL Programming Guide</CITE> for details.
+</UL>
+<P><STRONG>Examples</STRONG>
+<P><I>Example 1&#58;</I>&nbsp;
+<P>In C, invoke a procedure called TEAMWINS in the ACHIEVE library passing it
+a parameter stored in the host variable HV_ARGUMENT. 
+<PRE>   strcpy(HV_PROCNAME, "ACHIEVE!TEAMWINS");
+   <B>CALL</B> &#58;HV_PROCNAME (&#58;HV_ARGUMENT);
+</PRE>
+<P><I>Example 2&#58;</I>&nbsp;
+<P>In C, invoke a procedure called &#58;SALARY_PROC using the SQLDA named
+INOUT&#95;SQLDA. 
+<PRE>   struct sqlda *INOUT_SQLDA;
+  /* Setup code for SQLDA variables goes here */
+   <B>CALL</B> &#58;SALARY_PROC 
+   <B>USING DESCRIPTOR</B> &#58;*INOUT_SQLDA;
+</PRE>
+<P><I>Example 3&#58;</I>&nbsp;
+<P>A Java stored procedure is defined in the database using the following
+statement&#58; 
+<PRE>   <B>CREATE PROCEDURE</B> PARTS_ON_HAND <B>(IN</B>  PARTNUM  <B>INTEGER,</B> 
+                                  <B>OUT</B> COST     <B>DECIMAL(</B>7,2<B>),</B> 
+                                  <B>OUT</B> QUANTITY <B>INTEGER)</B>
+                    <B>EXTERNAL NAME</B> &#39;parts!onhand&#39; 
+                    <B>LANGUAGE JAVA PARAMETER STYLE DB2GENERAL;</B>
+</PRE>
+<P>A Java application calls this stored procedure using the following code
+fragment&#58; 
+<PRE>  ... 
+  CallableStatement stpCall ;
+ 
+  String sql = "CALL PARTS_ON_HAND ( ?,?,? )" ;
+ 
+  stpCall = con.prepareCall( sql ) ; /* con is the connection */
+  stpCall.setInt( 1, variable1 ) ;
+  stpCall.setBigDecimal( 2, variable2 ) ;
+  stpCall.setInt( 3, variable3 ) ;
+  stpCall.registerOutParameter( 2, Types.DECIMAL, 2 ) ;
+  stpCall.registerOutParameter( 3, Types.INTEGER ) ;
+  stpCall.execute() ;
+  variable2 = stpCall.getBigDecimal(2) ;
+  variable3 = stpCall.getInt(3) ;
+  ...  
+</PRE>
+<P>This application code fragment will invoke the Java method <VAR>onhand</VAR>
+in class <VAR>parts</VAR> since the procedure-name specified on the CALL
+statement is found in the database and has the external name
+&#39;parts!onhand&#39;.
+<A NAME=IDX6450></A>
+<A NAME=IDX6451></A>
+<P><P>
+<HR><B> Footnotes:</B>
+<P><A NAME="Footnote_42" HREF="#Footnote_Used_42" >(42)</A>
+Both the DB2 for MVS and DB2/400 servers support conversions between
+compatible data types when invoking their stored procedures. For example, if
+the client program uses the INTEGER data type and the stored procedure expects
+FLOAT, the server will convert the INTEGER value to FLOAT before invoking the
+procedure.
+<P><HR><B>&#91; <A HREF="#Top_Of_Page">Top of Page</A> &#124; <A Href="sqls0619.htm">Previous Page</A> &#124; <A HREF="sqls061e.htm">Next Page</A> &#93; </B> 
+<A NAME=Bot_Of_Page></A>
+</BODY></HTML>

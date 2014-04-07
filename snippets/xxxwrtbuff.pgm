@@ -1,0 +1,95 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+     Hnomain
+      /copy cgidev/qrpglesrc,prototypes
+      /copy qsysinc/qrpglesrc,qusec
+      * Global variables, structures, etc.
+      ******************************************************************
+      * Writes buffer to standard output, making sure that no more than
+      * xx (254) characters are between successive newline characters
+      ******************************************************************
+     Pwrtbuffer        b                   export
+     Dwrtbuffer        pi
+     Doutbuff                     30000                                         buffer
+     Doutbuffln                      10i 0                                      bufferln
+     Dxx               c                   254                                  max chrs bet nl chs
+     Dnewline          c                   x'15'                                newline character
+     Dshift            s              1
+     Dcount            s              5i 0
+     Df1               s              5i 0
+     Df2               s              5i 0
+     Df3               s              5i 0
+     Df4               s              5i 0
+     C                   eval      shift='1'
+     C                   dou       shift = '0'
+     C                   eval      shift = '0'
+     C                   eval      count = 0
+     C                   eval      f1=0
+     C                   dow       f1 < OutBuffln and shift= '0'
+     C                   eval      f1 = f1 + 1
+     C                   if        %subst(OutBuff:f1:1) = newline
+     C                   eval      count = 0
+     C                   else
+     C                   eval      count = count + 1
+     C                   endif
+     C                   if        count > xx
+     C                   eval      f2 = f1 - 1
+     C                   dow       %subst(OutBuff:f2:1) <> ' ' and
+     C                             %subst(OutBuff:f2:1) <> newline and
+     C                             f2>0
+     C                   eval      f2 = f2 -1
+     C                   enddo
+     C                   if        %subst(OutBuff:f2:1)=' '
+     C                   eval      %subst(OutBuff:f2:1) = newline
+     C                   eval      count = 0
+     C                   else
+     C                   eval      f2 = f1 - 1
+     C                   eval      f4 = OutBuffln - f1
+     C                   eval      %subst(OutBuff:f1:f4) =
+     C                             %subst(OutBuff:f2:f4)
+     C                   eval      %subst(OutBuff:f2:1)=newline
+     C                   eval      outbuffln = outbuffln + 1
+     C                   eval      shift = '1'
+     C                   endif                                                  %subs(Buff:f2:1)
+     C                   endif                                                  count < xx
+     C                   enddo                                                  dow f1 < Buff   ln
+     C                   enddo                                                  dou shift = '0'
+     C                   eval      qusbprv = 16                                 qusec length
+     C                   callb     'QtmhWrStout'
+     C                   parm                    OUTBuff                        Output buffer
+     C                   parm                    OutBuffln                      Outpt buffer length
+     C                   parm                    QUSEC                          Error structure
+     Pwrtbuffer        e

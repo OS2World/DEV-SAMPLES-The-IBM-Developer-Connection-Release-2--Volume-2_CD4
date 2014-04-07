@@ -1,0 +1,21 @@
+ Date 11/07/96
+
+
+ DESCRIPTION
+ This is unoptimzed example code.  The code will produce a loadddx for 
+ the GXT110P 2M video card.  In order to keep the complexity down, the 
+ code does not take advantage of the graphics hardware.  
+
+ Note: This code is designed for the S3 Trio64V+ graphics chip.
+
+
+                    NOTICE TO USERS OF THE SOURCE CODE
+
+ THE SOURCE CODE EXAMPLES PROVIDED BY IBM ARE ONLY INTENDED TO ASSIST 
+ IN THE DEVELOPMENT OF A 24 BIT DDX. 
+
+ INTERNATIONAL BUSINESS MACHINES CORPORATION PROVIDES THE SOURCE CODE
+ EXAMPLES, BOTH INDIVIDUALLY AND AS ONE OR MORE GROUPS, "AS IS" WITHOUT
+ WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT
+ LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE.  

@@ -1,0 +1,10 @@
+ANMWC001.exe: ANMWC001.obj ANMWC001.res ANMWC001.def
+   link /nod ANMWC001,ANMWC001,ANMWC001,slibcew libw cclwin,ANMWC001.def
+   rcw ANMWC001.res
+
+ANMWC001.res: ANMWC001.rc ANMWC001.h
+   rcw -r ANMWC001.rc
+
+ANMWC001.obj: ANMWC001.c ANMWC001.h
+   cl /c ANMWC001.c
+

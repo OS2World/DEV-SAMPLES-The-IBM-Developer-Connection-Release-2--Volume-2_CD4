@@ -1,0 +1,66 @@
+<!- -------------------------------------------------------------------->
+<!-                                                               -->
+<!-          Author: David Money                                  -->
+<!-          E-mail: money@vnet.ibm.com                           -->
+<!-                                                                 -->
+<!- This a HTML file that collects input for a multi-function parser for -->
+<!- CGI programming on AS/400.  Use this file to call DDMPARSDRV on your -->
+<!- AS/400.  The parser used is DDMPARSER. -->
+<!- -->
+<!-   Features included:                -->
+<!-      Collects Data               -->
+<!-      Calls AS/400 CGI program -->
+<!- 	NOTE: You will need to change the name of the server in the form tag. -->
+<!-                 Also you will have to specify what library to run from in th
+<!-                 and the HTTP configuration of your server.  -->
+<!-                                     -->
+<!-                  LICENSE AND DISCLAIMER                         -->
+<!-                                                                 -->
+<!- This material contains IBM copyrighted sample programming       -->
+<!- source code. IBM grants you a nonexclusive license to use,      -->
+<!- execute, display, reproduce, distribute and prepare derivatives -->
+<!- of this sample code. The sample code has not been thoroughly    -->
+<!- tested under all conditions.  IBM, therefore, does not warrant  -->
+<!- or guarantee its reliability, serviceablity, or function. All   -->
+<!- sample code contained herein is provided to you "AS IS." ALL    -->
+<!- IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED    -->
+<!- WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR     -->
+<!- PURPOSE, ARE EXPRESSLY DISCLAIMED.                             -->
+<!-                                                                 -->
+<!-                  COPYRIGHT                                      -->
+<!-                  ---------                                      -->
+<!-   (C) Copyright IBM CORP. 1997                                -->
+<!-   All rights reserved.                                        -->
+<!-   US Government Users Restricted Rights -                     -->
+<!-   Use, duplication or disclosure restricted                   -->
+<!-   by GSA ADP Schedule Contract with IBM Corp.                 -->
+<!-   Licensed Material - Property of IBM                             -->
+<!- -------------------------------------------------------------------->
+<html>
+<head>
+<title>C Parser Test Drive</title>
+</head>
+<body>
+<form method=post action="http://YourServer/QSYS.LIB/MONEY.LIB/DDMPARSDRV.PGM">
+Name <input type=text name=Name maxlength=40><br>
+City <input type=text name=City maxlength=40><br>
+Interests:
+<ul>
+	<input type=checkbox name=Interest value=Football>Football<br>
+	<input type=checkbox name=Interest value=Hockey>Hockey<br>
+	<input type=checkbox name=Interest value=Tennis>Tennis<br>	
+	<input type=checkbox name=Interest value=Baseball>Baseball<br>
+	<input type=checkbox name=Interest value=Hunting>Hunting<br>
+	<input type=checkbox name=Interest value=Fishing>Fishing<br>
+	<input type=checkbox name=Interest value=Camping>Camping<br>
+</ul>
+Do you want to be included in our mailing list
+ <input type=radio name=mail value=1>yes
+ <input type=radio name=mail value=0>no
+<p>
+<hr>
+<input type=submit value="Send info to AS/400">
+<input type=reset value="Clear form">
+</form>
+</body>
+</html>

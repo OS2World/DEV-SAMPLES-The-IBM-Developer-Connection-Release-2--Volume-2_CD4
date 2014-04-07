@@ -1,0 +1,120 @@
+<html>
+<head>
+<base target="_blank">
+<title>CICS Client for OS/2 V2.0.4 (P1)</title>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="../../template.css" TITLE="onlinebook">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="0000FF" alink="800080" vlink="800080">
+<h2>CICS Client for OS/2 V2.0.4 (P1)</h2>
+<p>This product is located on Premier Disc 1.<br>
+<br>
+<!-- <TITLE>CICS Client for OS/2</TITLE>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="template.css"
+TITLE="onlinebook">
+
+<P> <B>Updated:</B> </P>
+
+<P><B>Platform:</B>OS/2</P>
+
+<P> <B>Version: 2.0.4</B> </P>
+
+-->
+
+<I>CICS Clients</I> provide the basis for IBM's very successful Application Mining initiative, which enables customers to bring significant value to new desktop applications by tapping the hidden assets which exist in their core enterprise applications.
+
+<P><I>CICS Clients</I> provide an easy and low-cost mechanism to enable access to CICS applications for users at desktop workstations or on the Internet. They may be used with CICS servers on all platforms, including IBM Transaction Servers and IBM TXSeries&#153;.
+
+<H2>What's New</H2>
+
+<P>
+<UL>
+<LI>Telnet TN3270 support has been added to the <I>CICS Clients</I> for OS/2 &#174;, Windows 95, and Windows NT. This allows multiple Telnet 3270 clients to connect to CICS servers via a CICS Client. It is supported with all CICS servers which support EPI. With the <I>CICS Clients</I> for Windows 95 and Windows NT, code page conversion is supported only in US English; with the CICS Client for OS/2 code page conversion is supported with all supported code pages, including DBCS code pages. This function was introduced in the <I>CICS Clients</I> Version 2.0.3. <P>
+
+<LI>SNA LU alias name support has been added to <I>CICS Clients</I> for Windows 3.1, Windows 95, Windows NT, and OS/2. When used with the appropriate products, this allows LU names to be specified as aliases instead of as fully qualified network names. <P>
+
+<LI>The <I>CICS Clients</I> for OS/2, Windows 95 and Windows NT support concurrent ECI and EPI sessions from the same application.<P>
+
+<LI>CICS Host TCP/IP Access Feature (TCP62) support is added to the CICS Client for OS/2, enabling it to communicate using a TCP/IP network with either CICS/ESA&#153; Version 4.1, or CICS Transaction Server for OS/390&#153; Version 1.1, or later. <P>
+
+<LI>System Management ECI and EPI exits are supported on the <I>CICS Clients</I> for OS/2, Windows 3.1, Windows 95 and Windows NT, as from Version 2.0.3. (These exits are similar to those previously provided in the CICS for UNIX Clients). <P>
+
+<LI>API Tracing has been added to the <I>CICS Clients</I> for OS/2, Windows 3.1, Windows 95 and Windows NT, from Version 2.0.3. When activated, this enables a trace of ECI and EPI calls and their return codes.<P>
+
+<LI>The <I>CICS Clients</I> Version 2.0.4 for OS/2, Windows 3.1, Windows 95, and Windows NT incorporate enhancements to password management. These provide security pop-ups giving appropriate prompts in situations such as wrong password, unknown userid, expired password, or no password entered. This function is only available with servers which support the PEM (Password Expiry Management) service transaction: at present this is CICS Transaction Server for OS/390 Release 1, or later; CICS/ESA Version 4.1; or CICS/ESA Version 3.3 with PTF UN90057. <P>
+
+<LI>Modifications have been made to the CICS Client for OS/2 Version 2.0.4 SNA driver function with IBM Communications Server. CRSR transaction program definition is now done by the CICS Client (and will automatically overwrite any previous definition).
+<P>
+</UL>
+
+
+
+<H2>Software Requirements</H2>
+
+<UL>
+<LI>SNA communications support for the CICS Client for OS/2 Version 2.0.4 requires IBM Communications Server for OS/2 Warp, Version 4.0, or later (including IBM eNetwork Communications Server for OS/2 Warp, Version 5.0).  <P>
+
+<LI>TCP62 support for the CICS Client for OS/2 requires IBM eNetwork Communications Server for OS/2 Warp, Version 5.0; APAR JR10793 must be applied. <P>
+
+<LI>Products with which LU alias names may be used are: </LI>
+
+
+<UL>
+<LI>IBM Communications Manager/2</LI>
+<LI>IBM Communications Server for OS/2 Warp Version 4  X  <P>
+</UL>
+
+
+
+
+<LI>Password management using the PEM service transaction is supported using the following protocol drivers: </LI>
+
+<UL>
+<LI>Client platform  </LI>
+<UL>
+<LI>TCP62:</LI>
+<UL>
+<LI>CCLTCP62</LI>
+</UL>
+</UL>
+<UL>
+<LI>SNA:</LI>
+<UL>
+<LI>CCLIBMSN </LI>
+</UL>
+</UL>
+</UL>
+</UL>
+
+<H2>Web Sites</H2>
+
+<P><A HREF="http://www.software.ibm.com/ts/cics/">www.software.ibm.com/ts/cics/</A>
+</P>
+
+<H2>Installation Instructions</H2>
+
+<!-- cd start -->
+
+<H3>To Install from the CD:</H3>
+
+<OL>
+<LI>Change to the \cicscos2 directory on the CD.
+<LI>Type <B>install</B> to start the installation.
+</OL>
+
+
+<!-- cd end -->
+
+
+
+<p>
+<b>Related Information:</b>
+<ul>
+<li><a target="_self" href="ca02.htm">CICS Bitmap and Icon Files (M4)</a></li>
+<li><a target="_self" href="ca50.htm">CICS Client for OS/2 - Native OS/2 ECI Samples (M4)</a></li>
+<li><a target="_self" href="ca51.htm">CICS Client for OS/2 - OS/2 PM ECI Samples (M4)</a></li>
+<li><a target="_self" href="ca81.htm">CICS Client for OS/2 CGI Samples (M4)</a></li>
+<li><a target="_self" href="ts4os2.htm">CICS Transaction Server for OS/2 Warp, V4.1 (P1)</a></li>
+<li><a target="_self" href="ca31.htm">REXX to CICS Interface for OS/2 (M1)</a></li>
+</ul>
+</body>
+</html>

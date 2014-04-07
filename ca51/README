@@ -1,0 +1,69 @@
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³                                                                            ³
+³  MODULE NAME      CA51.ZIP                                                 ³
+³                                                                            ³
+³  DESCRIPTIVE NAME CICS Client for OS/2 - OS/2 PM ECI samples               ³
+³                                                                            ³
+³  Statement:       Licensed Materials - Property of IBM                     ³
+³                                                                            ³
+³                   CA51 SupportPac                                          ³
+³                   (c) Copyright IBM Corp. 1994, 1996                       ³
+³                                                                            ³
+³                   All rights reserved.                                     ³
+³                                                                            ³
+³                   U.S. Government Users Restricted Rights - use,           ³
+³                   duplication or disclosure restricted by GSA              ³
+³                   ADP Schedule Contract with IBM Corp.                     ³
+³                                                                            ³
+³  Status:          Version 1 Release 0 Modification 2                       ³
+³  Last Modified:   12 November 1996                                         ³
+³                   Added Transaction Server for OS/2 back end DLL           ³
+³                   Added additional usage notes                             ³
+³  Author:          Adrian Thomson                                           ³
+³                                                                            ³
+³   NOTES :-                                                                 ³
+³     DEPENDENCIES = OS/2, CICS Client for OS/2, CICS Server                 ³
+³     RESTRICTIONS = None                                                    ³
+³     MODULE TYPE  = InfoZip                                                 ³
+³     PROCESSOR    = PS/2 and PC                                             ³
+³                                                                            ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ To install the SupportPac, copy the file CA51.ZIP to a temporary directory
+ and uncompress using InfoZip's Unzip.  Use the default options to ensure
+ the subdirectories stored in the ZIP file are re-created.
+
+ The sample applications are located in the sub-directory as governed by
+ the initial three characters of the application name.  Each application
+ requires that the back end application (FAADECIC) is compiled and
+ available on the target CICS Server.  A 16-bit DLL for CICS for OS/2 V2
+ is supplied in \FAA\V2 and a 32-bit DLL for Transaction Server for OS/2 is
+ in \FAA\V3.
+
+ To get help on any sample, enter /? after the sample name.
+
+ Note that you need to pass a USERID and PASSWORD parameter using the /U and
+ /P options when executing a sample to a server that implements security.
+ An AEY7 abend will occur if this is not done.
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³ OS/2 PM application samples demonstrating the range of calls              ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  ASYPC001 - C Program making call type ECI_ASYNC
+  ANMPC001 - C Program making call type ECI_ASYNC_NOTIFY_MSG
+  ANCPC001 - C Program making call type ECI_ASYNC with CALLBACK
+  GRLPC001 - C Program making call type ECI_GET_REPLY
+  GRWPC001 - C Program making call type ECI_GET_REPLY_WAIT
+  GRSPC001 - C Program making call type ECI_GET_SPECIFIC_REPLY
+  GRSPC002 - C Program making call type ECI_GET_SPECIFIC_REPLY_WAIT
+  SASPC001 - C Program making call type ECI_STATE_ASYNC
+  SAMPC001 - C Program making call type ECI_STATE_ASYNC_MSG
+  SACPC001 - C Program making call type ECI_STATE_ASYNC with CALLBACK
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³ Generic application back end for all CICS Server Platforms                ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  FAADECIC - C Implementation of CICS Back End Application
+

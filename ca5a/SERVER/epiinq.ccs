@@ -1,0 +1,188 @@
+/************** CICS Client Classes *****************************************
+ *                                                                             
+ * FILE NAME:    EPIINQ.CCS
+ *                                                                             
+ * DESCRIPTION:  OO CICS Client server program for sample EPICPP4
+ *                                                                             
+ * 17H7605, 17H7616, 17H7627, 17H7638                                          
+ * (C) Copyright International Business Machines Corp. 1995                    
+ *                                                                             
+ * This is part of a sample application EPICPP4 which demonstrates how to use
+ * the OO CICS Client EPI BMS Map Classes. It provides a CICS server program
+ * obtains various items of system information from CICS and outputs them via
+ * two BMS maps.
+ *                                                                             
+ * This program does not demonstrate all the techniques required for a large 
+ * application. It is not a template and should not be used as the foundation
+ * for your next mission critical application.
+ ****************************************************************************/ 
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "mapinq1.h"
+
+/* Defintion of commarea data structure */
+typedef struct {
+    char Date[8];
+    char Time[8];
+    char Cicstype[40];
+    char SystemId[4];
+    char ApplId[8];
+    char Facility[4];
+    char Netname[8];
+    char UserId[8];
+    char Trancode[8];
+    char Progname[8];
+    char Mapname[8];
+    } comm_struct;
+
+/*****************************************************************************/
+/* Main transaction program
+/*****************************************************************************/
+void main ( )
+{
+    char *dfhCA ;
+    comm_struct  Commarea ;
+    comm_struct*   pCommarea = &Commarea;
+    char abs_time[8];
+    short oprel;
+    char opsys = ' ';
+    char release[4];
+    char prodname[40];
+    char tranid[4];
+    char endmsg[] = "Inquiry application terminated";
+    long rcode;
+
+    /* Get the EIB address */
+    EXEC CICS ADDRESS EIB ( dfheiptr ) ;
+
+    /* Test for commarea (length zero for initial invocation) */
+    if ( dfheiptr->eibcalen == 0 ) {
+
+        /*********************************************************************/
+        /* Initial call of pseudo-conversational transaction, get date, time */
+        /* and CICS system information                                       */
+        /*********************************************************************/
+        EXEC CICS ASKTIME ABSTIME(abs_time);
+
+        EXEC CICS FORMATTIME
+            ABSTIME(abs_time)
+            DATESEP('/')
+            DDMMYY(pCommarea->Date)
+            TIMESEP(':')
+            TIME(pCommarea->Time);
+
+        EXEC CICS INQUIRE SYSTEM
+            OPREL(oprel)
+            OPSYS(opsys)
+            RELEASE(release);
+
+        EXEC CICS ASSIGN
+            APPLID(pCommarea->ApplId)
+            FACILITY(pCommarea->Facility)
+            NETNAME(pCommarea->Netname)
+            SYSID(pCommarea->SystemId);
+
+        EXEC CICS ASSIGN 
+            USERID(pCommarea->UserId)
+            RESP(rcode);
+        if ( rcode != DFHRESP(NORMAL) )
+            memcpy (pCommarea->UserId,"        ",8);
+
+
+        /*  Build the commarea for output */
+        memset(pCommarea->Cicstype,0x0,sizeof(pCommarea->Cicstype));
+
+        switch (opsys) {
+        case 'A':
+            strcpy(prodname,"CICS/6000 Version");
+            break;
+        case 'P':
+            strcpy(prodname,"CICS OS/2 Version");
+            break;
+        case 'X':
+            strcpy(prodname,"CICS/ESA Version");
+            break;
+        default:
+            strcpy(prodname,"Unknown CICS");
+            break;
+        }
+
+        sprintf(pCommarea->Cicstype,"%s %c%c Release %c%c",
+                prodname,release[0],release[1],release[2],release[3]);
+
+        /* Construct the first BMS map output data */
+        memset(&mapinq1,0x0,sizeof(mapinq1));
+
+        memcpy(mapinq1.mapinq1o.dateo,pCommarea->Date,8);
+        memcpy(mapinq1.mapinq1o.timeo,pCommarea->Time,8);
+        memcpy(mapinq1.mapinq1o.prodnamo,pCommarea->Cicstype,40);
+        memcpy(mapinq1.mapinq1o.applido,pCommarea->ApplId,8);
+        memcpy(mapinq1.mapinq1o.netnameo,pCommarea->Netname,8);
+        memcpy(mapinq1.mapinq1o.userido,pCommarea->UserId,8);
+        memcpy(mapinq1.mapinq1o.sysido,pCommarea->SystemId,4);
+        memcpy(mapinq1.mapinq1o.faciltyo,pCommarea->Facility,4);
+        memcpy(mapinq1.mapinq1o.mapnameo,"MAPINQ1 ",8);
+        memcpy(pCommarea->Mapname,"MAPINQ1 ",8);
+
+        EXEC CICS SEND MAP("MAPINQ1") MAPSET("MAPINQ1") FREEKB FROM(&mapinq1) ERASE;
+
+        memcpy(tranid, dfheiptr->eibtrnid,4);
+
+        EXEC CICS RETURN TRANSID(tranid) COMMAREA(&Commarea) LENGTH(sizeof(Commarea));
+
+    } else { /* non-zero commarea returned */
+
+        /*********************************************************************/ 
+        /* Subsequent invocations, test returned AID. PF3 just exits, else   */
+        /* check for ANSWER=Y and return additional system information       */
+        /*********************************************************************/ 
+        EXEC CICS ADDRESS COMMAREA(pCommarea);
+
+        switch (dfheiptr->eibaid) {
+
+        case '3':
+             /* PF3 returned, exit with message */
+             EXEC CICS SEND FROM(endmsg) LENGTH(strlen(endmsg)) ERASE;
+             EXEC CICS RETURN ;
+             break;
+
+        default:
+            /* Other AID returned, check map id from previous invocation */
+            if (memcmp(pCommarea->Mapname,"MAPINQ1 ",8) == 0) {
+
+                EXEC CICS RECEIVE MAP("MAPINQ1") MAPSET("MAPINQ1") INTO(&mapinq1);
+
+                switch (mapinq1.mapinq1i.answeri) {
+                case 'Y':
+                case 'y':
+                    /* Get additional system information from CICS */
+                    EXEC CICS INQUIRE TERMINAL(pCommarea->Facility)
+                                      TRANSACTION(pCommarea->Trancode);
+                    EXEC CICS INQUIRE TRANSACTION(pCommarea->Trancode)
+                                      PROGRAM(pCommarea->Progname);
+
+                    /* Construct the second BMS map output data */
+                    memcpy(mapinq2.mapinq2o.mapnameo,"MAPINQ2 ",8);
+                    memcpy(mapinq2.mapinq2o.trancdeo,pCommarea->Trancode,4);
+                    memcpy(mapinq2.mapinq2o.prognamo,pCommarea->Progname,8);
+                    memcpy(pCommarea->Mapname,"MAPINQ2 ",8);
+
+                    /* Send map and return with commarea */
+                    EXEC CICS SEND MAP("MAPINQ2") MAPSET("MAPINQ1") FREEKB FROM(&mapinq2) ERASE;
+                    memcpy(tranid, dfheiptr->eibtrnid,4);
+                    EXEC CICS RETURN TRANSID(tranid) COMMAREA(&Commarea) LENGTH(sizeof(Commarea));
+
+                } /* end switch */
+
+            } /* end if */
+
+            /* Previous invocation was not MAPINQ1, just end with message */
+            EXEC CICS SEND FROM(endmsg) LENGTH(strlen(endmsg)) ERASE;
+            EXEC CICS RETURN ;
+
+        } /* end switch */
+    } /* end if */
+}
+

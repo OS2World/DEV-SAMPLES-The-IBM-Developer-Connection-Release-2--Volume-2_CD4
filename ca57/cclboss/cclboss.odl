@@ -1,0 +1,57 @@
+//************* CICS Client Classes ******************************************
+//                                                                            
+// File name:   cclboss.odl                                                   
+//                                                                            
+// Version:     1.0                                                           
+//                                                                            
+// Description: ODL source for Business Object server sample (Windows NT/95). 
+// This file is processed by the MS Visual C++ mktyplib tool to produce the 
+// type library file (cclboss.tlb). The type library provides interface  
+// descriptions, help and symbolic constants for the Visual Basic user.
+//                                                                            
+// (C) Copyright International Business Machines Corp. 1996                   
+//                                                                            
+//****************************************************************************
+
+[ uuid(AD78EF69-1AAD-11D0-BFEB-0004AC83E1CE), 
+   helpstring("CICS Client Business Object Server for COMMAREAs"),
+   version(1.0) ]
+library Cclboss
+{
+	importlib("stdole32.tlb");
+	
+	//  Primary dispatch interface for CclBOSSample
+	
+	[ uuid(AD78EF71-1AAD-11D0-BFEB-0004AC83E1CE),
+	   helpstring("Sample Business Object") ]
+	dispinterface CclBOSSample
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(BOTest)
+			[id(1), helpstring("Employee Name") ] BSTR Name;
+			[id(2), helpstring("Date of Birth") ] DATE DateOfBirth;
+			[id(3), helpstring("Number of years employed") ] short YearsService;
+			//}}AFX_ODL_PROP
+			
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(BOTest)
+			[id(4), helpstring("Builds the Business Object from the COMMAREA")] void BuildObject(IDispatch* commArea);
+			[id(5), helpstring("Builds the COMMAREA from the Business Object")] void BuildCclOBuf(IDispatch* commArea);
+			//}}AFX_ODL_METHOD
+
+	};
+
+	//  Class information for CclBOSSample
+
+	[ uuid(AD78EF72-1AAD-11D0-BFEB-0004AC83E1CE), hidden ]
+	coclass ICclBOSSample
+	{
+		[default] dispinterface CclBOSSample;
+	};
+
+	//{{AFX_APPEND_ODL}}
+};

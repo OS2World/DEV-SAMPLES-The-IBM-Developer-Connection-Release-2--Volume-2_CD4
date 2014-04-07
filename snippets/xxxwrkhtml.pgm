@@ -1,0 +1,455 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+     Hnomain
+     FHTMLSRC   IF   E             DISK    USROPN
+     F                                     RENAME(HTMLSRC:HTMLREC)
+
+      /copy cgidev/qrpglesrc,prototypes
+      * Global variables, structures, etc.
+     DFILE2OVR         s             10    INZ('HTMLSRC')                       File to override
+     Dhrec             S                   DIM(32767)
+      *
+     D                                     LIKE(hrecelem)
+     D                                     BASED(hrec@)
+     Dhec@             S               *
+     Dhrecelem         S            120                                         hrec element
+     Dhrecidx          S              5I 0                                      hrec index
+     DOperation        S              1P 0                                      hrec operation
+     dsecdelim         c                   '/$'                                 section delimiter
+     Dseccnt           c                   50                                   max # of sections
+     Dsecname          s             10    dim(seccnt)                          section names
+     Dsecstart         s              5I 0 dim(seccnt)                          section start RRNs
+     Dsecend           s              5I 0 dim(seccnt)                          section end RRNs
+     Di                s              5I 0
+     D                 DS
+     Dsrcdta                  13    132                                         srcdta field
+     Dhtmldata                      120    OVERLAY(srcdta)                      renamed
+     Dtwobytes                13     14                                         for section delimitr
+     Dsection                 15     24                                         section name
+     DOutBuff          S          30000A                                        Area for output
+     DOutBuffLn        S             10i 0                                      Length of Output are
+     DLower            C                   'abcdefghijklmnopqrstuvwxyz'
+     DUpper            C                   'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+     Dh1               s              5I 0 INZ(0)                               html record index
+     Dh2               s              5I 0 INZ(0)                               html record index
+     Ddbglen           s              5S 0
+     Ddbgdata          s            500
+
+
+
+      ******************************************************************
+      * Gethtml subprocedure
+      ******************************************************************
+      * Reads HTMLSRC records into dynamic html array
+      * Sets up secname, secstart, secend arrays
+     Pgethtml          b                   export
+     Dgethtml          pi
+     Dfn                             10
+     Dlib                            10
+     Dmbr                            10
+
+      * Local variables
+     Doldhreccnt       s              5i 0
+      * variables for managing dynamic array, hrec
+     DHeapId           S             10i 0 INZ(0)                               0 = default heap
+     DSize             S             10i 0                                      bytes to allocate
+     DRetAddr          S               *                                        Address to heap stor
+     Dhreccnt          S              5i 0 INZ(0)                               current alloc elems
+     DInitAlloc        S              5i 0 inz(100)                             initial elements
+     DSubsAlloc        S              5i 0 inz(100)                             incremental elements
+     DInitSwitch       S              1    INZ('0')                             whether initialized
+     Dhtmlstate        s             10                                         html read state
+     Dstartstate       c                   'start     '                         start state
+     Ddelimstate       c                   'delim     '                         delimiter state
+     Dindatastat       c                   'indata    '                         in-data state
+     Ds1               s              5I 0 INZ(0)                               section index 1
+     Ds2               s              5I 0 INZ(0)                               section index 2
+
+      * Override and open htmlsrc file
+     C                   CALLB     'XXXOVRHTML'
+     C                   PARM                    FILE2OVR
+     C                   PARM                    FN
+     C                   PARM                    LIB
+     C                   PARM                    MBR
+      * Initialize subprocedure.  If already done, return without doing it again.
+     C                   if        initswitch = '0'
+     C                   eval      initswitch = '1'
+     C                   exsr      init                                         initialize
+     C                   else
+     C                   return
+     C                   endif
+     C                   eval      htmlstate = startstate
+     C                   eval      secname = *blanks
+     C                   eval      secstart = 0
+     C                   eval      secend = 0
+     C                   eval      s1 = 0
+     C                   eval      s2 = 0
+     C                   eval      h1 = 0
+     C                   eval      h2 = 0
+      * Load the hrec array from the htmlsrc file
+     C                   open      htmlsrc                              98
+     C     *in98         doueq     *on
+     C                   read      htmlrec                                98
+     C                   if        *in98 = *on  and  s1 > 0
+     C                   eval      secend(s1) = h1
+     C                   else
+     C                   if        twobytes <> secdelim
+     C                   eval      hrecidx = hrecidx + 1
+     C                   eval      hrecelem = srcdta
+     C                   exsr      addhrec
+     C                   endif
+
+     C                   select
+      * handle first record
+     C                   when      htmlstate = startstate
+     C                   eval      htmlstate = delimstate
+     C                   eval      s1 = s1 + 1
+     C                   if        twobytes = secdelim
+     C                   eval      secname(s1) = %trimr(section)
+     C     lower:upper   xlate     secname(s1)   secname(s1)
+     C                   else
+     C                   eval      secname(s1) = '*NONAME'
+     C                   eval      h1 = h1 + 1
+     C                   eval      secstart(s1)=h1
+     C                   eval      htmlstate = indatastat
+     C                   endif
+      *
+      * handle record following a section delimiter.  If two in a row, set previous section's
+      * start and end indexes to 0
+     C                   when      htmlstate = delimstate                       Two delims in a row
+     C                   if        twobytes = secdelim
+     C                   eval      htmlstate = delimstate
+     C                   eval      secstart(s1) = 0
+     C                   eval      secend(s1) = 0
+     C                   eval      s1 = s1 + 1
+     C                   eval      secname(s1) = %trimr(section)
+     C     lower:upper   xlate     secname(s1)   secname(s1)
+     C                   else
+      * not a section delimiter
+     C                   eval      h1 = h1 + 1
+     C                   eval      secstart(s1) = h1
+     C                   eval      htmlstate = indatastat
+     C                   endif
+      *
+      * handle record following a data record
+     C                   when      htmlstate = indatastat
+     C                   if        twobytes = secdelim
+     C                   eval      htmlstate = delimstate
+     C                   eval      secend(s1) = h1
+     C                   eval      s1 = s1 + 1
+     C                   eval      secname(s1) = %trimr(section)
+     C     lower:upper   xlate     secname(s1)   secname(s1)
+     C                   else
+     C                   eval      h1 = h1 + 1
+     C                   eval      htmlstate = indatastat
+     C                   endif
+     C                   endsl
+     C                   endif
+     C                   enddo
+     C                   close     htmlsrc                              98
+      *-----------------------------------------------------------------*
+      * Interface to the CEEGTST API (Get heap Storage).                *
+      *  1) HeapId = Id of the heap.  We will allocate from the         *
+      *              default heap and thus set this variable to 0.      *
+      *  2) Size   = Number of bytes to allocate                        *
+      *  3) RetAddr= Return address of the allocated storage            *
+      *  4) *OMIT  = The feedback parameter.  Specifying *OMIT here     *
+      *              means that we will receive an exception from       *
+      *              the API if it cannot satisfy our request.          *
+      *              Since we do not monitor for it, the calling        *
+      *              procedure will receive the exception.              *
+      *-----------------------------------------------------------------*
+     C     CEEGTST_PL    PLIST
+     C                   PARM                    HeapId
+     C                   PARM                    Size
+     C                   PARM                    RetAddr
+     C                   PARM                    *OMIT
+
+      *-----------------------------------------------------------------*
+      * Interface to the CEECZST API (Reallocate Storage).              *
+      *  1) RetAddr= The address of the storage that we want            *
+      *              reallocated.                                       *
+      *  2) Size   = The new size of the storage                        *
+      *  3) *OMIT  = The feedback parameter.                            *
+      *-----------------------------------------------------------------*
+     C     CEECZST_PL    PLIST
+     C                   PARM                    RetAddr
+     C                   PARM                    Size
+     C                   PARM                    *OMIT
+
+      **********************************************************************
+     C     addhrec       begsr
+      **********************************************************************
+      * Increase array size if not large enough
+     C     hrecidx       IFGT      hreccnt
+     C                   EXSR      REALLOC
+     C                   ENDIF
+     C                   EVAL      hrec(hrecidx) = %trim(hrecelem)
+     C                   endsr
+      **********************************************************************
+     C     init          BEGSR
+      **********************************************************************
+      * ALLOCATE an initial amount of
+      * storage for the run time array, hrec
+
+     C                   Z-ADD     InitAlloc     hreccnt
+     C                   EXSR      ALLOCATE
+
+     C                   ENDSR
+
+      **********************************************************************
+     C     ALLOCATE      BEGSR
+      **********************************************************************
+      * ALLOCATE: Allocate storage for the dynamic array                *
+      *                                                                 *
+      * Determine the number of bytes needed for the array.             *
+      *                                                                 *
+     C                   EVAL      Size = hreccnt  * %SIZE(hrec)
+      *                                                                 *
+      * Allocate the storage and set the array basing pointer           *
+      * to the pointer returned from the API.                           *
+      *                                                                 *
+     C                   CALLB     'CEEGTST'     CEEGTST_PL
+     C                   MOVE      RetAddr       hrec@
+      *                                                                 *
+      * Initialize the storage for the array.                           *
+      *                                                                 *
+     C     1             DO        hreccnt       i
+     C                   CLEAR                   hrec(i)
+     C                   ENDDO
+
+     C                   ENDSR
+
+      **********************************************************************
+     C     REALLOC       BEGSR
+      **********************************************************************
+      * Reallocate storage by increasing the size of dynamic array hrec.
+      *
+      *  Remember the old number of hrecelems
+      *
+     C                   Z-ADD     hreccnt       oldhreccnt
+      *
+      *  Calculate the new number of hrecelems.  If the hrecidx is
+      *  greater than the current number of hrecelems in the array
+      *  plus the new allocation, then allocate up to the hrecidx,
+      *  otherwise, add a new allocation amount onto the array.
+      *
+     C                   IF        hrecidx > hreccnt  + SubsAlloc
+     C                   Z-ADD     hrecidx       hreccnt
+     C                   ELSE
+     C                   ADD       SubsAlloc     hreccnt
+     C                   ENDIF
+      *                                                                 *
+      * Calculate the new size of the array                             *
+      *                                                                 *
+     C                   EVAL      Size =  hreccnt  * %size(hrec)
+      *                                                                 *
+      * Reallocate the storage and set the array basing pointer         *
+      * to the pointer returned from the API.                           *
+      *                                                                 *
+     C                   CALLB     'CEECZST'     CEECZST_PL
+     C                   MOVE      RetAddr       hrec@
+      *                                                                 *
+      * Initialize the new hrecelems for the array.                     *
+      *                                                                 *
+     C     1             ADD       oldhreccnt    i
+     C     i             DO        hreccnt       i
+     C                   CLEAR                   hrec(i)
+     C                   ENDDO
+
+     C                   ENDSR
+
+     Pgethtml          e
+      ******************************************************************
+      * wrtsection subprocedure
+      ******************************************************************
+     Pwrtsection       b                   export
+     Dwrtsection       pi
+     Dsection                        10                                         section name
+     Dvarnm                          10    dim(50)                              variable names
+     Dvarval                        500    dim(50)                              variable values
+     Dvarln                           5I 0 dim(50)                              variable lengths
+      * Work fields for output subroutine (including variable substitution)
+     Dwk               s                   like(outbuff)
+     Dwkln             s                   like(outbuffln)
+      * arrays for locating substitution variables in hrec array entries
+     Dstart            s              5I 0 dim(50)                              subst var start pos
+     Dend              s              5I 0 dim(50)                              subst var end pos
+      * work variables
+     Di1               s              5i 0
+     Di2               s              5i 0
+     Di3               s              5i 0
+     Di4               s              5i 0
+     Di5               s              5i 0
+      * delimiter info for variables in html
+     Ddelim1           c                   '/%'                                 variable delimiter 1
+     Ddelim2           c                   '%/'                                 variable delimiter 2
+     ddelim1ln         c                   %size(delim1)                        delimiter 1 length
+     ddelim2ln         c                   %size(delim1)                        delimiter 2 length
+      * newline character
+     DNewLine          C                   x'15'
+      * current variable information
+     Dvarname          S             10                                         cur var name
+     Dvarvalue         S            500                                         cur var value
+     Dvarlength        S              5i 0                                      cur var length
+     Dhtmldataln       S              5i 0                                      cur html rec length
+     Ddatastart        S              5i 0                                      html rec data start
+     Ddatalength       S              5i 0                                      html rec data length
+     Dnamestart        S              5i 0                                      html rec name start
+     Dnamelength       S              5i 0                                      html rec name length
+
+     DOutBufSize       S              5i 0 inz(30000)                           Output buffer size
+     Dshift            s              1
+     Dcount            s              5i 0
+     Df1               s              5i 0
+     Df2               s              5i 0
+     Df3               s              5i 0
+     Df4               s              5i 0
+      * writes a section from the hrec arrays
+     C     lower:upper   xlate     section       section
+     C     1             do        50            i1
+     C                   if        varnm(i1) = *blank
+     C                   leave
+     C                   endif
+     C     lower:upper   xlate     varnm(i1)     varnm(i1)
+     C                   enddo
+     C                   if        section = '*FINI'
+     C                   callp     wrtbuffer(outbuff:outbuffln)                 Flush buffer
+     C                   else
+     C                   eval      h1 = 1
+     C     section       lookup    secname(h1)                            99
+     C                   if        *in99 = *on                                  found section
+     C     secstart(h1)  do        secend(h1)    h2
+     C                   eval      htmldata = %trimr(hrec(h2))
+     C                   exsr      output
+     C                   enddo
+     C                   endif
+     C                   endif
+      *********************************************************************************************
+     C     output        begsr
+      *********************************************************************************************
+      * Output subroutine, including variable substitution.
+      *
+      * Input is htmldata, output is wk and wkln
+      *
+      * initialize variables
+     C                   eval      wk = *blanks
+     C                   eval      wkln = 0
+     C                   eval      start = 0
+     C                   eval      end = 0
+     C                   eval      i1 = 1                                       current index
+     C                   eval      i2 = 0                                       previous index
+     C                   eval      i3 = 0                                       last dta byte hndled
+     C     ' '           checkr    htmldata      htmldataln
+      * put delimiters' positions into arrays start and end
+     C     delim1        scan      HTMLDATA      start
+     C     delim2        scan      HTMLDATA      end
+     C* if delimiters not found, output htmldata and exit subroutine
+     C                   if        start(i1) = 0
+     C                   eval      wk = %trimr(htmldata) + newline
+     C     ' '           checkr    wk            wkln
+     C                   exsr      stdout
+     C                   goto      output99
+     C                   endif
+      * loop through start and end arrays, building output in the wk variable
+      *   data to the left of the substitution variable
+     C                   eval      datastart = 1
+     C                   dow       start(i1) > 0
+     C                   if        start(i1) > 1
+     C                   eval      datalength = start(i1) - datastart
+     C                   eval      %subst(wk:wkln+1:datalength) =
+     C                               %subst(htmldata:datastart:datalength)
+     C                   eval      wkln=wkln + datalength
+     C                   endif                                                  start(i1) > 1
+      *   data to replace the substitution variable.  If not found, set to a blank.
+     C                   eval      namestart = start(i1) + 2
+     C                   eval      namelength = end(i1) - namestart
+     C                   eval      varname = %subst(htmldata:namestart:
+     C                               namelength)
+     C     lower:upper   xlate     varname       varname
+     C                   eval      i4=1
+     C     varname       lookup    varnm(i4)                              99
+     C                   if        *in99 = *on
+     C                   eval      varvalue = varval(i4)
+     C     ' '           checkr    varvalue      varlength
+     C                   else
+     C                   eval      varvalue = ' '
+     C                   eval      varlength = 1
+     C                   endif
+     C                   eval      %subst(wk:wkln+1:varlength) =
+     C                               %subst(varvalue:1:varlength)
+     C                   eval      wkln = wkln + varlength
+     C* Set up for next look through the start() and end() arrays
+     C                   eval      datastart = end(i1) + 2
+     C                   eval      i1 = i1 + 1
+     C                   enddo
+      * Any data to the right of the last substitution variable
+     C                   eval      i1 = i1 - 1
+     C                   eval      datastart = end(i1) + 2
+     C                   if        datastart < htmldataln
+     C                   eval      datalength = htmldataln - datastart + 1
+     C                   eval      %subst(wk:wkln+1:datalength) =
+     C                               %subst(htmldata:datastart:datalength)
+     C                   eval      wkln = wkln + datalength
+     C                   endif
+      *
+      * Output the data
+     C                   eval      wkln = wkln + 1
+     C                   eval      %subst(wk:wkln:1) = newline
+     C                   exsr      stdout
+     C     output99      ENDSR
+      *********************************************************************************************
+     C     STDOUT        BEGSR
+      *********************************************************************************************
+      * Standard output subroutine
+      * Debug output
+     C                   eval      dbgdata=('HTML:     ' +
+     C                               %trim(%subst(wk:1:wkln)))
+     C                   eval      dbglen=wkln
+     C                   callp     wrtdebug(dbglen:dbgdata)
+
+     C                   if        (outbuffln + wkln) > (outbufsize - 100)      Flush buffer
+     C                   callp     wrtbuffer(outbuff:outbuffln)                 Flush buffer
+     C                   MOVEL (P) wk            OutBuff                        Start refilling
+     C                   eval      outbuffln = wkln                             Reset length
+     C                   else
+     C                   eval      %subst(outbuff:outbuffln+1) =                append
+     C                             %subst(wk:1:wkln)
+     C                   eval      outbuffln = outbuffln + wkln                 add to size
+     C                   endif
+     C                   ENDSR
+      *
+     Pwrtsection       e

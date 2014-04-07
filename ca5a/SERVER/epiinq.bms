@@ -1,0 +1,72 @@
+***************************************************************
+*  cicssda  MAPINQ1  -- Wed  2 Aug 14:14:02 1995
+***************************************************************
+MAPINQ1 DFHMSD TYPE=&SYSPARM,MODE=INOUT,LANG=C,STORAGE=AUTO,TIOAPFX=YES
+MAPINQ1 DFHMDI SIZE=(24,80),MAPATTS=(COLOR,HILIGHT,VALIDN),LINE=1,     X
+               COLUMN=1,COLOR=NEUTRAL,HILIGHT=OFF
+DTITLE                         DFHMDF POS=(2,2),LENGTH=5,ATTRB=(PROT,  X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Date:'
+DATE                           DFHMDF POS=(2,9),LENGTH=8,ATTRB=(PROT,  X
+               BRT),CASE=MIXED
+TTITLE                         DFHMDF POS=(2,25),LENGTH=5,ATTRB=(PROT, X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Time:'
+TIME                           DFHMDF POS=(2,32),LENGTH=8,ATTRB=(PROT, X
+               BRT),CASE=MIXED
+MTITLE                         DFHMDF POS=(2,59),LENGTH=8,ATTRB=(PROT, X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Mapname:'
+MAPNAME                        DFHMDF POS=(2,69),LENGTH=8,ATTRB=(PROT, X
+               BRT),CASE=MIXED
+PTITLE                         DFHMDF POS=(5,8),LENGTH=12,ATTRB=(PROT, X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='CICS Server:'
+PRODNAM                        DFHMDF POS=(5,24),LENGTH=40,ATTRB=(PROT,X
+               BRT),CASE=MIXED
+STITLE                         DFHMDF POS=(10,3),LENGTH=10,ATTRB=(PROT,X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='System ID:'
+SYSID                          DFHMDF POS=(10,15),LENGTH=4,ATTRB=(PROT,X
+               BRT),CASE=MIXED
+FTITLE                         DFHMDF POS=(10,30),LENGTH=9,ATTRB=(PROT,X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Facility:'
+FACILTY                        DFHMDF POS=(10,42),LENGTH=4,ATTRB=(PROT,X
+               BRT),CASE=MIXED
+NTITLE                         DFHMDF POS=(10,59),LENGTH=8,ATTRB=(PROT,X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Netname:'
+NETNAME                        DFHMDF POS=(10,69),LENGTH=8,ATTRB=(PROT,X
+               BRT),CASE=MIXED
+ATITLE                         DFHMDF POS=(15,3),LENGTH=8,ATTRB=(PROT, X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Appl ID:'
+APPLID                         DFHMDF POS=(15,15),LENGTH=8,ATTRB=(PROT,X
+               BRT),CASE=MIXED
+UTITLE                         DFHMDF POS=(15,59),LENGTH=8,ATTRB=(PROT,X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='User ID:'
+USERID                         DFHMDF POS=(15,69),LENGTH=8,ATTRB=(PROT,X
+               BRT),CASE=MIXED
+QUESTN                         DFHMDF POS=(21,20),LENGTH=32,           X
+               ATTRB=(PROT,BRT),COLOR=GREEN,CASE=MIXED,                X
+               INITIAL='Do You Want More Information Y/N'
+ANSWER                         DFHMDF POS=(21,54),LENGTH=1,            X
+               ATTRB=(UNPROT,BRT,IC),HILIGHT=UNDERLINE,COLOR=YELLOW,   X
+               VALIDN=(MUSTENTER),CASE=MIXED
+                               DFHMDF POS=(21,56),ATTRB=(ASKIP,NORM),  X
+               LENGTH=0
+                               DFHMDF POS=(24,7),LENGTH=13,ATTRB=(PROT,X
+               NORM),COLOR=RED,CASE=MIXED,INITIAL='Enter=Process'
+                               DFHMDF POS=(24,31),LENGTH=7,ATTRB=(PROT,X
+               BRT),COLOR=RED,CASE=MIXED,INITIAL='F3=Exit'
+MAPINQ2 DFHMDI SIZE=(24,80),MAPATTS=(COLOR),LINE=1,COLUMN=1,           X
+               COLOR=NEUTRAL
+MTITLE                         DFHMDF POS=(2,58),LENGTH=8,ATTRB=(PROT, X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Mapname:'
+MAPNAME                        DFHMDF POS=(2,69),LENGTH=8,ATTRB=(PROT, X
+               NORM),CASE=MIXED
+TTITLE                         DFHMDF POS=(7,8),LENGTH=12,ATTRB=(PROT, X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Transaction:'
+TRANCDE                        DFHMDF POS=(7,24),LENGTH=4,ATTRB=(PROT, X
+               BRT),CASE=MIXED
+PTITLE                         DFHMDF POS=(7,40),LENGTH=8,ATTRB=(PROT, X
+               NORM),COLOR=TURQUOISE,CASE=MIXED,INITIAL='Program:'
+PROGNAM                        DFHMDF POS=(7,51),LENGTH=8,ATTRB=(PROT, X
+               BRT),CASE=MIXED
+                               DFHMDF POS=(24,10),LENGTH=7,ATTRB=(PROT,X
+               NORM),COLOR=RED,CASE=MIXED,INITIAL='F3=Exit'
+MAPINQ1 DFHMSD TYPE=FINAL
+

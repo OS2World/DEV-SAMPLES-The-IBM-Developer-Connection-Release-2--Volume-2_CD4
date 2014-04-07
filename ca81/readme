@@ -1,0 +1,116 @@
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³                                                                    ³
+³  MODULE NAME      CA81.ZIP                                         ³
+³                                                                    ³
+³  DESCRIPTIVE NAME CICS Client for OS/2 CGI Samples                 ³
+³                                                                    ³
+³  Statement:       Licensed Materials - Property of IBM             ³
+³                                                                    ³
+³                   CA81 SupportPac                                  ³
+³                   (c) Copyright IBM Corp. 1996                     ³
+³                                                                    ³
+³                   All rights reserved.                             ³
+³                                                                    ³
+³                   U.S. Government Users Restricted Rights - use,   ³
+³                   duplication or disclosure restricted by GSA      ³
+³                   ADP Schedule Contract with IBM Corp.             ³
+³                                                                    ³
+³  Status:          Version 1 Release 1 Modification 1               ³
+³  Last Modified:   3 October 1996                                   ³
+³  Author:          Helcio Cezar Joao                                ³
+³                                                                    ³
+³   NOTES :-                                                         ³
+³     DEPENDENCIES = CICS Client for OS/2 V2                         ³
+³                    CICS for OS/2 V2 or Transaction Server for OS/2 ³
+³                    Internet Connection Server for OS/2             ³
+³     RESTRICTIONS = None                                            ³
+³     MODULE TYPE  = INFOZIP compressed                              ³
+³                                                                    ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Description
+-----------
+
+The sample COBOL programs supplied in this SupportPac show how a CICS
+application can be accessed from the World Wide Web using the External
+Call Interface (ECI) available as part of the CICS Client for OS/2.
+
+The programs interact with a supplied CICS for OS/2 backend application
+which is part of the TECHDEMO developed by the Transaction Processing
+Marketing Team at IBM's Hursley Laboratories in the UK.
+
+Pre-requisites
+--------------
+
+The following products and versions are required:
+
+ - A CICS for OS/2 Client.  The MicroFocus COBOL sample requires the
+   CICS for OS/2 Client V1.0 or later.  The IBM COBOL sample requires
+   the CICS Client for OS/2 V1.1 or later.
+
+ - A WWW server. The IBM Internet Connection Server (ICS) V4.0, under
+   which this application was developed and tested, is recommended.
+   (A copy of ICS V4.0 can be obtained for free from the following
+   URL:
+             http://www.ics.raleigh.ibm.com
+
+   The SupportPac installation instructions provided in the User Guide
+   assume this server is being used and is installed in it's default
+   directories.
+
+ - A CICS for OS/2 V2.0.1 or Warp Transaction Server to run the CICS
+   backend application.
+
+Installation
+------------
+
+All the files which make up the SupportPac are shipped in the file
+CA81.ZIP.  This is an archived file which should be uncompressed to a
+temporary directory on a PC using one of INFOZIPs unzip programs
+(e.g. unzip32.exe for OS/2).  The following files should be produced.
+
+  \
+  ³Ä readme       - This file
+  ³Ä license2.txt - License file
+  ³Ä ca81.inf     - User Guide in OS/2 VIEW format
+  ³
+  ³Ä \server
+  ³  ³
+  ³  ³Ä\v2\bin\vsamserv.dll     - CICS for OS/2 V2.01 backend
+  ³  ³    \data\techbase.btr    - VSAM account file with sample data
+  ³  ³
+  ³  ³Ä\v3\runtime\vsamserv.dll - Transaction Server backend
+  ³  ³    \data\techbase.btr    - VSAM account file with sample data
+  ³  ³    \cobolrt\iwzccpm.dll  - IBM Cobol Runtime
+  ³  ³             iwzrlib.dll  -       "
+  ³  ³             setloc.dll   -       "
+  ³  ³             setloc1.dll  -       "
+  ³  ³             smrtlite.dll -       "
+  ³  ³
+  ³  ÀÄ\source\vsamserv.ccp     - The COBOL source for the CICS
+  ³                               backend
+  ³
+  ÀÄ \client
+     ³
+     ÃÄ\gui\techd1.exe           - An OS/2 PM GUI that interfaces
+     ³                             with the CICS backend
+     ÃÄ\html\credacct.htm        - HTML source to drive the sample
+     ³
+     ÀÄ\cgi\ibmcobol
+           ³   \bin\credacc1.exe - Executable to retrieve account
+           ³   ³                   details
+           ³   ³   \credacc2.exe - Executable to update account
+           ³   ³                   details
+           ³   \source\          - IBM COBOL source plus example
+           ³                       compile CMD files
+           ³
+           \mfcobol
+               \bin\credacc1.exe - Executable to retrieve account
+               ³                   details
+               ³   \credacc2.exe - Executable to update account
+               ³                   details
+               \source\          - MF COBOL source plus example
+                                   compile CMD files
+
+Follow the instructions in the User Guide to complete the installation
+and to see how the samples can be invoked.

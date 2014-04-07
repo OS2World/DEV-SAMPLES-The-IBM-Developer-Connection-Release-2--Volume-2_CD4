@@ -1,0 +1,151 @@
+/*
+<br>
+<head>
+<title>Program that creates threads and retrieves return data</title>
+</head>
+
+<h1>Create threads and retrieve return data</h1>
+
+<p>This program creates two threads and retrieves arbitrary return data from one of the threads.  It performs the following actions:
+<ul>
+<li>Calls pthread_create() with valid parameters and default attributes to create two threads.
+<li>Uses pthread_join() to wait for the first thread to end and displays the results of the thread after the join has completed.
+<li>Allows the second thread to complete without intervention.
+</ul>
+
+<p>
+Choose your browser's option to <b>save to local disk</b> to download this code example.  Send the program to your AS/400 and compile it using the development facilities supplied there.  This program was developed V3R1 system and tested on V3R1, V3R2 and V3R6 systems.
+
+<p>
+This small program that is furnished by IBM is a simple example to provide an illustration.  This example has not been thoroughly tested under all conditions.  IBM, therefore, cannot guarantee or imply reliability, serviceability, or function of this program.  All programs contained herein are provided to you "AS IS".  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
+<xmp>
+*/
+
+/************************************************************************/
+/*                                                                      */
+/* test case:    threads.c                                              */
+/*                                                                      */
+/* objective:    pthread_create() semantics demo/example                */
+/*                                                                      */
+/* scenario:     main(): pthread_create()                               */
+/*                       pthread_join()                                 */
+/*                       pthread_detach()                               */
+/*                                                                      */
+/*               user_thread0: pthread_exit()                           */
+/*                                                                      */
+/*               user_thread1: return                                   */
+/*                                                                      */
+/* description:  Call pthread_create with valid parameters              */
+/*               and default attributes, creating two threads.          */
+/*               Wait for the first user thread to                      */
+/*               terminate using pthread_join. Display the results of   */
+/*               the thread after the join has completed. Allow the     */
+/*               second thread to complete with no intervention.        */
+/*                                                                      */
+/*               Shows a simple example of creating two threads         */
+/*               and retrieving arbitrary return data from one of them. */
+/*                                                                      */
+/* internal routines: user_thread0                                      */
+/*                    user_thread1                                      */
+/*                                                                      */
+/* external routines: pthread_create                                    */
+/*                    pthread_join                                      */
+/*                    pthread_exit                                      */
+/*                                                                      */
+/* usage notes:  Compile this program using CRTCMOD and CRTCPAPGM(V3R1) */
+/*               or CRTPTHPGM (V3R2 or V3R6)                            */
+/*               Call it with no parameters.                            */
+/*                                                                      */  
+/************************************************************************/
+
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+/* Note that a thread can return any type of data if the use of         */
+/* pthread_exit or a void * return type is cast to the appropriate type */
+typedef struct {
+    int         exit_status;
+    char        description[20];
+} thread_return_type;
+
+/* Thread start routines                                                */
+void *user_thread0(void);
+void *user_thread1(void);
+
+/*************************************************************************/
+/*  main: creates two threads, waits for results of the first one and    */
+/*        displays the results                                           */
+/*************************************************************************/
+int main(int argc, char *argv[])
+{
+    int                         rc;     
+    pthread_t                   threads[2];
+    thread_return_type         *status = NULL;
+
+    /* Create two user threads for this example *************************/
+    rc = pthread_create(&threads[0], pthread_attr_default,
+                        (pthread_startroutine_t)user_thread0,
+                        NULL);
+    if (rc < 0) {
+        perror("main: pthread_create #1");
+        exit(1);
+      }
+    
+    rc = pthread_create(&threads[1], pthread_attr_default,
+                        (pthread_startroutine_t)user_thread1,
+                        NULL);
+    if (rc < 0) {
+        perror("main: pthread_create #2");
+        exit(1);
+      }
+    printf("main: Two threads created:\n#0: %d\n#1: %d\n",
+           threads[0], threads[1]);
+
+    
+    
+    /* Wait for the results of user_thread0 and print out the status    */
+    /* Ignore the results of the other thread.                          */
+    
+    rc = pthread_join(threads[0], (void **)&status);
+    if (rc < 0) {
+        perror("main: pthread_join");
+        exit(1);
+      }
+    printf("main: user_thread0 returns the results\n status      : %d\n"
+           " description : %s\n", status->exit_status, status->description);
+
+    /* Don't forget to free the dynamic memory allocated                */
+    free(status);
+    return(0);
+}
+
+
+
+/************************************************************************/
+/*  user_thread0: simple thread, prints out a message, after allocating */
+/*                a return data structure. This data structure is used  */
+/*                to return 'failure information' to the caller of      */
+/*                pthread_join.                                         */
+/************************************************************************/
+void *user_thread0(void)
+{
+    thread_return_type         *return_data;
+
+    return_data = (thread_return_type *)malloc(sizeof(thread_return_type));
+    
+    printf("user_thread0: running\n");
+    return_data->exit_status = -1;
+    strcpy(return_data->description, "Err Description");
+    pthread_exit((void *)return_data); /* OR return((void *)return_data);*/
+    return(NULL); /* so the compiler will smile!                        */
+}
+
+/************************************************************************/
+/*  user_thread1: simple thread, only prints out a message              */
+/************************************************************************/
+void *user_thread1(void)
+{
+    printf("user_thread1: running\n");
+    return(NULL);
+}

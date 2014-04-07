@@ -1,0 +1,121 @@
+/***************************************/
+
+public void clearFields() {
+	ivjProductID.setText("") ;
+	ivjProductName.setText("") ;
+	ivjShortName.setText("") ;
+	ivjDescription.setText("") ;
+	ivjSupplierID.setText("") ;
+	ivjURL.setText("") ;
+	return;
+}
+
+/**************************************/
+
+public void fillListBox() {
+	
+	try {
+		Connection connection = getDatastoreJDBC().getConnection() ;
+		Statement statement = connection.createStatement() ;
+		ResultSet resultSet = statement.executeQuery("SELECT product_name FROM isvapps") ;
+		while(resultSet.next())
+		{
+			String product_name = resultSet.getString("PRODUCT_NAME") ;
+			ivjList.addItem(product_name) ;
+		}
+		resultSet.close() ;
+	} catch(Exception exception) {
+		getStatus().setText("List insertion failed") ;
+		exception.printStackTrace() ;
+	 } 		
+
+	return;
+}
+
+/**************************************/
+
+public void updateEntryForm() {
+	String product_name = ivjList.getSelectedItem() ;
+	if(product_name != null)
+	{
+		try {
+		Connection connection = getDatastoreJDBC().getConnection() ;
+		Statement statement = connection.createStatement() ;
+		ResultSet resultSet = statement.executeQuery("SELECT product_id, short_name, description, supplier_id, url FROM isvapps WHERE product_name = '" + product_name  + "'") ;
+		while(resultSet.next())
+		{
+			String product_id = resultSet.getString("PRODUCT_ID") ;
+			String short_name = resultSet.getString("SHORT_NAME") ;
+			String description = resultSet.getString("DESCRIPTION") ;
+			String supplier_id = resultSet.getString("SUPPLIER_ID") ;
+			String url = resultSet.getString("URL") ;
+			ivjProductID.setText(product_id) ;
+			ivjProductName.setText(product_name) ;
+			ivjShortName.setText(short_name) ;
+			ivjDescription.setText(description) ;
+			ivjSupplierID.setText(supplier_id) ;
+			ivjURL.setText(url) ;
+		}
+		resultSet.close() ;
+} catch(Exception exception) {
+		getStatus().setText("Status:  Product search failed.") ;
+		exception.printStackTrace() ;
+	 } 		
+
+		
+	}	
+	return;
+}
+
+/**************************************/
+
+//: From AppEntry's init()
+// user code begin {1}
+
+Frame frame = new Frame() ;
+JDBCLogon logon = new JDBCLogon(frame, getDatastoreJDBC()) ;
+logon.dispose() ;
+
+ivjIsvapps = new Isvapps.Isvapps(getDatastoreJDBC()) ;
+this.fillListBox() ;
+
+// user code end
+
+
+/**************************************/
+
+public void updateEntryForm() {
+	String product_name = ivjList.getSelectedItem() ;
+	if(product_name != null)
+	{
+		try {
+		Connection connection = getDatastoreJDBC().getConnection() ;
+		Statement statement = connection.createStatement() ;
+		ResultSet resultSet = statement.executeQuery("SELECT product_id, short_name, description, supplier_id, url FROM isvapps WHERE product_name = '" + product_name  + "'") ;
+		while(resultSet.next())
+		{
+			String product_id = resultSet.getString("PRODUCT_ID") ;
+			String short_name = resultSet.getString("SHORT_NAME") ;
+			String description = resultSet.getString("DESCRIPTION") ;
+			String supplier_id = resultSet.getString("SUPPLIER_ID") ;
+			String url = resultSet.getString("URL") ;
+			ivjProductID.setText(product_id) ;
+			ivjProductName.setText(product_name) ;
+			ivjShortName.setText(short_name) ;
+			ivjDescription.setText(description) ;
+			ivjSupplierID.setText(supplier_id) ;
+			ivjURL.setText(url) ;
+		}
+		resultSet.close() ;
+} catch(Exception exception) {
+		getStatus().setText("Status:  Product search failed.") ;
+		exception.printStackTrace() ;
+	 } 		
+
+		
+	}	
+	return;
+}
+
+
+/*************************************************/

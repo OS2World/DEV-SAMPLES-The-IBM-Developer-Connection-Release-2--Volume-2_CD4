@@ -1,0 +1,75 @@
+/********************************************************************/
+/*                                                                  */
+/*            Author: David Money                                   */
+/*            E-mail: money@vnet.ibm.com                            */
+/*                                                                  */
+/*  This a driver for a parser for CGI programming on AS/400.       */
+/*  Compile this source as module and link to the parser            */
+/*  (DDMPARSER) to create a sample CGI program.  You can use        */
+/*  the include file (DDMPARSINC) that has the                      */
+/*  function prototypes.  There is also an HTML form to use for     */
+/*  input and to launch the CGI program. It is titled DDMPARSER     */
+/*  in the HTMLSRC file.                                            */
+/*                                                                  */
+/*  Features included:                                              */
+/*     Shows calls to each of three parsing routines                */
+/*     Displays results                                             */
+/*                                                                  */
+/*                  LICENSE AND DISCLAIMER                          */
+/*                                                                  */
+/* This material contains IBM copyrighted sample programming        */
+/* source code. IBM grants you a nonexclusive license to use,       */
+/* execute, display, reproduce, distribute and prepare derivatives  */
+/* of this sample code. The sample code has not been thoroughly     */
+/* tested under all conditions.  IBM, therefore, does not warrant   */
+/* or guarantee its reliability, serviceablity, or function. All    */
+/* sample code contained herein is provided to you "AS IS." ALL     */
+/* IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO THE IMPLIED     */
+/* WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A PARTICULAR      */
+/* PURPOSE, ARE EXPRESSLY DISCLAIMED.                               */
+/*                                                                  */
+/*                  COPYRIGHT                                       */
+/*                  ---------                                       */
+/*   (C) Copyright IBM CORP. 1997                                   */
+/*   All rights reserved.                                           */
+/*   US Government Users Restricted Rights -                        */
+/*   Use, duplication or disclosure restricted                      */
+/*   by GSA ADP Schedule Contract with IBM Corp.                    */
+/*   Licensed Material - Property of IBM                            */
+/*                                                                  */
+/********************************************************************/
+
+#include "ddmparsinc"
+
+void main()
+{
+   int numvars;
+   int ct;
+   char **names;
+   char **values;
+
+   int *num;
+
+   numvars = cGetAllVars(&names, &values, &num);
+
+   printf ("Content-Type: text/html\n\n");
+
+   printf("<table border=1><tr><th>%s<th>%s\n",
+          "Variable Name", "Variable Value");
+   for (ct = 0; ct < numvars; ct++)
+   {
+       printf("<tr><td>%s<td>%s<br>\n", names[ct], values[ct]);
+   } /*for*/
+   printf("</table><hr>\n");
+   printf ("%s<br>\n", cGetVar("Name"));
+   printf("<hr>\n");
+
+   numvars = cGetMVar("Interest", &values);
+   printf("Interest has values: <br>\n");
+   for (ct = 0; ct < numvars; ct++)
+   {
+       printf("%s<br>\n", values[ct]);
+   } /*for*/
+
+
+} /*main*/

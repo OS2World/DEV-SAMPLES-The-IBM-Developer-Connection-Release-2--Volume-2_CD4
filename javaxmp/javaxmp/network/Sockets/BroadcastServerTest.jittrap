@@ -1,0 +1,111 @@
+//-----------------------------------------------------------------------------
+// BroadcastServerTest.java
+//
+// A simple example of how you can broadcast to everyone on a specific
+// subnet and see if anyone replies to you.
+//
+// This is the server side of a two part test. For the client side, see
+// the file BroadcastClientTest.java.
+// 
+// This version requires Java JDK level 1.0.2 or higher.
+//
+// Demonstrates use of these classes/interfaces:
+//
+//
+// Author : Kelvin R Lawrence.     19-Jun-1997
+//
+// History:
+//
+//-----------------------------------------------------------------------------
+import java.net.*;
+import java.io.*;
+
+//---------------------------------------------------------------
+// Class: BroadcastServerTest
+//
+// Experiment with the ServerSocket class.
+//---------------------------------------------------------------
+public class BroadcastServerTest
+{
+
+   //----------------------------------------------------------
+   // Hard coded for now, don't know how to query this in Java.
+   //----------------------------------------------------------
+   private byte [] subnetMask = { (byte)255,(byte)255,(byte)254,(byte)0 } ;
+
+   //------------------------------------------------------------------------
+   // Constructor.
+   //
+   // In this particular case, nothing to do.
+   //------------------------------------------------------------------------
+   public BroadcastServerTest( )
+   {
+   }
+
+   //------------------------------------------------------------------------
+   // getBroadcastAddress()
+   //
+   // Using the address of the machine we are running on and the subnet mask
+   // for our subnet, we can calculate the broadcast address for this 
+   // specific subnet. The way this is done is to use the following
+   // formula :
+   //
+   //    broadcast = my_address OR ( NOT subnet mask )
+   //
+   //------------------------------------------------------------------------
+   public byte [] getBroadcastAddress( byte [] thisMachine )
+   {
+
+     byte [] broadcast = new byte[4] ;
+ 
+     broadcast[0] =  (byte)(thisMachine[0] | (~subnetMask[0]) ) ;
+     broadcast[1] =  (byte)(thisMachine[1] | (~subnetMask[1]) ) ;
+     broadcast[2] =  (byte)(thisMachine[2] | (~subnetMask[2]) ) ;
+     broadcast[3] =  (byte)(thisMachine[3] | (~subnetMask[3]) ) ;
+
+     System.out.println( broadcast[0] ) ;
+     System.out.println( broadcast[1] ) ;
+     System.out.println( broadcast[2] ) ;
+     System.out.println( broadcast[3] ) ;
+ 
+     return( broadcast ) ;
+   }
+
+   //------------------------------------------------------------------------
+   // runTests()
+   //
+   //------------------------------------------------------------------------
+   public void runTests( int port)
+   {
+     try
+     {
+       System.out.println( "Attempting to setup server" ) ;
+       System.out.println( "Local host is " + InetAddress.getLocalHost() ) ;
+
+       getBroadcastAddress( InetAddress.getAddress() ) ;
+
+     }
+     catch ( IOException e )
+     {
+       System.out.println( "IO Exception during ServerSocket() creation." ) ;
+     }
+   }
+
+   //------------------------------------------------------------------------
+   // main()
+   //
+   // 
+   // 
+   // 
+   //------------------------------------------------------------------------
+   static public void main( String[] args )
+   {
+     if ( args.length > 0 )
+     {
+     }
+
+     BroadcastServerTest s = new BroadcastServerTest() ;
+
+     s.runTests( port ) ;
+   }
+}

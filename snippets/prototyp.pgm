@@ -1,0 +1,129 @@
+      *********************************************************************
+      * LICENSE AND DISCLAIMER                                            *
+      * ----------------------                                            *
+      * This material contains IBM copyrighted sample programming         *
+      * source code.  IBM grants you a nonexclusive license to use,       *
+      * execute, display, reproduce, distribute and prepare derivative    *
+      * works of this sample code.  The sample code has not been          *
+      * thoroughly tested under all conditions.  IBM, therefore, does     *
+      * not warrant or guarantee its reliability, serviceablity, or       *
+      * function.  All sample code contained herein is provided to you    *
+      * "AS IS." ALL IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO     *
+      * THE IMPLIED WARRANTIES OF MERCHANTABILLITY AND FITNESS FOR A      *
+      * PARTICULAR PURPOSE, ARE EXPRESSLY DISCLAIMED.                     *
+      *                                                                   *
+      * COPYRIGHT                                                         *
+      * ---------                                                         *
+      *  (C) COPYRIGHT IBM CORP. 1996, 1997                               *
+      *  ALL RIGHTS RESERVED.                                             *
+      *  US GOVERNMENT USERS RESTRICTED RIGHTS -                          *
+      *  USE, DUPLICATION OR DISCLOSURE RESTRICTED                        *
+      *  BY GSA ADP SCHEDULE CONTRACT WITH IBM CORP.                      *
+      *  LICENSED MATERIAL - PROPERTY OF IBM                              *
+      *                                                                   *
+      *  COMMENTS/QUESTIONS                                               *
+      *  ------------------                                               *
+      *  Please send comments or questions via e-mail to Mel Rothman      *
+      *  at mrothman@vnet.ibm.com                                         *
+      *                                                                   *
+      *  THIS FILE AVAILABLE FROM:                                        *
+      *  ------------------------                                         *
+      *  AS/400 Web Builder's Workshop's Snippets Page                   *
+      *  http://205.217.130.15/workshop/snippets/snippets.htm             *
+      *  It is included in SAVF CGIDEVD (identified as                    *
+      *  SAVEFILE OF CGIDEV LIBRARY)                                      *
+      *********************************************************************
+      * Prototype for hex2char, used by xlatesc subroutine
+     D hex2char        PR             1
+     D    chars                       2    VALUE
+      *
+      * Prototype for char2hex, used by xlatesc subroutine
+     D char2hex        PR             2
+     D    char                        1    VALUE
+
+      * Prototype for cgiparse
+     D cgiparse        PR
+     D    string                  32767    options(*varsize)
+     D    stringln                   10I 0
+      *
+      * Prototype for cvtedtcod.
+     Dcvtedtcod        PR            40
+     D    srcvar                     30    VALUE                                Source variable
+     D    srcvartype                 10    VALUE                                Type (e.g. *ZONED)
+     D    edtcode                     1    VALUE                                edit code
+     D    floatcur                    1    VALUE                                float curr symbol
+     D    prec                       10i 0 VALUE                                precision (digits)
+     D    dec                        10i 0 VALUE                                positns aft dec pnt
+
+      * Prototype for cvtedtwrd.
+     Dcvtedtwrd        PR            40
+     D    srcvar                     30    VALUE                                Source variable
+     D    srcvartype                 10    VALUE                                Type (e.g. *ZONED)
+     D    editword                   30    VALUE                                edit word
+     D    editwordln                 10i 0 VALUE                                edit word length
+     D    prec                       10i 0 VALUE                                precision (digits)
+
+      * Prototype for gethtml
+     Dgethtml          pr
+     DFN                             10
+     DLIB                            10
+     DMBR                            10
+
+      * Prototype for wrtsection
+     Dwrtsection       pr
+     Dsection                        10                                         section name
+     Dvarnm                          10    dim(50)                              variable names
+     Dvarval                        500    dim(50)                              variable values
+     Dvarln                           5I 0 dim(50)                              variable lengths
+
+
+      * Prototype for c2n, converts 32-byte string to 30/9 packed decimal
+     Dc2n              PR            30p 9
+     Dc                              32    options(*varsize)
+
+      * Prototype for getenvp, calls QtmhGetEnv API
+     Dgetenvp          pr                  extproc('QtmhGetEnv')
+     Denvrcvr                     32767
+     Denvrcvrln                      10i 0
+     Denvrspln                       10i 0
+     Denvrqsnm                       30
+     Denvrqsln                       10i 0
+     Dqusec                          16
+
+      * Prototype for CvtDb, calls QtmhCvtDb API
+     DCvtDb            pr                  extproc('QtmhCvtDb')
+     DDbFileName                     20                                         Filename & Library
+     DInData                      32767    options(*varsize)                    Input data
+     DInActLn                        10i 0                                      Input data length
+     DDSBuffer                    32767    options(*varsize)                    Data structure buffr
+     DDBDSLn                         10i 0                                      Data struct length
+     DDBActLn                        10i 0                                      Data struc retrn len
+     DDBRespCd                       10i 0                                      Response Code
+     Dqusec                          16                                         Error structure
+
+      * Prototype for getinput
+     Dgetinput         pr
+     DInData                      32767    options(*varsize)                    Input data
+     DInDataln                       10i 0                                      Size of input buffer
+     DInActLn                        10I 0                                      Actual length Rcvd
+     DInDataType                      5                                         Returns GET or POST
+
+      * Prototype for isdebug
+     Disdebug          pr             1
+
+      * Prototype for wrtdebug
+     Dwrtdebug         pr
+     Ddbglenin                        5S 0
+     Ddbgdatain                     500
+
+      * Prototype for wrtbuffer
+     Dwrtbuffer        pr
+     Doutbuff                     30000                                         buffer
+     Doutbuffln                      10i 0                                      bufferln
+
+      * Prototype for countp
+     Dcountp           pr            10S 0                                      Counter value
+     Dkeyvalin                       20                                         Counter key
+
+      * Prototype for contlen (content_length)
+     Dcontlen          pr            10I 0                                      content length

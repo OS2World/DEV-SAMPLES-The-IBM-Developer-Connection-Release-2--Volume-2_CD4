@@ -1,0 +1,37 @@
+Isvapps.java:841: Variable 'rowsAffected' is already defined in this method.
+      int rowsAffected = stmt.executeUpdate(); 
+          ^
+Isvapps.java:842: [] can only be applied to arrays. It can't be applied to int.
+      rowsAffected[0] = new Integer(((CallableStatement)stmt).getInt(1));
+                  ^
+Isvapps.java:843: [] can only be applied to arrays. It can't be applied to int.
+      if (((CallableStatement)stmt).wasNull()) rowsAffected[0] = null; 
+                                                           ^
+Isvapps.java:869: Variable 'rowsAffected' is already defined in this method.
+      int rowsAffected = stmt.executeUpdate(); 
+          ^
+Isvapps.java:870: [] can only be applied to arrays. It can't be applied to int.
+      rowsAffected[0] = new Integer(((CallableStatement)stmt).getInt(2));
+                  ^
+Isvapps.java:871: [] can only be applied to arrays. It can't be applied to int.
+      if (((CallableStatement)stmt).wasNull()) rowsAffected[0] = null; 
+                                                           ^
+Isvapps.java:965: Variable 'rowsAffected' is already defined in this method.
+      int rowsAffected = stmt.executeUpdate(); 
+          ^
+Isvapps.java:966: [] can only be applied to arrays. It can't be applied to int.
+      rowsAffected[0] = new Integer(((CallableStatement)stmt).getInt(7));
+                  ^
+Isvapps.java:967: [] can only be applied to arrays. It can't be applied to int.
+      if (((CallableStatement)stmt).wasNull()) rowsAffected[0] = null; 
+                                                           ^
+Isvapps.java:1008: Variable 'rowsAffected' is already defined in this method.
+      int rowsAffected = stmt.executeUpdate(); 
+          ^
+Isvapps.java:1009: [] can only be applied to arrays. It can't be applied to int.
+      rowsAffected[0] = new Integer(((CallableStatement)stmt).getInt(7));
+                  ^
+Isvapps.java:1010: [] can only be applied to arrays. It can't be applied to int.
+      if (((CallableStatement)stmt).wasNull()) rowsAffected[0] = null; 
+                                                           ^
+12 errors

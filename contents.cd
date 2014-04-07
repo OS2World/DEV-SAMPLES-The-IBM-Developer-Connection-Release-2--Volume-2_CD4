@@ -1,0 +1,142 @@
+FYI: ca31 201 --> 204
+FYI: cicscnt 405 --> 204
+FYI: cicscos2 401 --> 204
+FYI: progrmgd 202 --> 204
+FYI: servx21b 202 --> 204
+FYI: ts4os2 401 --> 204
+FYI: tscp 405 --> 204
+FYI: tsv4wnt 405 --> 204
+FYI: tswinlb 207 --> 204
+This is a list of the content for the June 1998 issue of 
+The IBM Developer Connection Release 2, Volume 2, Member Level Disc 4.
+The products for this issue are noted as New (N) or Updated (U).
+
+Products with Time-Out code are noted with a (T).
+Member Level is the base subscription.  Advanced Level includes the Member
+Level, and the Premier Level includes the Advanced and Member Levels.
+Note that product disc numbers are shown preceded by their subscription level
+(i.e (M1) = Member Level Disc 1, (A3) = Advanced Level Disc 3, (P2) = Premier
+Level Disc 2) following the product name.  The subscription programs include
+limited licenses to the following:
+
+
+The IBM Developer Connection
+FixPaks, CSDs, and Service
+  AIX 4.2.1 Maintenance Fixes (M4)
+Java Tools
+  Bamba for Java Applet V0.98 Windows 95/NT (M4) (N)
+Sample Code
+  AIX
+    ISA Device Driver Samples (M4)
+    Loadddx for GXT110P 2M Video Card (For S3 Trio64V+ graphics chip) (M4)
+    PCMCIA Device Driver Samples (M4)
+    SCSI Device Driver Sample Code (M4)
+  Developer Connection Magazine
+    32-bit Char_Mode APIs-Volume 3 (M4)
+    32-bit Memory Management-Volume 10 (M4)
+    Don't Hesitate to Terminate-Volume 12 (M4)
+    Dynamic Linking on OS/2 V2.X - Volume 2 (M4)
+    Exception Management in 32-Bit OS/2 - Volume 2 (M4)
+    Extend Your Programs with REXX-Volume 6 (M4)
+    Filling You In: Areas, Clippings & Paths-Volume 4 (M4)
+    Fonts R Us-Volume 5 (M4)
+    Hello World: Part II, OpenDoc Views and Presentation Types-Volume 7 (M4)
+    Ink PS Sample Code-Volume 11 (M4)
+    M Shell-Volume 3 (M4)
+    Making Your OS/2 Device Driver APM-Aware-Volume 5 (M4)
+    Memory Mapped File I/O for OS/2 - R2V1 Sept. 1997 (M4)
+    Monitoring Display Driver Interface Calls-Volume 6 (M4)
+    Multithreading PM Applications - Volume 1 (M4)
+    Mustering DCE Registry Objects with the Managed Object Class Library-Volume 10 (M4)
+    NewShow: A C++ DIVE class sample-Volume 9 (M4)
+    One Call Does It All-Volume 7 (M4)
+    OS/2 BootLogo Utility-Volume 6 (M4)
+    OS/2-Win-OS/2 Communications - Volume 2 (M4)
+    OS/2-Win-OS/2 Communications-Volume 4 (M4)
+    OS2TUTOR-Volume 8 (M4)
+    Pile of Class-Volume 8 (M4)
+    PMCX - What's zat?-Volume 9 (M4)
+    PMCX: A Combined Solution-Volume 10 (M4)
+    Porting Windows and OS/2 based Applications to Java - R2V1 Dec. 1997 (M4) (N)
+    Sharing The Parallel Port-Volume 4 (M4)
+    Simple Animation Techniques-Volume 12 (M4)
+    StartDos-Volume 3 (M4)
+    T Shell-Volume 3 (M4)
+    THE JAVA FOUNDATION CLASSES: the NEW STANDARD for Java GUI Development - R2V2 June 1998 (M4) (N)
+    The OS/2 Debug Kernel-Volume 4 (M4)
+    Transform Example-Volume 3 (M4)
+    Using the Developer API Extensions (Open32)-Volume 10 (M4)
+    VisualAge for Java, Bean Editor Deluxe - R2V1 Mar. 1998 (M4) (N)
+    Workplace Shell & DSOM-Volume 6 (M4)
+    Writing Multithreaded Graphics Programs-Volume 7 (M4)
+    Writing Object Oriented Multimedia IO Procs-Volume 4 (M4)
+    Writing OpenDoc Part Handlers: The Hello World Part-Volume 6 (M4)
+    Writing Workplace Shell objects using IBM Open Class Libraries-Volume 9 (M4)
+  Internet / Java
+    Java Example Code (M4) (N)
+    VisualAge for Java and Java Connectors Workshop Samples (M4) (N)
+  OS/400
+    AS/400 EX. 01: Program that creates threads and retrieves return data (M4)
+    AS/400 EX. 02: Program that retrieves return data from thread and writes trace data (M4)
+    AS/400 EX. 03: Program that uses mutex locking and unlocking (M4)
+    AS/400 EX. 04: Program that uses condition variables (M4)
+    AS/400 EX. 05: Client/Server programs that use semaphores and shared memory (M4)
+    AS/400 EX. 06: Program that gets and sets value of an environment variable (M4)
+    AS/400 EX. 07: Program that is a replacement for sys_nerr[] to retrieve a message text in any language (M4)
+    AS/400 EX. 08: Program that use spawn() and wait() to start a child process (M4)
+    AS/400 EX. 09: Program that is a replacement for gettimeofday() (M4)
+    AS/400 EX. 10: Use of iconv() functions to convert characters from one CCSID to another CCSID (M4)
+    AS/400 EX. 11: Program that gets hidden input from terminal (M4)
+    AS/400 EX. 12: Program that is a replacement for usleep() (M4)
+    AS/400 EX. 13: Sockets client and a server that uses threads, spawn, fork, or inline processing of requests (M4)
+    AS/400 EX. 14: Program that uses Dynamic Screen Manager (DSM) APIs to create a user interface (M4)
+    AS/400 EX. 15: Program that is a replacement for finite() (M4)
+    AS/400 EX. 16: Program that is a replacement for isnan() (M4)
+    AS/400 EX. 17: Program that is a replacement for getdtablesize() (M4)
+    Snippets (M4)
+  Transaction Systems
+    CICS Bitmap and Icon Files (M4)
+    CICS Client for OS/2 - Native OS/2 ECI Samples (M4)
+    CICS Client for OS/2 - OS/2 PM ECI Samples (M4)
+    CICS Client for OS/2 CGI Samples (M4)
+    CICS Client for Windows - COBOL ECI Samples (M4)
+    CICS Client for Windows - ECI Samples (M4)
+    CICS Client for Windows - OO Basic Programming with Complex COMMAREAs (M4)
+    CICS Client for Windows - Programming with LotusScript (M4)
+    CICS Client for Windows - Programming with VBScript (M4)
+    CICS Client for Windows - Sample ECI OLE Automation Server (M4)
+    CICS for MVS/ESA EXCI CGI Sample Program (M4)
+    Link Extra for Lotus Notes (M4)
+    Non-CICS COBOL Samples for VSAM file access (M4)
+  VisualAge C++
+    AB2C - VisualAge C++ Sample (M4)
+    ARGTEST - VisualAge C++ Sample (M4)
+    BIGCNR - VisualAge C++ Sample (M4)
+    CLOSEEVT - VisualAge C++ Sample (M4)
+    CNRDRAG - VisualAge C++ Sample (M4)
+    CNRFILT - VisualAge C++ Sample (M4)
+    CNRHELPO - VisualAge C++ Sample (M4)
+    CNRHELPW - VisualAge C++ Sample (M4)
+    CNRSAMP - VisualAge C++ Sample (M4)
+    DAXTHRDS - VisualAge C++ Sample (M4)
+    DBBROWSE - VisualAge C++ Sample (M4)
+    DLG2CPP - VisualAge C++ Sample (M4)
+    DLLRES - VisualAge C++ Sample (M4)
+    DMSAMP - VisualAge C++ Sample (M4)
+    DRAGTOYS - VisualAge C++ Sample (M4)
+    I3STATE - VisualAge C++ Sample (M4)
+    IOBJPART - VisualAge C++ Sample (M4)
+    KEYSRT - VisualAge C++ Sample (M4)
+    LISTSAMP - VisualAge C++ Sample (M4)
+    MLE - VisualAge C++ Sample (M4)
+    MYENTRY - VisualAge C++ Sample (M4)
+    NLSPARTS - VisualAge C++ Sample (M4)
+    NOTEBOOK - VisualAge C++ Sample (M4)
+    PGEHDL - VisualAge C++ Sample (M4)
+    POWERGU2 - VisualAge C++ Sample (M4)
+    STRGEN - VisualAge C++ Sample (M4)
+    THREADS - VisualAge C++ Sample (M4)
+    THREADS2 - VisualAge C++ Sample (M4)
+    TREECNR - VisualAge C++ Sample (M4)
+    VBTIMER - VisualAge C++ Sample (M4)
+

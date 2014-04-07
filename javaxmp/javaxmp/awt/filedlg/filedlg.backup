@@ -1,0 +1,72 @@
+//-----------------------------------------------------------------------------
+// filedlg.java
+//
+// Simple Java test application that demonstrates how to display and
+// get data from the system file dialog.
+//
+// Author : Kelvin R Lawrence.     12th-Sept-1996.
+//
+//-----------------------------------------------------------------------------
+
+import java.awt.* ;
+import java.applet.* ;
+
+//---------------------------------------------------------------
+// Class: filedlg
+//
+// Simple class that experiments with Java file dialogs.
+//
+//---------------------------------------------------------------
+
+public class filedlg extends Applet
+{
+  //----------------------------------------------------------
+  // Init routine. Called whenever the applet is first loaded.
+  //----------------------------------------------------------
+  public void init()
+  {
+    Frame      myFrame   ; // Frame window object.
+    FileDialog fd        ; // File dialog object.
+    String     filename  ; // Filename returned from file dialog.
+    String     path      ; // Path returned from file dialog.
+
+    setLayout(null) ;
+
+    System.out.println( "init() method called" ) ;
+
+    //------------------------------------------------
+    // Create a frame window.
+    //------------------------------------------------
+
+    myFrame = new Frame("File dialog tests" );
+
+    fd = new FileDialog( myFrame, "Select a file" ) ;
+
+    //------------------------------------------------
+    // Add our frame window to the Applet's container
+    // This way we will get the events we need.
+    //------------------------------------------------
+    add( myFrame );
+
+    myFrame.resize( 100,100 ) ;
+    myFrame.show() ;
+
+    fd.show() ;
+
+    filename = fd.getFile() ;
+    path     = fd.getDirectory() ;
+
+    System.out.println( "Returned with file name :" + filename ) ;
+    System.out.println( "Returned with path name :" + path ) ;
+  }
+
+  public boolean action( Event evt, Object what )
+  {
+    System.out.println( "action() method got called" );
+
+    return true ;
+  }
+}
+
+
+
